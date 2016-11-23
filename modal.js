@@ -18,6 +18,7 @@ Modal.Actions = function (model, render) {
 }
 
 Modal.Render = function (model) {
+    console.log("rendering modal");
     var component = document.querySelector("[data-component=modal]");
 
     function update(model) {

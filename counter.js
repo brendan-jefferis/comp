@@ -24,6 +24,7 @@ Counter.Actions = function (model, render) {
 }
 
 Counter.Render = function (model) {
+    console.log("rendering counter");
     var component = document.querySelector("[data-component=counter]");
 
     function update(count) {

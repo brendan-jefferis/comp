@@ -15,6 +15,7 @@ Greeter.Actions = (model, render) => {
 };
 
 Greeter.Render = (model) => {
+    console.log("rendering greeter");
     var component = document.querySelector("[data-component=greeter]");
 
     function update(model) {
