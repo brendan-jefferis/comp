@@ -1,13 +1,9 @@
 /**
  * Created by bjefferis on 23/11/2016.
  */
-function Counter(model) {
-    model = model || {};
-    this.Render(model);
-    return this.Actions(model, this.Render);
-}
+Counter = {};
 
-Counter.prototype.Actions = function (model, render) {
+Counter.Actions = function (model, render) {
     return componentize({
         add: function() {
             model.count = model.count + 1;
@@ -27,11 +23,11 @@ Counter.prototype.Actions = function (model, render) {
     }, model, render);
 }
 
-Counter.prototype.Render = function (model) {
+Counter.Render = function (model) {
     var component = document.querySelector("[data-component=counter]");
 
     function update(count) {
-        component.querySelector("[data-model=count]").innerHTML = count;
+        component.querySelector("[data-selector=count]").innerHTML = count;
     }
 
     update(model.count);

@@ -1,13 +1,9 @@
 /**
  * Created by bjefferis on 23/11/2016.
  */
-function Modal(model) {
-    model = model || {};
-    this.Render(model);
-    return this.Actions(model, this.Render);
-}
+Modal = {};
 
-Modal.prototype.Actions = function (model, render) {
+Modal.Actions = function (model, render) {
     return componentize({
         setContent: function(content) {
             model.content = content.toString();
@@ -21,12 +17,12 @@ Modal.prototype.Actions = function (model, render) {
     }, model, render);
 }
 
-Modal.prototype.Render = function (model) {
+Modal.Render = function (model) {
     var component = document.querySelector("[data-component=modal]");
 
     function update(model) {
         if (model.content != null && model.content.trim() !== "") {
-            component.querySelector("[data-model=modal-content]").innerHTML = model.content;
+            component.querySelector("[data-selector=modal-content]").innerHTML = model.content;
         }
 
         component.style.display = model.showModal ? "block" : "none";
