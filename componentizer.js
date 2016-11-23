@@ -18,6 +18,14 @@
     }
 
  */
+function Component(actions, render = ()=>{}, model = {}) {
+    if (actions == null) {
+        throw new Error("This won't do much without actions. GO GET ME SOME ACTIONS");
+    }
+
+    render(model);
+    return actions(model, render);
+};
 
 function componentize(actions, model, render) {
     let result = {};
