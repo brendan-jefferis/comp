@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Module</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        [data-component] {
+            border: 1px dotted #ccc;
+            margin: 10px;
+            padding: 10px;
+        }
+
+        [data-component] h6 {
+            color: #aaa;
+            font-size: 10px;
+            margin: 0;
+        }
+
+        [data-component="modal"] {
+            border: none;
+            margin: 0;
+            content: '';
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: rgba(0, 0, 0, .5);
+            top: 0;
+            left: 0;
+        }
+
+        [data-component="modal"] .modal-container {
+            background: #fff;
+            position: absolute;
+            top: 20%;
+            transform: translate(50%);
+            min-width: 320px;
+            width: 50%;
+            box-shadow: 0 6px 20px rgba(50, 50, 50, .2);
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        [data-component="modal"] [data-model="modal-content"] {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div data-component="counter">
+        <h6>Counter</h6>
+
+        <h4>Count: <span data-model="count"></span></h4>
+        <button onclick="counter.subtract()">Subtract</button>
+        <button onclick="counter.add()">Add</button>
+        <button onclick="counter.double()">Double</button>
+        <button onclick="counter.reset()">Reset</button>
+
+        <button onclick="modal.setContent('Current count is ' + counter.get('count'))">Set Modal content for counter</button>
+        <button onclick="modal.setContent(greeter.get('greeting') + ' ' + greeter.get('name'))" data-model="show-greeter-modal">Set Modal content for greeter</button>
+    </div>
+
+    <div data-component="greeter">
+        <h6>Greeter</h6>
+
+        <h4 data-model="greeting"></h4>
+
+        <label for="greeter-name">Enter your name</label>
+        <input id="greeter-name" type="text" onkeyup="greeter.setName(this.value)">
+
+        <label for="greeter-select">Select greeting</label>
+        <select id="greeter-select" name="greet" onchange="greeter.greet(this.value)">
+            <option value="">-Select-</option>
+            <option value="hello">Hello</option>
+            <option value="sup">Sup</option>
+            <option value="waaaazzaaaaapp">Wazaaaap</option>
+            <option value="hallo">Hallo</option>
+        </select>
+
+        <button onclick="modal.setContent(greeter.get('greeting') + ' ' + greeter.get('name'))" data-model="show-greeter-modal">Set Modal content</button>
+    </div>
+
+    <div data-component="address">
+        <h6>Address</h6>
+
+        <p data-model="validation" style="display: none;"></p>
+
+        <p>
+            <label for="address-name">Name</label>
+            <input type="text" id="address-name" data-model="address-name" onchange="address.validateName(this.value)">
+        </p>
+
+        <p>
+            <label for="address-line-1">Address line 1</label>
+            <input type="text" id="address-line-1" data-model="address-line-1">
+        </p>
+
+        <p>
+            <label for="address-line-2">Address line 2</label>
+            <input type="text" id="address-line-2" data-model="address-line-2">
+        </p>
+
+        <p>
+            <label for="address-city">City</label>
+            <input type="text" id="address-city" data-model="address-city">
+        </p>
+
+        <p>
+            <label for="address-country">Country</label>
+            <input type="text" id="address-country" data-model="address-country">
+        </p>
+
+        <button >Save</button>
+    </div>
+
+    <div data-component="modal" style="display: none;" onclick="modal.closeModal()">
+        <div class="modal-container">
+            <div data-model="modal-content"></div>
+            <button onclick="modal.closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="componentizer.js"></script>
+    <script src="address.js"></script>
+    <script src="counter.js"></script>
+    <script src="greeter.js"></script>
+    <script src="modal.js"></script>
+
+    <script>
+        address = new Address({
+            name: "Brendan",
+            line1: "12/315 Hereford St",
+            line2: "Christchurch Central",
+            city: "Christchurch",
+            country: "New Zealand"
+        });
+
+        greeter = new Greeter({
+            greeting: "",
+            name: "",
+            address: {
+                line1: "123 street",
+                line2: "townville"
+            },
+            myArr: [{fruit: "apple"}, {fruit: "orange"}, {fruit: "pear"}, {fruit: "banana"}, {fruit: "fig"}]
+        });
+
+        counter = new Counter({
+            count: 0
+        });
+
+        modal = new Modal();
+    </script>
+</body>
+</html>
