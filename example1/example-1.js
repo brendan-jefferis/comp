@@ -1,16 +1,18 @@
 Example1 = {};
 
+
+
 Example1.Actions = (model, render) => {
-    return componentize({
+    let actions = {
         setName: (name) => {
-            model.nameField = name;
-            model.greeting = `Hello ${name}`;
+            model.name = name;
         },
         clear: () => {
-            model.nameField = "";
-            model.greeting = "";
+            model.name = "";
         }
-    }, model, render);
+    };
+
+    return componentize(actions, model, render);
 };
 
 Example1.Render = (model) => {
@@ -21,12 +23,11 @@ Example1.Render = (model) => {
     const CLEAR_BUTTON = COMPONENT.find("[data-selector=example-1-clear]");
 
     function update(model) {
-        INPUT_NAME.val(model.nameField);
-        CLEAR_BUTTON.prop("disabled", model.nameField == null || model.nameField === "");
+        INPUT_NAME.val(model.name);
+        CLEAR_BUTTON.prop("disabled", model.name == null || model.name === "");
 
-        if (model.greeting != null) {
-            H2_OUTPUT.html(model.greeting);
-        }
+        let greeting = (model.name != null && model.name !== "") ? `Hello ${model.name}` : "";
+        H2_OUTPUT.html(greeting);
     }
 
     update(model);
