@@ -3,15 +3,15 @@
  */
 Greeter = {};
 
-Greeter.Actions = (model, render) => {
-    return componentize({
+Greeter.Actions = (model) => {
+    return {
         greet: (greeting) => {
             model.greeting = model.greeting = greeting.toUpperCase();
         },
         setName: (name) => {
             model.name = name;
         }
-    }, model, render);
+    };
 };
 
 Greeter.Render = (model) => {

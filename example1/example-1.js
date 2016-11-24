@@ -1,9 +1,7 @@
 Example1 = {};
 
-
-
-Example1.Actions = (model, render) => {
-    let actions = {
+Example1.Actions = (model) => {
+    return {
         setName: (name) => {
             model.name = name;
         },
@@ -11,11 +9,10 @@ Example1.Actions = (model, render) => {
             model.name = "";
         }
     };
-
-    return componentize(actions, model, render);
 };
 
 Example1.Render = (model) => {
+    console.log("rendering example1");
     const COMPONENT = $("[data-component=example-1]");
 
     const INPUT_NAME = COMPONENT.find("[data-selector=example-1-your-name]");

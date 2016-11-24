@@ -3,8 +3,8 @@
  */
 Counter = {};
 
-Counter.Actions = function (model, render) {
-    return componentize({
+Counter.Actions = function (model) {
+    return {
         add: function() {
             model.count = model.count + 1;
         },
@@ -20,7 +20,7 @@ Counter.Actions = function (model, render) {
         reset: function() {
             model.count = 0;
         }
-    }, model, render);
+    };
 }
 
 Counter.Render = function (model) {

@@ -4,8 +4,8 @@
 
 Address = {};
 
-Address.Actions = (model, render) => {
-    return componentize({
+Address.Actions = (model) => {
+    return {
         validateName: (str) => {
             model.name = str;
             model.isValid = model.name !== "" && model.name != null;
@@ -14,7 +14,7 @@ Address.Actions = (model, render) => {
         save: () => {
 
         }
-    }, model, render);
+    };
 };
 
 Address.Render = (model) => {

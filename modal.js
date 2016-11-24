@@ -3,8 +3,8 @@
  */
 Modal = {};
 
-Modal.Actions = function (model, render) {
-    return componentize({
+Modal.Actions = function (model) {
+    return {
         setContent: function(content) {
             model.content = content.toString();
             model.showModal = model.content != null && model.content.trim() !== "";
@@ -14,7 +14,7 @@ Modal.Actions = function (model, render) {
             model.content = "";
             model.showModal = false;
         }
-    }, model, render);
+    };
 }
 
 Modal.Render = function (model) {

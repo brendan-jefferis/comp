@@ -4,8 +4,8 @@
 
 RandomUser = {};
 
-RandomUser.Actions = (model, render) => {
-    return componentize({
+RandomUser.Actions = (model) => {
+    return {
         getUser: () => {
             model = {};
 
@@ -28,7 +28,7 @@ RandomUser.Actions = (model, render) => {
                 });
             });
         }
-    }, model, render);
+    };
 };
 
 RandomUser.Render = (model) => {
