@@ -3,66 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Module</title>
-    <style>
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: sans-serif;
-        }
-
-        [data-component] {
-            border: 1px dotted #ccc;
-            margin: 10px;
-            padding: 10px;
-        }
-
-        [data-component] h6 {
-            color: #aaa;
-            font-size: 10px;
-            margin: 0;
-        }
-
-        [data-component="modal"] {
-            border: none;
-            margin: 0;
-            content: '';
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            background: rgba(0, 0, 0, .5);
-            top: 0;
-            left: 0;
-        }
-
-        [data-component="modal"] .modal-container {
-            background: #fff;
-            position: absolute;
-            top: 20%;
-            transform: translate(50%);
-            min-width: 320px;
-            width: 50%;
-            box-shadow: 0 6px 20px rgba(50, 50, 50, .2);
-            border-radius: 3px;
-            border: 1px solid #ddd;
-            padding: 10px;
-        }
-
-        [data-component="modal"] [data-selector="modal-content"] {
-            margin-bottom: 30px;
-        }
-
-        [data-selector="validation"] {
-            font-size: 10px;
-            color: crimson;
-        }
-
-        .error-message {
-            background: crimson;
-            color: #fff;
-            padding: 10px;
-            border-radius: 2px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
@@ -102,7 +43,7 @@
     <div data-component="address">
         <h6>Address</h6>
 
-        <p data-selector="validation" style="display: none;"></p>
+        <p data-selector="validation" class="validation" style="display: none;"></p>
 
         <p>
             <label for="address-name">Name</label>
@@ -132,9 +73,9 @@
         <button onclick="address.save()" data-selector="address-save">Save</button>
     </div>
 
-    <div data-component="modal" style="display: none;" onclick="modal.closeModal()">
+    <div data-component="modal" style="display: none;" class="modal" onclick="modal.closeModal()">
         <div class="modal-container">
-            <div data-selector="modal-content"></div>
+            <div data-selector="modal-content" class="modal-content"></div>
             <button onclick="modal.closeModal()">Close</button>
         </div>
     </div>

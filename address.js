@@ -1,11 +1,6 @@
 /**
  * Created by bjefferis on 23/11/2016.
  */
-// function Address(model) {
-//     model = model || {};
-//     this.Render(model);
-//     return this.Actions(model, this.Render);
-// };
 
 Address = {};
 

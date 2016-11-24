@@ -29,3 +29,6 @@ _ReSharper*/
 
 *.xml
 *.iml
+
+*.css
+*.css.map
