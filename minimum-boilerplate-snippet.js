@@ -11,10 +11,14 @@ YourModule.Actions = (model, render) => {
 };
 
 YourModule.Render = (model) => {
-    //var component = $("[data-component=your-module]");
+    const Selector = {
+        //COMPONENT: "[data-component=your-module]",
+        //INPUT_YOUR_INPUT: "[data-selector=your-module-your-input]"
+    }
+    //const component = $(Selector.COMPONENT);
 
     function update(model) {
-        //component.find("[data-selector=your-element]").html(model.yourProp);
+        //component.find(Selector.INPUT_YOUR_INPUT).val(model.yourProp);
     }
 
     update(model);
