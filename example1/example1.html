@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<head lang="en">
+	<title>Example1 | TinyComponents</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<h2>Example 1.</h2>
+	
+	<div data-component="example-1">
+		<p>
+			<label id="example-1-your-name">Enter your name</label>
+			<input type="text" for="example-1-your-name" data-selector="example-1-your-name" onkeyup="example1.setName(this.value)">
+			<button onclick="example1.clear()" data-selector="example-1-clear">Clear</button>
+		</p>
+
+		<h1 data-selector="example-1-output"></h1>
+	</div>
+
+	<script src="../lib/jquery-3.1.1.min.js"></script>
+	<script src="../componentizer.js"></script>
+	<script src="example-1.js"></script>
+
+	<script>
+		example1 = new Component(Example1.Actions, Example1.Render);
+	</script>
+
+</body>
