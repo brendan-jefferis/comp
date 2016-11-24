@@ -6,6 +6,10 @@
     <style>
         * { box-sizing: border-box; }
 
+        body {
+            font-family: sans-serif;
+        }
+
         [data-component] {
             border: 1px dotted #ccc;
             margin: 10px;
@@ -50,6 +54,13 @@
         [data-selector="validation"] {
             font-size: 10px;
             color: crimson;
+        }
+
+        .error-message {
+            background: crimson;
+            color: #fff;
+            padding: 10px;
+            border-radius: 2px;
         }
     </style>
 </head>
@@ -128,11 +139,44 @@
         </div>
     </div>
 
+    <div data-component="random-user">
+        <h6>Random user</h6>
+
+        <button onclick="randomUser.getUser()">Get random user</button>
+
+        <p class="error-message" data-selector="random-user-error-message" style="display: none;"></p>
+
+        <div data-selector="random-user-details" style="display: none;">
+            <p>
+                <label>Name:</label>
+                <label data-selector="random-user-name"></label>
+            </p>
+
+            <p>
+                <label>Email:</label>
+                <label data-selector="random-user-email"></label>
+            </p>
+
+            <p>
+                <label>Phone:</label>
+                <label data-selector="random-user-phone"></label>
+            </p>
+
+            <p>
+                <label>Website:</label>
+                <label data-selector="random-user-website"></label>
+            </p>
+        </div>
+
+    </div>
+
+    <script src="lib/jquery-3.1.1.min.js"></script>
     <script src="componentizer.js"></script>
     <script src="address.js"></script>
     <script src="counter.js"></script>
     <script src="greeter.js"></script>
     <script src="modal.js"></script>
+    <script src="random-user.js"></script>
 
     <script>
         address = new Component(Address.Actions, Address.Render, {
@@ -153,6 +197,8 @@
         });
 
         modal = new Component(Modal.Actions, Modal.Render);
+
+        randomUser = new Component(RandomUser.Actions, RandomUser.Render);
     </script>
 </body>
 </html>

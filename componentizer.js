@@ -31,7 +31,22 @@ function componentize(actions, model, render) {
     let result = {};
     Object.keys(actions).map((fn) => {
         result[fn] = (...args) => {
-            actions[fn].apply(this, args);
+            let promise = actions[fn].apply(actions, args);
+
+            if (promise && promise.constructor.name === "Promise") {
+                promise.catch((result) => {
+                    if ((!result.reason || typeof result.reason !== "string")
+                        || (!result.model || typeof result.model !== "object")) {
+                        console.error("The reject function is expecting an object of type: { reason: string, model: object }\r\nRendering view with last available model");
+                        return model;
+                    }
+                    console.error(result.reason);
+                    return result.model;
+                }).then((updatedModel) => {
+                    render(updatedModel);
+                });
+            }
+
             render(model);
         }
     });

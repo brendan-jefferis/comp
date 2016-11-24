@@ -23,6 +23,7 @@ Address.Actions = (model, render) => {
 };
 
 Address.Render = (model) => {
+    console.log("rendering address");
     var component = document.querySelector("[data-component=address]");
 
     function update(model) {
