@@ -21,8 +21,20 @@
 	<script src="../componentizer.js"></script>
 	<script src="example-1.js"></script>
 
+    <div class="recorder">
+        <button onclick="recorder.pause()">Pause</button>
+        <button onclick="recorder.resume()">Resume</button>
+        <button onclick="recorder.save()">Save</button>
+        <input id="storageId" type="text" placeholder="e.g., tiny-components_index-510116124653">
+        <button onclick="recorder.load($('#storageId').val())">Load</button>
+        <button onclick="recorder.replay()">Replay</button>
+    </div>
+
 	<script>
+        recorder = new Recorder();
+
 		example1 = new Component(Example1.Actions, Example1.Render, { name: "Jim" });
+
 	</script>
 
 </body>

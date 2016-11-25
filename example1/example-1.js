@@ -3,9 +3,11 @@ Example1 = {};
 Example1.Actions = (model) => {
     return {
         setName: (name) => {
+            console.log(`calling setName with ${name}`);
             model.name = name;
         },
         clear: () => {
+            console.log('calling clear');
             model.name = "";
         }
     };

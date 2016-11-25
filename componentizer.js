@@ -18,7 +18,55 @@
     }
 
  */
-"use strict";
+class Recorder {
+    constructor() {
+        this.initialTimestamp = Date.now();
+        this.steps = [];
+        this.components = [];
+        this.recording = true;
+        let path = window.location.pathname;
+        this.sessionName = path.substr(1, path.indexOf('.')-1).split('/').join('_');
+    }
+
+    replay() {
+        this.steps.map(this.runStep, this);
+    }
+
+    pause() {
+        this.recording = false;
+    }
+
+    resume() {
+        this.recording = true;
+    }
+
+    runStep(step) {
+        let component = this.components[step.componentIndex].component;
+        component[step.action].apply(component, step.args);
+    }
+
+    save() {
+        let now = new Date();
+        let storageId = `${this.sessionName}-${now.getDay()}${now.getMonth()}${now.getYear()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}`;
+        localStorage.setItem(storageId, JSON.stringify(this));
+        console.log(storageId);
+    }
+
+    load(id) {
+        let loadedState = JSON.parse(localStorage.getItem(id));
+        this.steps = loadedState.steps;
+        loadedState.components.map((x, i) => { this.components[i].initialState = x.initialState }, this);
+        console.log(`${id} loaded`);
+    }
+
+    storeComponent(component, model) {
+        // TODO ensure only one of each is added
+        this.components.push({
+            component: component,
+            initialState: model
+        });
+    }
+};
 
 class Component {
     constructor (actions, render = ()=>{}, model = {}) {
@@ -28,16 +76,31 @@ class Component {
 
         render(model);
 
-        let component = this.componentize(actions(model), model, render)
+        let recorderId = window.recorder ? window.recorder.components.length : null;
+        let component = this.componentize(actions(model), model, render, recorderId);
         Object.keys(component).map((prop) => {
             this[prop] = component[prop];
         });
+
+        if (window.recorder) {
+            window.recorder.storeComponent(component, model);
+        }
     }
 
-    componentize(actions, model, render) {
+    componentize(actions, model, render, recorderId = -1) {
         let result = {};
         Object.keys(actions).map((fn) => {
             result[fn] = (...args) => {
+
+                if (window.recorder && window.recorder.recording) {
+                    window.recorder.steps.push({
+                        timestamp: Date.now(),
+                        componentIndex: recorderId,
+                        action: fn,
+                        args: args
+                    });
+                }
+
                 let promise = actions[fn].apply(actions, args);
 
                 if (promise && promise.constructor.name === "Promise") {
