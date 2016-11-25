@@ -52,9 +52,19 @@ Componentizer.Recorder = class Recorder {
         this.recording = true;
     }
 
+    recordStep(componentName, model, action, args) {
+        window.recorder.components[componentName].currentState = model;
+        window.recorder.steps.push({
+            timestamp: Date.now(),
+            componentName: componentName,
+            action: action,
+            args: args
+        });
+    }
+
     runStep(step) {
         let component = this.components[step.componentName];
-        component.actions[step.action].apply(component, step.args);
+        component[step.action].apply(component, step.args);
     }
 
     save() {
@@ -73,11 +83,9 @@ Componentizer.Recorder = class Recorder {
         console.log(`${id} loaded`);
     }
 
-    storeComponent(componentName, actions, model) {
-        this.components[componentName] = {
-            actions: actions,
-            initialState: Object.assign({}, model)
-        };
+    storeComponent(component, model) {
+        this.components[component.componentName] = component;
+        this.components[component.componentName].initialState = Object.assign({}, model);
     }
 };
 
@@ -86,57 +94,56 @@ Componentizer.Component = class Component {
         if (componentName == null || componentName === "") {
             throw new Error("Your component needs a name");
         }
-        this.componentName = componentName;
 
         if (actions == null) {
             throw new Error("This won't do much without actions. GO GET ME SOME ACTIONS");
         }
 
-        render(model);
-
-        let component = this.componentize(this.componentName, actions(model), model, render);
-        Object.keys(component).map((prop) => {
-            this[prop] = component[prop];
-        });
+        this.componentName = componentName;
+        Object.assign(this, this.componentize(this.componentName, actions, model, render));
 
         if (window.recorder) {
-            window.recorder.storeComponent(componentName, component, model);
+            window.recorder.storeComponent(this, model);
         }
     }
 
+    handlePromise(promise, render) {
+        promise.catch((result) => {
+            if ((!result.reason || typeof result.reason !== "string")
+                || (!result.model || typeof result.model !== "object")) {
+                console.error("The reject function is expecting an object of type: { reason: string, model: object }\r\nRendering view with last available model");
+                return model;
+            }
+            console.error(result.reason);
+            return result.model;
+        }).then((updatedModel) => {
+            render(updatedModel)();
+        });
+    }
+
     componentize(componentName, actions, model, render) {
-        let result = {};
-        Object.keys(actions).map((fn) => {
-            result[fn] = (...args) => {
+        let a = actions(model);
+        let r = render(model);
+        r();
+
+        let component = {};
+        Object.keys(a).map((fn) => {
+            component[fn] = (...args) => {
 
                 if (window.recorder && window.recorder.recording) {
-                    window.recorder.steps.push({
-                        timestamp: Date.now(),
-                        componentName: componentName,
-                        action: fn,
-                        args: args
-                    });
+                    window.recorder.recordStep(componentName, model, fn, args);
                 }
 
-                let promise = actions[fn].apply(actions, args);
+                let promise = a[fn].apply(a, args);
 
                 if (promise && promise.constructor.name === "Promise") {
-                    promise.catch((result) => {
-                        if ((!result.reason || typeof result.reason !== "string")
-                            || (!result.model || typeof result.model !== "object")) {
-                            console.error("The reject function is expecting an object of type: { reason: string, model: object }\r\nRendering view with last available model");
-                            return model;
-                        }
-                        console.error(result.reason);
-                        return result.model;
-                    }).then((updatedModel) => {
-                        render(updatedModel);
-                    });
+                    this.handlePromise(promise, render);
+                } else {
+                    r();
                 }
-                render(model);
             }
-        });
-        result.get = (prop) => model[prop];
-        return result;
+        }, this);
+        component.get = (prop) => model[prop];
+        return component;
     }
 };

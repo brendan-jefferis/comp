@@ -2,24 +2,19 @@
  * Created by bjefferis on 23/11/2016.
  */
 
-YourModule = {};
+YourComponent = {};
 
-YourModule.Actions = (model, render) => {
-    return componentize({
+YourComponent.Actions = (model) => {
+    return {
         //.. yourActions: () => {}
-    }, model, render);
+    };
 };
 
-YourModule.Render = (model) => {
-    const Selector = {
-        //COMPONENT: "[data-component=your-module]",
-        //INPUT_YOUR_INPUT: "[data-selector=your-module-your-input]"
-    }
-    //const component = $(Selector.COMPONENT);
+YourComponent.Render = (model) => {
+    //const COMPONENT = $("[data-component=your-component]");
+    //const INPUT_YOUR_INPUT: COMPONENT.find("[data-selector=your-module-your-input]");
 
-    function update(model) {
-        //component.find(Selector.INPUT_YOUR_INPUT).val(model.yourProp);
-    }
-
-    update(model);
+    return () => {
+        //INPUT_YOUR_INPUT.val(model.yourProp);
+    };
 };

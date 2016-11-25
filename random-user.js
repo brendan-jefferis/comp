@@ -32,37 +32,31 @@ RandomUser.Actions = (model) => {
 };
 
 RandomUser.Render = (model) => {
-    console.log("rendering random user...");
-    const Selector = {
-        COMPONENT: "[data-component=random-user]",
-        P_ERROR_MESSAGE: "[data-selector=random-user-error-message]",
-        DIV_DETAILS: "[data-selector=random-user-details]",
-        LABEL_NAME: "[data-selector=random-user-name]",
-        LABEL_EMAIL: "[data-selector=random-user-email]",
-        LABEL_PHONE: "[data-selector=random-user-phone]",
-        LABEL_WEBSITE: "[data-selector=random-user-website]"
-    };
+    const COMPONENT = $("[data-component=random-user]");
+    const ERROR_MESSAGE = COMPONENT.find("[data-selector=random-user-error-message]");
+    const DETAILS = COMPONENT.find("[data-selector=random-user-details]");
+    const LABEL_NAME = COMPONENT.find("[data-selector=random-user-name]");
+    const LABEL_EMAIL = COMPONENT.find("[data-selector=random-user-email]");
+    const LABEL_PHONE = COMPONENT.find("[data-selector=random-user-phone]");
+    const LABEL_WEBSITE = COMPONENT.find("[data-selector=random-user-website]");
 
-    const component = $(Selector.COMPONENT);
-
-    function update(model) {
+    return () => {
+        ERROR_MESSAGE.text(model.errorMessage);
         if (model.errorMessage != null && model.errorMessage !== "") {
-            component.find(Selector.P_ERROR_MESSAGE).text(model.errorMessage).fadeIn();
+            ERROR_MESSAGE.fadeIn();
         } else {
-            component.find(Selector.P_ERROR_MESSAGE).text(model.errorMessage).hide();
+            ERROR_MESSAGE.hide();
         }
 
         if (model.name == null || model.name === "") {
-            component.find(Selector.DIV_DETAILS).hide();
+            DETAILS.hide();
         } else {
-            component.find(Selector.DIV_DETAILS).fadeIn();
+            DETAILS.fadeIn();
         }
 
-        component.find(Selector.LABEL_NAME).text(model.name);
-        component.find(Selector.LABEL_EMAIL).text(model.email);
-        component.find(Selector.LABEL_PHONE).text(model.phone);
-        component.find(Selector.LABEL_WEBSITE).text(model.website);
-    }
-
-    update(model);
+        LABEL_NAME.text(model.name);
+        LABEL_EMAIL.text(model.email);
+        LABEL_PHONE.text(model.phone);
+        LABEL_WEBSITE.text(model.website);
+    };
 };

@@ -18,16 +18,18 @@ Modal.Actions = function (model) {
 }
 
 Modal.Render = function (model) {
-    console.log("rendering modal");
-    var component = document.querySelector("[data-component=modal]");
+    const COMPONENT = $("[data-component=modal]");
+    const MODAL_CONTENT = COMPONENT.find("[data-selector=modal-content]");
 
-    function update(model) {
+    return () => {
         if (model.content != null && model.content.trim() !== "") {
-            component.querySelector("[data-selector=modal-content]").innerHTML = model.content;
+            MODAL_CONTENT.html(model.content);
         }
 
-        component.style.display = model.showModal ? "block" : "none";
-    }
-
-    update(model);
+        if (model.showModal) {
+            COMPONENT.fadeIn();
+        } else {
+            COMPONENT.fadeOut();
+        }
+    };
 }

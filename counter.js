@@ -24,12 +24,10 @@ Counter.Actions = function (model) {
 }
 
 Counter.Render = function (model) {
-    console.log("rendering counter");
-    var component = document.querySelector("[data-component=counter]");
+    const COMPONENT = $("[data-component=counter]");
+    const COUNTER = COMPONENT.find("[data-selector=count]");
 
-    function update(count) {
-        component.querySelector("[data-selector=count]").innerHTML = count;
-    }
-
-    update(model.count);
+    return () => {
+        COUNTER.html(model.count);
+    };
 }
