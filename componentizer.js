@@ -26,7 +26,7 @@ class Componentizer {
     }
 
     create(componentName, actions, render = ()=>{}, model = {}) {
-        window[componentName] = new Componentizer.Component(componentName, actions, render, model);
+        return window[componentName] = new Componentizer.Component(componentName, actions, render, model);
     }
 };
 
