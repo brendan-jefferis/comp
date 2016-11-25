@@ -21,7 +21,7 @@
 	<script src="../componentizer.js"></script>
 	<script src="example-1.js"></script>
 
-    <div class="recorder">
+    <div data-component="tiny-component-recorder">
         <button onclick="recorder.pause()">Pause</button>
         <button onclick="recorder.resume()">Resume</button>
         <button onclick="recorder.save()">Save</button>
@@ -31,10 +31,8 @@
     </div>
 
 	<script>
-        recorder = new Recorder();
-
-		example1 = new Component(Example1.Actions, Example1.Render, { name: "Jim" });
-
+        let componentizer = new Componentizer();
+        componentizer.create("example1", Example1.Actions, Example1.Render/*, { name: "Jim" }*/);
 	</script>
 
 </body>

@@ -18,11 +18,23 @@
     }
 
  */
-class Recorder {
+class Componentizer {
+    constructor(options = { record: true}) {
+        if (options.record) {
+            window.recorder = new Componentizer.Recorder();
+        }
+    }
+
+    create(componentName, actions, render = ()=>{}, model = {}) {
+        window[componentName] = new Componentizer.Component(componentName, actions, render, model);
+    }
+};
+
+Componentizer.Recorder = class Recorder {
     constructor() {
-        this.initialTimestamp = Date.now();
+        this.pageLoadTimestamp = Date.now();
         this.steps = [];
-        this.components = [];
+        this.components = {};
         this.recording = true;
         let path = window.location.pathname;
         this.sessionName = path.substr(1, path.indexOf('.')-1).split('/').join('_');
@@ -41,8 +53,8 @@ class Recorder {
     }
 
     runStep(step) {
-        let component = this.components[step.componentIndex].component;
-        component[step.action].apply(component, step.args);
+        let component = this.components[step.componentName];
+        component.actions[step.action].apply(component, step.args);
     }
 
     save() {
@@ -55,39 +67,44 @@ class Recorder {
     load(id) {
         let loadedState = JSON.parse(localStorage.getItem(id));
         this.steps = loadedState.steps;
-        loadedState.components.map((x, i) => { this.components[i].initialState = x.initialState }, this);
+        Object.keys(loadedState.components).map((componentName) => {
+            this.components[componentName].initialState = loadedState.components[componentName].initialState;
+        }, this);
         console.log(`${id} loaded`);
     }
 
-    storeComponent(component, model) {
-        // TODO ensure only one of each is added
-        this.components.push({
-            component: component,
-            initialState: model
-        });
+    storeComponent(componentName, actions, model) {
+        this.components[componentName] = {
+            actions: actions,
+            initialState: Object.assign({}, model)
+        };
     }
 };
 
-class Component {
-    constructor (actions, render = ()=>{}, model = {}) {
+Componentizer.Component = class Component {
+    constructor (componentName, actions, render, model) {
+        if (componentName == null || componentName === "") {
+            throw new Error("Your component needs a name");
+        }
+        this.componentName = componentName;
+
         if (actions == null) {
             throw new Error("This won't do much without actions. GO GET ME SOME ACTIONS");
         }
 
         render(model);
 
-        let recorderId = window.recorder ? window.recorder.components.length : null;
-        let component = this.componentize(actions(model), model, render, recorderId);
+        let component = this.componentize(this.componentName, actions(model), model, render);
         Object.keys(component).map((prop) => {
             this[prop] = component[prop];
         });
 
         if (window.recorder) {
-            window.recorder.storeComponent(component, model);
+            window.recorder.storeComponent(componentName, component, model);
         }
     }
 
-    componentize(actions, model, render, recorderId = -1) {
+    componentize(componentName, actions, model, render) {
         let result = {};
         Object.keys(actions).map((fn) => {
             result[fn] = (...args) => {
@@ -95,7 +112,7 @@ class Component {
                 if (window.recorder && window.recorder.recording) {
                     window.recorder.steps.push({
                         timestamp: Date.now(),
-                        componentIndex: recorderId,
+                        componentName: componentName,
                         action: fn,
                         args: args
                     });

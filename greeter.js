@@ -16,12 +16,16 @@ Greeter.Actions = (model) => {
 
 Greeter.Render = (model) => {
     console.log("rendering greeter");
-    var component = document.querySelector("[data-component=greeter]");
+    const COMPONENT = $("[data-component=greeter]");
+    const GREETING = COMPONENT.find("[data-selector=greeting]");
+    const INPUT_NAME = COMPONENT.find("[data-selector=greeter-name]");
+    const BUTTONS_SHOW_MODAL = $("[data-selector=show-greeter-modal]");
 
     function update(model) {
-        component.querySelector("[data-selector=greeting]").innerHTML = model.greeting + " " + model.name;
-        document.querySelectorAll("[data-selector=show-greeter-modal]").forEach((x) => {
-            x.disabled = model.name.length === 0 || model.greeting.length === 0;
+        GREETING.html(`${model.greeting} ${model.name}`);
+        INPUT_NAME.val(model.name);
+        BUTTONS_SHOW_MODAL.each((i, x) => {
+            $(x).prop("disabled",  model.name.length === 0 || model.greeting.length === 0);
         });
     }
 
