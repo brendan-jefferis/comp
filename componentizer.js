@@ -100,7 +100,7 @@ Componentizer.Component = class Component {
         }
 
         this.componentName = componentName;
-        Object.assign(this, this.componentize(this.componentName, actions, model, render));
+        Object.assign(this, this.componentize(this.componentName, actions(model), model, render(model)));
 
         if (window.recorder) {
             window.recorder.storeComponent(this, model);
@@ -122,24 +122,21 @@ Componentizer.Component = class Component {
     }
 
     componentize(componentName, actions, model, render) {
-        let a = actions(model);
-        let r = render(model);
-        r();
-
+        render(model);
         let component = {};
-        Object.keys(a).map((fn) => {
-            component[fn] = (...args) => {
+        Object.keys(actions).map((action) => {
+            component[action] = (...args) => {
 
                 if (window.recorder && window.recorder.recording) {
-                    window.recorder.recordStep(componentName, model, fn, args);
+                    window.recorder.recordStep(componentName, model, action, args);
                 }
 
-                let promise = a[fn].apply(a, args);
+                let promise = actions[action].apply(actions, args);
 
                 if (promise && promise.constructor.name === "Promise") {
                     this.handlePromise(promise, render);
                 } else {
-                    r();
+                    render(model);
                 }
             }
         }, this);
