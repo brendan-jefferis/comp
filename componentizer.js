@@ -3,10 +3,6 @@
  */
 
 class Componentizer {
-    constructor(recorder) {
-        window.c = this;
-        c.actions = {};
-    }
 
     createRecorder(actions, view = ()=>{}) {
         let path = window.location.pathname;
@@ -17,11 +13,14 @@ class Componentizer {
             recording: true,
             sessionName: path.substr(1, path.indexOf('.')-1).split('/').join('_')
         };
-        c.recorder = new Componentizer.Component("recorder", actions, view, model);
+        this.recorder = new Componentizer.Component("recorder", actions, view, model);
     }
 
     create(componentName, actions, view = ()=>{}, model = {}) {
-        c.actions[componentName] = new Componentizer.Component(componentName, actions, view, model);
+        if (this.actions === undefined) {
+            this.actions = {};
+        }
+        this.actions[componentName] = new Componentizer.Component(componentName, actions, view, model);
     }
 };
 
@@ -44,8 +43,8 @@ Componentizer.Component = class Component {
         Object.assign(this, this.componentize(this.componentName, actions(model), render, model));
         viewInit(this, model);
         
-        if (c.recorder && componentName !== "recorder") {
-            c.recorder.storeComponent(this, model);
+        if (componentizer.recorder && componentName !== "recorder") {
+            componentizer.recorder.storeComponent(this, model);
         }
     }
 
@@ -55,8 +54,8 @@ Componentizer.Component = class Component {
         Object.keys(actions).map((action) => {
             component[action] = (...args) => {
 
-                if (c.recorder && componentName !== "recorder" && c.recorder.get("recording")) {
-                    c.recorder.recordStep(componentName, model, action, args);
+                if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
+                    componentizer.recorder.recordStep(componentName, model, action, args);
                 }
 
                 let returnValue = actions[action].apply(actions, args);

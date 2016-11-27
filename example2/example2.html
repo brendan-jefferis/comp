@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head lang="en">
+	<title>Example2 | Componentizer</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+	<h2>Example 2.</h2>
+
+	<div data-component="example-2">
+		<p>
+			<label id="example-2-your-name">Enter your name</label>
+			<input type="text" for="example-2-your-name" data-selector="example-2-your-name">
+			<button data-selector="example-2-clear">Clear</button>
+		</p>
+
+		<h1 data-selector="example-2-output"></h1>
+	</div>
+
+    <div data-component="componentizer-recorder">
+    	<h6>Recorder</h6>
+        <button data-selector="recorder-pause">Pause</button>
+        <button data-selector="recorder-resume">Resume</button>
+        <button data-selector="recorder-save">Save</button>
+        <input id="storageId" type="text" placeholder="e.g., tiny-components_index-510116124653" data-selector="recorder-recording-id">
+        <button data-selector="recorder-load">Load</button>
+        <button data-selector="recorder-replay">Replay</button>
+        <p style="display: none" data-selector="recorder-confirmation-message"></p>
+    </div>
+	
+	<script src="../lib/jquery-3.1.1.min.js"></script>
+	<script src="../componentizer.js"></script>
+	<script src="../componentizer-recorder.js"></script>
+	<script src="example-2.js"></script>
+
+	<script>
+        window.componentizer = new Componentizer();
+		componentizer.createRecorder(Recorder.Actions, Recorder.View);
+
+		componentizer.create("example1", Example2.Actions, Example2.View/*, { name: "Jim" }*/);
+	</script>
+
+</body>

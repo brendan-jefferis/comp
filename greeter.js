@@ -43,7 +43,7 @@ Greeter.View = () => {
         init: (actions, model) => {
             INPUT_NAME.on("keyup", (e) => { actions.setName(e.currentTarget.value); });
             SELECT_GREETING.on("change", (e) => { actions.setGreeting(e.currentTarget.value); });
-            BUTTONS_SHOW_MODAL.on("click", (e) => { c.actions.modal.show(model.fullGreeting); });
+            BUTTONS_SHOW_MODAL.on("click", (e) => { componentizer.actions.modal.show(model.fullGreeting); });
         },
         render: (model) => {
             GREETING.html(model.fullGreeting);

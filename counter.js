@@ -40,7 +40,7 @@ Counter.View = function() {
             BUTTON_DOUBLE.on("click", actions.double);
             BUTTON_RESET.on("click", actions.reset);
             SHOW_COUNTER_MODAL.on("click", () => {
-                c.actions.modal.show(`Current count is ${model.count}`);
+                componentizer.actions.modal.show(`Current count is ${model.count}`);
             });
         },
         render: (model) => {

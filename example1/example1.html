@@ -6,27 +6,12 @@
 </head>
 <body>
 	<h2>Example 1.</h2>
-	
+	<p>This example shows when the functions of a component are called. Check your console...</p>
+
 	<div data-component="example-1">
-		<p>
-			<label id="example-1-your-name">Enter your name</label>
-			<input type="text" for="example-1-your-name" data-selector="example-1-your-name">
-			<button data-selector="example-1-clear">Clear</button>
-		</p>
-
-		<h1 data-selector="example-1-output"></h1>
+		<p data-selector="example-1-output"></p>
+		<button data-selector="example-1-foo">Random number</button>
 	</div>
-
-    <div data-component="componentizer-recorder">
-    	<h6>Recorder</h6>
-        <button data-selector="recorder-pause">Pause</button>
-        <button data-selector="recorder-resume">Resume</button>
-        <button data-selector="recorder-save">Save</button>
-        <input id="storageId" type="text" placeholder="e.g., tiny-components_index-510116124653" data-selector="recorder-recording-id">
-        <button data-selector="recorder-load">Load</button>
-        <button data-selector="recorder-replay">Replay</button>
-        <p style="display: none" data-selector="recorder-confirmation-message"></p>
-    </div>
 	
 	<script src="../lib/jquery-3.1.1.min.js"></script>
 	<script src="../componentizer.js"></script>
@@ -34,10 +19,9 @@
 	<script src="example-1.js"></script>
 
 	<script>
-        new Componentizer();
-        c.createRecorder(Recorder.Actions, Recorder.View);
+        window.componentizer = new Componentizer();
 
-        c.create("example1", Example1.Actions, Example1.View/*, { name: "Jim" }*/);
+		componentizer.create("example1", Example1.Actions, Example1.View);
 	</script>
 
 </body>

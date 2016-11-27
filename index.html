@@ -132,11 +132,11 @@
     <script src="random-user.js"></script>
 
     <script>
-        new Componentizer();
+        window.componentizer = new Componentizer();
 
-        c.createRecorder(Recorder.Actions, Recorder.View);
+        componentizer.createRecorder(Recorder.Actions, Recorder.View);
 
-        // c.create("address", Address.Actions, Address.View, {
+        // componentizer.create("address", Address.Actions, Address.View, {
         //     name: "Brendan",
         //     line1: "12/315 Hereford St",
         //     line2: "Christchurch Central",
@@ -144,18 +144,18 @@
         //     country: "New Zealand"
         // });
 
-        c.create("greeter", Greeter.Actions, Greeter.View, {
+        componentizer.create("greeter", Greeter.Actions, Greeter.View, {
             greeting: "",
             name: ""
         });
 
-        c.create("counter", Counter.Actions, Counter.View, {
+        componentizer.create("counter", Counter.Actions, Counter.View, {
             count: 0
         });
 
-        c.create("modal", Modal.Actions, Modal.View);
+        componentizer.create("modal", Modal.Actions, Modal.View);
 
-        // c.create("randomUser", RandomUser.Actions, RandomUser.View);
+        // componentizer.create("randomUser", RandomUser.Actions, RandomUser.View);
     </script>
 </body>
 </html>

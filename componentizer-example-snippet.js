@@ -1,10 +1,8 @@
-/**
- * Created by bjefferis on 23/11/2016.
- */
-
 YourComponent = {};
 
 YourComponent.Actions = (model) => {
+    // declare private action functions here...
+
  	return {
         //.. yourActions: () => {}
     };
@@ -14,6 +12,8 @@ YourComponent.View = () => {
     //const COMPONENT = $("[data-component=your-component]");
     
     //const INPUT_YOUR_INPUT: COMPONENT.find("[data-selector=your-module-your-input]");
+
+    // declare private view functions here...
 
     return {
     	init: (actions, model) => {
