@@ -63,9 +63,8 @@ Componentizer.Component = class Component {
 
                 if (returnValue && returnValue.constructor.name === "Promise") {
                     this.handlePromise(returnValue, render);
-                } else {
-                    render(model);
                 }
+                render(model);
             }
         }, this);
         component.get = (prop) => model[prop];
@@ -82,7 +81,7 @@ Componentizer.Component = class Component {
             console.error(result.reason);
             return result.model;
         }).then((updatedModel) => {
-            render(updatedModel)();
+            render(updatedModel);
         });
     }
 };

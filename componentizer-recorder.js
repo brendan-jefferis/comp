@@ -30,7 +30,13 @@ Recorder.Actions = (model) => {
 			let now = new Date();
 	        let recordingId = `${model.sessionName}-${now.getDay()}${now.getMonth()}${now.getYear()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}`;
 	        localStorage.setItem(recordingId, JSON.stringify(model));
-	        console.log(recordingId);
+	        model.confirmationMessage = `Saved recording with recording id:<br><strong>${recordingId}</strong>`;
+	        return new Promise((resolve) => {
+	        	setTimeout(() => {
+	        		model.confirmationMessage = "";
+	        		resolve(model);
+	        	}, 10000);
+	        });
 		},
 		load: (id) => {
 			let loadedState = JSON.parse(localStorage.getItem(id));
@@ -42,7 +48,13 @@ Recorder.Actions = (model) => {
 	        Object.keys(loadedState.components).map((componentName) => {
 	            model.components[componentName].initialState = loadedState.components[componentName].initialState;
 	        });
-	        console.log(`${id} loaded`);
+	        model.confirmationMessage = `Recording ${id} loaded`;
+	        return new Promise((resolve) => {
+	        	setTimeout(() => {
+	        		model.confirmationMessage = "";
+	        		resolve(model);
+	        	}, 3000);
+	        });
 		},
 		storeComponent: (component, componentModel) => {
 			model.components[component.componentName] = component;
@@ -63,6 +75,7 @@ Recorder.View = () => {
 	const BUTTON_LOAD = COMPONENT.find("[data-selector=recorder-load]");
 	const BUTTON_REPLAY = COMPONENT.find("[data-selector=recorder-replay]");
 	const INPUT_RECORDING_ID = COMPONENT.find("[data-selector=recorder-recording-id]");
+	const CONFIRMATION_MESSAGE = COMPONENT.find("[data-selector=recorder-confirmation-message]");
 
 	return {
 		init: (actions, model) => {
@@ -74,7 +87,14 @@ Recorder.View = () => {
 			INPUT_RECORDING_ID.on("keyup", (e) => { actions.setRecordingId(e.currentTarget.value); });
 		},
 		render: (model) => {
-
+			if (model.confirmationMessage) {
+				CONFIRMATION_MESSAGE.html(model.confirmationMessage);
+			}
+			if (model.confirmationMessage !== "") {
+				CONFIRMATION_MESSAGE.fadeIn(200);
+			} else {
+				CONFIRMATION_MESSAGE.fadeOut(200);
+			}
 		}
 	};
 };
