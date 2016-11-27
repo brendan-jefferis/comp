@@ -1,34 +1,24 @@
 /**
  * Created by bjefferis on 23/11/2016.
  */
-/*
 
-    This will return a new object with all your actions + a generic get method
-    for read-only access to properties on the model.
-
-    The componentizer also ensures that the render function is called with the
-    latest model after each action is called.
-
-    Example return value:
-
-    {
-        sayHello: (),
-        setName: (name),
-        get(prop)
-    }
-
- */
 class Componentizer {
-    constructor(options = { record: true }) {
+    constructor(recorder) {
         window.c = this;
         c.actions = {};
-
-        if (options.record) {
-            c.recorder = new Componentizer.Recorder();
-        }
     }
 
-
+    createRecorder(actions, view = ()=>{}) {
+        let path = window.location.pathname;
+        let model = {
+            pageLoadTimestamp: Date.now(),
+            steps: [],
+            components: {},
+            recording: true,
+            sessionName: path.substr(1, path.indexOf('.')-1).split('/').join('_')
+        };
+        c.recorder = new Componentizer.Component("recorder", actions, view, model);
+    }
 
     create(componentName, actions, view = ()=>{}, model = {}) {
         c.actions[componentName] = new Componentizer.Component(componentName, actions, view, model);
@@ -54,9 +44,8 @@ Componentizer.Component = class Component {
         Object.assign(this, this.componentize(this.componentName, actions(model), render, model));
         viewInit(this, model);
         
-
-        if (window.recorder) {
-            window.recorder.storeComponent(this, model);
+        if (c.recorder && componentName !== "recorder") {
+            c.recorder.storeComponent(this, model);
         }
     }
 
@@ -66,8 +55,8 @@ Componentizer.Component = class Component {
         Object.keys(actions).map((action) => {
             component[action] = (...args) => {
 
-                if (window.recorder && window.recorder.recording) {
-                    window.recorder.recordStep(componentName, model, action, args);
+                if (c.recorder && componentName !== "recorder" && c.recorder.get("recording")) {
+                    c.recorder.recordStep(componentName, model, action, args);
                 }
 
                 let returnValue = actions[action].apply(actions, args);
