@@ -17,7 +17,7 @@
         <button data-selector="button-reset">Reset</button>
 
         <button data-selector="show-counter-modal">Set Modal content for counter</button>
-        <button onclick="modal.setContent(greeter.get('greeting') + ' ' + greeter.get('name'))" data-selector="show-greeter-modal">Set Modal content for greeter</button>
+        <button data-selector="show-greeter-modal">Set Modal content for greeter</button>
     </div>
 
     <div data-component="greeter">
@@ -26,10 +26,10 @@
         <h4 data-selector="greeting"></h4>
 
         <label for="greeter-name">Enter your name</label>
-        <input id="greeter-name" type="text" data-selector="greeter-name" onkeyup="greeter.setName(this.value)">
+        <input id="greeter-name" type="text" data-selector="greeter-name">
 
         <label for="greeter-select">Select greeting</label>
-        <select id="greeter-select" name="greet" onchange="greeter.greet(this.value)">
+        <select id="greeter-select" name="greet" data-selector="greeter-select-greeting">
             <option value="">-Select-</option>
             <option value="hello">Hello</option>
             <option value="sup">Sup</option>
@@ -37,7 +37,7 @@
             <option value="hallo">Hallo</option>
         </select>
 
-        <button onclick="modal.setContent(greeter.get('greeting') + ' ' + greeter.get('name'))" data-selector="show-greeter-modal">Set Modal content</button>
+        <button data-selector="show-greeter-modal">Set Modal content</button>
     </div>
 
     <div data-component="address">
@@ -144,10 +144,10 @@
         //     country: "New Zealand"
         // });
 
-        // c.create("greeter", Greeter.Actions, Greeter.Render, {
-        //     greeting: "",
-        //     name: ""
-        // });
+        c.create("greeter", Greeter.Actions, Greeter.View, {
+            greeting: "",
+            name: ""
+        });
 
         c.create("counter", Counter.Actions, Counter.View, {
             count: 0
