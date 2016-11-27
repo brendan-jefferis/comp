@@ -19,6 +19,7 @@ Modal.Actions = function (model) {
 
 Modal.View = function () {
     const COMPONENT = $("[data-component=modal]");
+    
     const MODAL_CONTENT = COMPONENT.find("[data-selector=modal-content]");
     const BUTTON_CLOSE = COMPONENT.find("[data-selector=button-close]");
 

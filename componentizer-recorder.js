@@ -69,6 +69,7 @@ Recorder.Actions = (model) => {
 
 Recorder.View = () => {
 	const COMPONENT = $("[data-component=componentizer-recorder]");
+	
 	const BUTTON_PAUSE = COMPONENT.find("[data-selector=recorder-pause]");
 	const BUTTON_RESUME = COMPONENT.find("[data-selector=recorder-resume]");
 	const BUTTON_SAVE = COMPONENT.find("[data-selector=recorder-save]");

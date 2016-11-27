@@ -18,6 +18,7 @@ Example1.Actions = (model) => {
 Example1.View = () => {
     console.log("Example1.View called... declaring consts and returning init & render");
     const COMPONENT = $("[data-component=example-1]");
+    
     const INPUT_NAME = COMPONENT.find("[data-selector=example-1-your-name]");
     const H2_OUTPUT = COMPONENT.find("[data-selector=example-1-output]");
     const CLEAR_BUTTON = COMPONENT.find("[data-selector=example-1-clear]");

@@ -12,6 +12,7 @@ YourComponent.Actions = (model) => {
 
 YourComponent.View = () => {
     //const COMPONENT = $("[data-component=your-component]");
+    
     //const INPUT_YOUR_INPUT: COMPONENT.find("[data-selector=your-module-your-input]");
 
     return {

@@ -31,8 +31,9 @@ RandomUser.Actions = (model) => {
     };
 };
 
-RandomUser.Render = (model) => {
+RandomUser.View = (model) => {
     const COMPONENT = $("[data-component=random-user]");
+
     const ERROR_MESSAGE = COMPONENT.find("[data-selector=random-user-error-message]");
     const DETAILS = COMPONENT.find("[data-selector=random-user-details]");
     const LABEL_NAME = COMPONENT.find("[data-selector=random-user-name]");
@@ -40,23 +41,28 @@ RandomUser.Render = (model) => {
     const LABEL_PHONE = COMPONENT.find("[data-selector=random-user-phone]");
     const LABEL_WEBSITE = COMPONENT.find("[data-selector=random-user-website]");
 
-    return () => {
-        ERROR_MESSAGE.text(model.errorMessage);
-        if (model.errorMessage != null && model.errorMessage !== "") {
-            ERROR_MESSAGE.fadeIn();
-        } else {
-            ERROR_MESSAGE.hide();
-        }
+    return {
+        init: (actions, model) => {
 
-        if (model.name == null || model.name === "") {
-            DETAILS.hide();
-        } else {
-            DETAILS.fadeIn();
-        }
+        },
+        render: (model) => {
+            ERROR_MESSAGE.text(model.errorMessage);
+            if (model.errorMessage != null && model.errorMessage !== "") {
+                ERROR_MESSAGE.fadeIn();
+            } else {
+                ERROR_MESSAGE.hide();
+            }
 
-        LABEL_NAME.text(model.name);
-        LABEL_EMAIL.text(model.email);
-        LABEL_PHONE.text(model.phone);
-        LABEL_WEBSITE.text(model.website);
+            if (model.name == null || model.name === "") {
+                DETAILS.hide();
+            } else {
+                DETAILS.fadeIn();
+            }
+
+            LABEL_NAME.text(model.name);
+            LABEL_EMAIL.text(model.email);
+            LABEL_PHONE.text(model.phone);
+            LABEL_WEBSITE.text(model.website);
+        }
     };
 };
