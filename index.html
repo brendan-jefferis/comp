@@ -111,13 +111,13 @@
 
     </div>
 
-    <div class="recorder">
-        <button onclick="recorder.pause()">Pause</button>
-        <button onclick="recorder.resume()">Resume</button>
-        <button onclick="recorder.save()">Save</button>
-        <input id="storageId" type="text" placeholder="e.g., tiny-components_index-510116124653">
-        <button onclick="recorder.load($('#storageId').val())">Load</button>
-        <button onclick="recorder.replay()">Replay</button>
+    <div data-component="componentizer-recorder">
+        <button data-selector="recorder-pause">Pause</button>
+        <button data-selector="recorder-resume">Resume</button>
+        <button data-selector="recorder-save">Save</button>
+        <input id="storageId" type="text" placeholder="e.g., tiny-components_index-510116124653" data-selector="recorder-recording-id">
+        <button data-selector="recorder-load">Load</button>
+        <button data-selector="recorder-replay">Replay</button>
     </div>
 
     <script src="lib/jquery-3.1.1.min.js"></script>
