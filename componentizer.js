@@ -19,14 +19,82 @@
 
  */
 class Componentizer {
-    constructor(options = { record: true}) {
+    constructor(options = { record: true }) {
+        window.c = this;
+        c.actions = {};
+
         if (options.record) {
-            window.recorder = new Componentizer.Recorder();
+            c.recorder = new Componentizer.Recorder();
         }
     }
 
-    create(componentName, actions, render = ()=>{}, model = {}) {
-        return window[componentName] = new Componentizer.Component(componentName, actions, render, model);
+
+
+    create(componentName, actions, view = ()=>{}, model = {}) {
+        c.actions[componentName] = new Componentizer.Component(componentName, actions, view, model);
+    }
+};
+
+Componentizer.Component = class Component {
+    constructor (componentName, actions, view, model) {
+        if (componentName == null || componentName === "") {
+            throw new Error("Your component needs a name");
+        }
+
+        if (actions == null) {
+            throw new Error("This won't do much without actions. GO GET ME SOME ACTIONS");
+        }
+
+        this.componentName = componentName;
+
+        let _view = view && view();
+        let render = _view && _view.render ? _view.render : () =>{};
+        let viewInit = _view && _view.init ? _view.init : () => {};
+        
+        Object.assign(this, this.componentize(this.componentName, actions(model), render, model));
+        viewInit(this, model);
+        
+
+        if (window.recorder) {
+            window.recorder.storeComponent(this, model);
+        }
+    }
+
+    componentize(componentName, actions, render, model) {
+        render(model);
+        let component = {};
+        Object.keys(actions).map((action) => {
+            component[action] = (...args) => {
+
+                if (window.recorder && window.recorder.recording) {
+                    window.recorder.recordStep(componentName, model, action, args);
+                }
+
+                let returnValue = actions[action].apply(actions, args);
+
+                if (returnValue && returnValue.constructor.name === "Promise") {
+                    this.handlePromise(returnValue, render);
+                } else {
+                    render(model);
+                }
+            }
+        }, this);
+        component.get = (prop) => model[prop];
+        return component;
+    }
+
+    handlePromise(promise, render) {
+        promise.catch((result) => {
+            if ((!result.reason || typeof result.reason !== "string")
+                || (!result.model || typeof result.model !== "object")) {
+                console.error("The reject function is expecting an object of type: { reason: string, model: object }\r\nRendering view with last available model");
+                return model;
+            }
+            console.error(result.reason);
+            return result.model;
+        }).then((updatedModel) => {
+            render(updatedModel)();
+        });
     }
 };
 
@@ -86,61 +154,5 @@ Componentizer.Recorder = class Recorder {
     storeComponent(component, model) {
         this.components[component.componentName] = component;
         this.components[component.componentName].initialState = Object.assign({}, model);
-    }
-};
-
-Componentizer.Component = class Component {
-    constructor (componentName, actions, render, model) {
-        if (componentName == null || componentName === "") {
-            throw new Error("Your component needs a name");
-        }
-
-        if (actions == null) {
-            throw new Error("This won't do much without actions. GO GET ME SOME ACTIONS");
-        }
-
-        this.componentName = componentName;
-        Object.assign(this, this.componentize(this.componentName, actions(model), model, render(model)));
-
-        if (window.recorder) {
-            window.recorder.storeComponent(this, model);
-        }
-    }
-
-    handlePromise(promise, render) {
-        promise.catch((result) => {
-            if ((!result.reason || typeof result.reason !== "string")
-                || (!result.model || typeof result.model !== "object")) {
-                console.error("The reject function is expecting an object of type: { reason: string, model: object }\r\nRendering view with last available model");
-                return model;
-            }
-            console.error(result.reason);
-            return result.model;
-        }).then((updatedModel) => {
-            render(updatedModel)();
-        });
-    }
-
-    componentize(componentName, actions, model, render) {
-        render(model);
-        let component = {};
-        Object.keys(actions).map((action) => {
-            component[action] = (...args) => {
-
-                if (window.recorder && window.recorder.recording) {
-                    window.recorder.recordStep(componentName, model, action, args);
-                }
-
-                let promise = actions[action].apply(actions, args);
-
-                if (promise && promise.constructor.name === "Promise") {
-                    this.handlePromise(promise, render);
-                } else {
-                    render(model);
-                }
-            }
-        }, this);
-        component.get = (prop) => model[prop];
-        return component;
     }
 };

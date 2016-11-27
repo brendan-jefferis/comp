@@ -11,12 +11,12 @@
         <h6>Counter</h6>
 
         <h4>Count: <span data-selector="count"></span></h4>
-        <button onclick="counter.subtract()">Subtract</button>
-        <button onclick="counter.add()">Add</button>
-        <button onclick="counter.double()">Double</button>
-        <button onclick="counter.reset()">Reset</button>
+        <button data-selector="button-subtract">Subtract</button>
+        <button data-selector="button-add">Add</button>
+        <button data-selector="button-double">Double</button>
+        <button data-selector="button-reset">Reset</button>
 
-        <button onclick="modal.setContent('Current count is ' + counter.get('count'))">Set Modal content for counter</button>
+        <button data-selector="show-counter-modal">Set Modal content for counter</button>
         <button onclick="modal.setContent(greeter.get('greeting') + ' ' + greeter.get('name'))" data-selector="show-greeter-modal">Set Modal content for greeter</button>
     </div>
 
@@ -73,10 +73,10 @@
         <button onclick="address.save()" data-selector="address-save">Save</button>
     </div>
 
-    <div data-component="modal" style="display: none;" class="modal" onclick="modal.closeModal()">
+    <div data-component="modal" style="display: none;" class="modal">
         <div class="modal-container">
             <div data-selector="modal-content" class="modal-content"></div>
-            <button onclick="modal.closeModal()">Close</button>
+            <button data-selector="button-close">Close</button>
         </div>
     </div>
 
@@ -129,28 +129,28 @@
     <script src="random-user.js"></script>
 
     <script>
-        let componentizer = new Componentizer();
+        new Componentizer();
 
-        componentizer.create("address", Address.Actions, Address.Render, {
-            name: "Brendan",
-            line1: "12/315 Hereford St",
-            line2: "Christchurch Central",
-            city: "Christchurch",
-            country: "New Zealand"
-        });
+        // c.create("address", Address.Actions, Address.Render, {
+        //     name: "Brendan",
+        //     line1: "12/315 Hereford St",
+        //     line2: "Christchurch Central",
+        //     city: "Christchurch",
+        //     country: "New Zealand"
+        // });
 
-        componentizer.create("greeter", Greeter.Actions, Greeter.Render, {
-            greeting: "",
-            name: ""
-        });
+        // c.create("greeter", Greeter.Actions, Greeter.Render, {
+        //     greeting: "",
+        //     name: ""
+        // });
 
-        componentizer.create("counter", Counter.Actions, Counter.Render, {
+        c.create("counter", Counter.Actions, Counter.View, {
             count: 0
         });
 
-        componentizer.create("modal", Modal.Actions, Modal.Render);
+        c.create("modal", Modal.Actions, Modal.View);
 
-        componentizer.create("randomUser", RandomUser.Actions, RandomUser.Render);
+        // c.create("randomUser", RandomUser.Actions, RandomUser.Render);
     </script>
 </body>
 </html>

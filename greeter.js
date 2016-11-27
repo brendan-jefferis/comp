@@ -14,13 +14,13 @@ Greeter.Actions = (model) => {
     };
 };
 
-Greeter.Render = (model) => {
+Greeter.Render = (actions) => {
     const COMPONENT = $("[data-component=greeter]");
     const GREETING = COMPONENT.find("[data-selector=greeting]");
     const INPUT_NAME = COMPONENT.find("[data-selector=greeter-name]");
     const BUTTONS_SHOW_MODAL = $("[data-selector=show-greeter-modal]");
 
-    return () => {
+    return (model) => {
         GREETING.html(`${model.greeting} ${model.name}`);
         INPUT_NAME.val(model.name);
         BUTTONS_SHOW_MODAL.each((i, x) => {
