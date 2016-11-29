@@ -72,7 +72,7 @@ Componentizer.Component = class Component {
         return component;
     }
 
-    handlePromise(jqXHR, render){
+    handleJQXHR(jqXHR, render){
         jqXHR
             .then((updatedModel)=> {
                 if (updatedModel == null) {
