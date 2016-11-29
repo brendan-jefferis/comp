@@ -31,7 +31,7 @@ Componentizer.Component = class Component {
         }
 
         if (actions == null) {
-            throw new Error("This won't do much without actions. GO GET ME SOME ACTIONS");
+            throw new Error(`${componentName} won't do much without actions. GO GET ME SOME ACTIONS`);
         }
 
         this.componentName = componentName;
