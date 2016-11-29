@@ -60,7 +60,9 @@ Componentizer.Component = class Component {
 
                 let returnValue = actions[action].apply(actions, args);
 
-                if (returnValue && returnValue.constructor.name === "Promise") {
+                if (returnValue && returnValue.always) {
+                    this.handleJQXHR(returnValue, render);
+                } else if (returnValue && returnValue.constructor.name === "Promise") {
                     this.handlePromise(returnValue, render);
                 }
                 render(model);
@@ -68,6 +70,23 @@ Componentizer.Component = class Component {
         }, this);
         component.get = (prop) => model[prop];
         return component;
+    }
+
+    handlePromise(jqXHR, render){
+        jqXHR
+            .then((updatedModel)=> {
+                if (updatedModel == null) {
+                    throw new Error("No model received: aborting render");
+                }
+                render(updatedModel);
+            })
+            .catch((err) => {
+                if (typeof err === "string") {
+                    console.error(err);
+                } else {
+                    console.error(`Error unhandled by component. Add a catch handler to your AJAX method.`);
+                }
+            });
     }
 
     handlePromise(promise, render) {

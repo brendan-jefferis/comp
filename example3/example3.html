@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <head lang="en">
-	<title>Example2 | Componentizer</title>
+	<title>Example3 | Componentizer</title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-	<h2>Example 2.</h2>
-	<p>Simple component with action recorder</p>
+	<h2>Example 3.</h2>
+	<p>Async actions using both ES6 and jQuery Promises</p>
 
-	<div data-component="example-2">
-		<p>
-			<label id="example-2-your-name">Enter your name</label>
-			<input type="text" for="example-2-your-name" data-selector="example-2-your-name">
-			<button data-selector="example-2-clear">Clear</button>
-		</p>
+	<div data-component="example-3">
+		<h6>jQuery</h6>
+		<button data-selector="example-3-get-posts">Get posts (success)</button>
+		<button data-selector="example-3-get-posts-404">Get posts (404)</button>
+		<button data-selector="example-3-get-posts-error-network">Get posts (network error)</button>
 
-		<h1 data-selector="example-2-output"></h1>
+		<div data-selector="example-3-posts"></div>
+		<div data-selector="example-3-error-message" class="error-message"></div>
+	</div>
+
+	<div>
+		<button data-selector="example-3-es6-promise">test es6 promise</button>
 	</div>
 
     <div data-component="componentizer-recorder">
@@ -32,13 +36,17 @@
 	<script src="../lib/jquery-3.1.1.min.js"></script>
 	<script src="../componentizer.js"></script>
 	<script src="../componentizer-recorder.js"></script>
-	<script src="example-2.js"></script>
+	<script src="example-3.js"></script>
 
 	<script>
         window.componentizer = new Componentizer();
-		componentizer.createRecorder(Recorder.Actions, Recorder.View);
+		//componentizer.createRecorder(Recorder.Actions, Recorder.View);
 
-		componentizer.create("example2", Example2.Actions, Example2.View/*, { name: "Jim" }*/);
+		componentizer.create("example3", Example3.Actions, Example3.View, {
+			apiUrl: "https://jsonplaceholder.typicode.com",
+			posts: [],
+			errorMessage: ""
+		});
 	</script>
 
 </body>
