@@ -25,11 +25,12 @@ Basic read/write functionality. The state recorder is also introduced here.
 ####[Example 3](/example3) - Async actions
 Componentizer will ensure that your view function is called when your jQuery AJAX or ES6 Promises are resolved.
 
--- Example 4 Interacting with external elements
--- Example 5 Interacting with other components
--- Example 6 Targeting dynamic DOM elements
--- Example 7 Interop with .NET model binding
--- Example 8 Interop with .NET model binding using dynamic elements
--- Example 9 Multiple views
--- Example 10 React views (?)
--- Example 11 Elm migration (?)
+TODO
+----
+Example 4 Interacting with external elements
+Example 5 Interacting with other components
+Example 6 Targeting dynamic DOM elements
+Example 7 Interop with .NET model binding
+Example 8 Interop with .NET model binding using dynamic elements
+Example 9 Multiple views
+Example 10 React views (?)
