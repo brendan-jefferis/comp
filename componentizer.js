@@ -61,9 +61,7 @@ Componentizer.Component = class Component {
 
                 let returnValue = actions[action].apply(actions, args);
 
-                if (returnValue && returnValue.always) {
-                    this.handleJQXHR(returnValue, render);
-                } else if (returnValue && returnValue.constructor.name === "Promise") {
+                if (returnValue && returnValue.then) {
                     this.handlePromise(returnValue, render);
                 }
                 render(model);
@@ -73,8 +71,8 @@ Componentizer.Component = class Component {
         return component;
     }
 
-    handleJQXHR(jqXHR, render){
-        jqXHR
+    handlePromise(promise, render){
+        promise
             .then((updatedModel)=> {
                 if (updatedModel == null) {
                     throw new Error("No model received: aborting render");
@@ -88,19 +86,5 @@ Componentizer.Component = class Component {
                     console.error(`Error unhandled by component. Add a catch handler to your AJAX method.`);
                 }
             });
-    }
-
-    handlePromise(promise, render) {
-        promise.catch((result) => {
-            if ((!result.reason || typeof result.reason !== "string")
-                || (!result.model || typeof result.model !== "object")) {
-                console.error("The reject function is expecting an object of type: { reason: string, model: object }\r\nRendering view with last available model");
-                return model;
-            }
-            console.error(result.reason);
-            return result.model;
-        }).then((updatedModel) => {
-            render(updatedModel);
-        });
     }
 };

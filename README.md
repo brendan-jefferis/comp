@@ -14,13 +14,13 @@ No external dependencies. Componentizer code is around 3K including the state re
 
 ##Examples
 
-####[Example 1](/example1/example1.html) - Core functionality
+####[Example 1](/example1) - Core functionality
 Simplest implementation (with console log statements to demonstrate when key component functions are called)
 
-####[Example 2](/example1/example1.html) - Simple component
+####[Example 2](/example1) - Simple component
 Basic read/write functionality. The state recorder is also introduced here.
 
-####[Example 3](/example3/example3.html) - Async actions
+####[Example 3](/example3) - Async actions
 Componentizer will ensure that your view function is called when your jQuery AJAX or ES6 Promises are resolved.
 
 -- Example 4 Interacting with external elements

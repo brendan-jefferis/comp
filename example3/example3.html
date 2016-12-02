@@ -8,18 +8,22 @@
 	<h2>Example 3.</h2>
 	<p>Async actions using both ES6 and jQuery Promises</p>
 
-	<div data-component="example-3">
-		<h6>jQuery</h6>
-		<button data-selector="example-3-get-posts">Get posts (success)</button>
-		<button data-selector="example-3-get-posts-404">Get posts (404)</button>
-		<button data-selector="example-3-get-posts-error-network">Get posts (network error)</button>
+	<div data-component="example-3-jquery">
+		<h6>jQuery AJAX</h6>
+		<button data-selector="jquery-get-posts">Get posts (success)</button>
+		<button data-selector="jquery-get-posts-404">Get posts (404)</button>
+		<button data-selector="jquery-get-posts-error-network">Get posts (network error)</button>
+		
 
-		<div data-selector="example-3-posts"></div>
-		<div data-selector="example-3-error-message" class="error-message"></div>
+		<div data-selector="jquery-posts"></div>
+		<div data-selector="jquery-error-message" class="error-message"></div>
 	</div>
 
-	<div>
-		<button data-selector="example-3-es6-promise">test es6 promise</button>
+	<div data-component="example-3-es6">
+		<h6>ES6 Promises</h6>
+		<button data-selector="es6-get-number">Get random number</button>
+		<div data-selector="es6-number-message"></div>
+		<div data-selector="es6-error-message" class="error-message"></div>
 	</div>
 
     <div data-component="componentizer-recorder">
@@ -42,11 +46,13 @@
         window.componentizer = new Componentizer();
 		//componentizer.createRecorder(Recorder.Actions, Recorder.View);
 
-		componentizer.create("example3", Example3.Actions, Example3.View, {
+		componentizer.create("example3-jquery", Example3.JQuery.Actions, Example3.JQuery.View, {
 			apiUrl: "https://jsonplaceholder.typicode.com",
 			posts: [],
 			errorMessage: ""
 		});
+
+		componentizer.create("example-3-es6", Example3.ES6.Actions, Example3.ES6.View);
 	</script>
 
 </body>
