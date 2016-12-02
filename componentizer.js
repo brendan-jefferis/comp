@@ -31,7 +31,8 @@ Componentizer.Component = class Component {
         }
 
         if (actions == null) {
-            throw new Error(`${componentName} won't do much without actions. GO GET ME SOME ACTIONS`);
+            var example = "// It must be a function that takes a model and returns an object of functions, e.g.\r\n\r\nYourComponent.Actions = function (model) {\r\n    return {\r\n        sayHello: () { console.log('Hi.'); },\r\n        greet: (name) { console.log('Hello, ' + name); }\r\n    }\r\n}"
+            throw new Error(`${componentName} needs some actions! Here's an example of an Actions function:\r\n\r\n${example}\r\n\r\n`);
         }
 
         this.componentName = componentName;
