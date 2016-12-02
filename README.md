@@ -7,6 +7,8 @@ Designed to be used instead of a framework, in cases where that might be overkil
 
 No external dependencies. Componentizer code is around 3K including the state recorder.
 
+I use jQuery in the examples for DOM manipulation but it's not required by Componentizer.
+
 ###Features
 - Auto-update the DOM when the model changes
 - State recorder saves actions and state for testing/logging/debugging

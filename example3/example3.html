@@ -26,16 +26,16 @@
 		<div data-selector="es6-error-message" class="error-message"></div>
 	</div>
 
-    <div data-component="componentizer-recorder">
-    	<h6>Recorder</h6>
-        <button data-selector="recorder-pause">Pause</button>
-        <button data-selector="recorder-resume">Resume</button>
-        <button data-selector="recorder-save">Save</button>
-        <input id="storageId" type="text" placeholder="e.g., tiny-components_index-510116124653" data-selector="recorder-recording-id">
-        <button data-selector="recorder-load">Load</button>
-        <button data-selector="recorder-replay">Replay</button>
-        <p style="display: none" data-selector="recorder-confirmation-message"></p>
-    </div>
+	<div data-component="componentizer-recorder">
+		<h6>Recorder</h6>
+		<button data-selector="recorder-pause">Pause</button>
+		<button data-selector="recorder-resume">Resume</button>
+		<button data-selector="recorder-save">Save</button>
+		<input id="storageId" type="text" placeholder="e.g., tiny-components_index-510116124653" data-selector="recorder-recording-id">
+		<button data-selector="recorder-load">Load</button>
+		<button data-selector="recorder-replay">Replay</button>
+		<p style="display: none" data-selector="recorder-confirmation-message"></p>
+	</div>
 	
 	<script src="../lib/jquery-3.1.1.min.js"></script>
 	<script src="../componentizer.js"></script>
@@ -43,7 +43,7 @@
 	<script src="example-3.js"></script>
 
 	<script>
-        window.componentizer = new Componentizer();
+		window.componentizer = new Componentizer();
 		//componentizer.createRecorder(Recorder.Actions, Recorder.View);
 
 		componentizer.create("example3-jquery", Example3.JQuery.Actions, Example3.JQuery.View, {
