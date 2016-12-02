@@ -12,11 +12,9 @@ Example3.JQuery.Actions = (model) => {
             /*
             *   Key points with using jQuery:
             *   1. make sure to return the $.ajax/get/post object to
-                   componentizer so it can handle view rendering
+            *      componentizer so it can handle view rendering
             *   2. use catch/then rather than fail/success/done
             *   3. make sure to return the model in your then handler
-            *   4. adding a catch here is optional (i.e. componentizer
-                   will fail gracefully either way) but highly recommended
             */
             return $.get(url)
                 .catch((result) => {
@@ -91,16 +89,16 @@ Example3.ES6.Actions = (model) => {
     return {
         /*
         *   Key points with using ES6 Promises:
-        *   1. make sure to return the $.ajax/get/post object to
-               componentizer so it can handle view rendering
-        *   2. use catch/then rather than fail/success/done
-        *   3. make sure to return the model in your then handler
-        *   4. adding a catch here is optional (i.e. componentizer
-               will fail gracefully either way) but highly recommended
+        *   1. make sure to return the Promise to
+        *      componentizer so it can handle view rendering
+        *   2. Resolve/reject the promise within the executor callback,
+        *      passing the model to the handler functions.
+        *   3. Make sure to return the model in your then and catch handlers
         */
         getRandomNumber: () => {
             model.errorMessage = "";
             model.numberMessage = "Generating...";
+
             return new Promise((resolve, reject) => {
                 let rand = Math.floor(Math.random()*10 + 1);
                 setTimeout(() => {
