@@ -43,16 +43,13 @@
 	<script src="example-3.js"></script>
 
 	<script>
-		window.componentizer = new Componentizer();
-		//componentizer.createRecorder(Recorder.Actions, Recorder.View);
-
-		componentizer.create("example3-jquery", Example3.JQuery.Actions, Example3.JQuery.View, {
+		_comp.create("example3JQuery", Example3.JQuery.Actions, Example3.JQuery.View, {
 			apiUrl: "https://jsonplaceholder.typicode.com",
 			posts: [],
 			errorMessage: ""
 		});
 
-		componentizer.create("example-3-es6", Example3.ES6.Actions, Example3.ES6.View);
+		_comp.create("example3ES6", Example3.ES6.Actions, Example3.ES6.View);
 	</script>
 
 </body>

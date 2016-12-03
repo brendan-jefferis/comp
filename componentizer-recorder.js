@@ -99,3 +99,9 @@ Recorder.View = () => {
 		}
 	};
 };
+
+if (window.componentizer != null && window.componentizer.createRecorder != null) {
+	componentizer.createRecorder(Recorder.Actions, Recorder.View);
+} else {
+	console.warn("Componentizer recorder failed to attach. Make sure to load componentizer.js script first.");
+}

@@ -17,10 +17,10 @@ class Componentizer {
     }
 
     create(componentName, actions, view = ()=>{}, model = {}) {
-        if (this.actions === undefined) {
-            this.actions = {};
+        if (this.components === undefined) {
+            this.components = {};
         }
-        this.actions[componentName] = new Componentizer.Component(componentName, actions, view, model);
+        this.components[componentName] = new Componentizer.Component(componentName, actions, view, model);
     }
 };
 
@@ -88,3 +88,5 @@ Componentizer.Component = class Component {
             });
     }
 };
+
+window.componentizer = window._comp = new Componentizer();
