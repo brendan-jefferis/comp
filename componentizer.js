@@ -55,11 +55,11 @@ Componentizer.Component = class Component {
         Object.keys(actions).map((action) => {
             component[action] = (...args) => {
 
+                let returnValue = actions[action].apply(actions, args);
+
                 if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
                     componentizer.recorder.recordStep(componentName, model, action, args);
                 }
-
-                let returnValue = actions[action].apply(actions, args);
 
                 if (returnValue && returnValue.then) {
                     this.handlePromise(returnValue, render);

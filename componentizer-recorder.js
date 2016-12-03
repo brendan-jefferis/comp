@@ -68,18 +68,77 @@ Recorder.Actions = (model) => {
 
 
 Recorder.View = () => {
-	const COMPONENT = $("[data-component=componentizer-recorder]");
+	let COMPONENT = $("[data-component=componentizer-recorder]");
 	
-	const BUTTON_PAUSE = COMPONENT.find("[data-selector=recorder-pause]");
-	const BUTTON_RESUME = COMPONENT.find("[data-selector=recorder-resume]");
-	const BUTTON_SAVE = COMPONENT.find("[data-selector=recorder-save]");
-	const BUTTON_LOAD = COMPONENT.find("[data-selector=recorder-load]");
-	const BUTTON_REPLAY = COMPONENT.find("[data-selector=recorder-replay]");
-	const INPUT_RECORDING_ID = COMPONENT.find("[data-selector=recorder-recording-id]");
-	const CONFIRMATION_MESSAGE = COMPONENT.find("[data-selector=recorder-confirmation-message]");
+	let BUTTON_PAUSE = COMPONENT.find("[data-selector=recorder-pause]");
+	let BUTTON_RESUME = COMPONENT.find("[data-selector=recorder-resume]");
+	let BUTTON_SAVE = COMPONENT.find("[data-selector=recorder-save]");
+	let BUTTON_LOAD = COMPONENT.find("[data-selector=recorder-load]");
+	let BUTTON_REPLAY = COMPONENT.find("[data-selector=recorder-replay]");
+	let INPUT_RECORDING_ID = COMPONENT.find("[data-selector=recorder-recording-id]");
+	let CONFIRMATION_MESSAGE = COMPONENT.find("[data-selector=recorder-confirmation-message]");
+
+	function renderControls() {
+		var component = document.createElement("div");
+		component.setAttribute("data-component", "componentizer-recorder");
+		
+		var header = document.createElement("h6");
+		header.innerText = "Recorder";
+
+		var pause = document.createElement("button");
+		pause.setAttribute("data-selector", "recorder-pause");
+		pause.innerText = "Pause";
+
+		var resume = document.createElement("button");
+		resume.setAttribute("data-selector", "recorder-resume");
+		resume.innerText = "Resume";
+
+		var save = document.createElement("button");
+		save.setAttribute("data-selector", "recorder-save");
+		save.innerText = "Save";
+
+		var storageId = document.createElement("input");
+		storageId.setAttribute("type", "text");
+		storageId.setAttribute("placeholder", "e.g., tiny-components_index-510116124653");
+		storageId.setAttribute("data-selector", "recorder-recording-id");
+
+		var load = document.createElement("button");
+		load.setAttribute("data-selector", "recorder-load");
+		load.innerText = "Load";
+
+		var replay = document.createElement("button");
+		replay.setAttribute("data-selector", "recorder-replay");
+		replay.innerText = "Replay";
+		
+		var message = document.createElement("p");
+		message.style.display = "none";
+		message.setAttribute("data-selector", "recorder-confirmation-message");
+
+		component.appendChild(header);
+		component.appendChild(pause);
+		component.appendChild(resume);
+		component.appendChild(save);
+		component.appendChild(storageId);
+		component.appendChild(load);
+		component.appendChild(replay);
+		component.appendChild(message);
+
+		return component;
+	};
 
 	return {
 		init: (actions, model) => {
+			document.body.append(renderControls());
+
+			COMPONENT = $("[data-component=componentizer-recorder]");	
+			BUTTON_PAUSE = COMPONENT.find("[data-selector=recorder-pause]");
+			BUTTON_RESUME = COMPONENT.find("[data-selector=recorder-resume]");
+			BUTTON_SAVE = COMPONENT.find("[data-selector=recorder-save]");
+			BUTTON_LOAD = COMPONENT.find("[data-selector=recorder-load]");
+			BUTTON_REPLAY = COMPONENT.find("[data-selector=recorder-replay]");
+			INPUT_RECORDING_ID = COMPONENT.find("[data-selector=recorder-recording-id]");
+			CONFIRMATION_MESSAGE = COMPONENT.find("[data-selector=recorder-confirmation-message]");
+
 			BUTTON_PAUSE.on("click", actions.pause);
 			BUTTON_RESUME.on("click", actions.resume);
 			BUTTON_SAVE.on("click", actions.save);
