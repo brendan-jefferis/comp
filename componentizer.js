@@ -38,11 +38,18 @@ Componentizer.Component = class Component {
         this.componentName = componentName;
 
         let _view = view && view();
-        let render = _view && _view.render ? _view.render : () =>{};
         let viewInit = _view && _view.init ? _view.init : () => {};
-        
+        let selectors = _view && _view.el ? _view.el : {};
+        let elements = this.confirmOrRegisterElements(selectors, {});
+        let render = _view && _view.render
+            ? (model) => {
+                elements = this.confirmOrRegisterElements(selectors, elements);
+                _view.render(model, elements);
+            }
+            : () =>{};
+
         Object.assign(this, this.componentize(this.componentName, actions(model), render, model));
-        viewInit(this, model);
+        viewInit(this, model, elements);
         
         if (componentizer.recorder && componentName !== "recorder") {
             componentizer.recorder.storeComponent(this, model);
@@ -71,13 +78,13 @@ Componentizer.Component = class Component {
         return component;
     }
 
-    handlePromise(promise, render){
+    handlePromise(promise, render) {
         promise
             .then((updatedModel)=> {
                 if (updatedModel == null) {
                     throw new Error("No model received: aborting render");
                 }
-                render(updatedModel);
+                render(updatedModel, elements);
             })
             .catch((err) => {
                 if (typeof err === "string") {
@@ -86,6 +93,15 @@ Componentizer.Component = class Component {
                     console.error(`Error unhandled by component. Add a catch handler to your AJAX method.`);
                 }
             });
+    }
+
+    confirmOrRegisterElements(selectors, elements = {}) {
+        Object.keys(selectors).map((elName) => {
+            elements[elName] = elements[elName] && jQuery.contains(document.documentElement, elements[elName][0])
+                ? elements[elName] = elements[elName]
+                : elements[elName] = $(selectors[elName]);
+        });
+        return elements;
     }
 };
 
