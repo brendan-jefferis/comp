@@ -65,7 +65,7 @@ Example3.JQuery.View = () => {
     };
 
     return {
-        init: (actions, model) => {
+        init: (actions) => {
             BUTTON_GET_POSTS.on("click", () => actions.getPosts());
             BUTTON_GET_POSTS_404.on("click", () => actions.getPosts(999));
             BUTTON_GET_POSTS_ERROR_NETWORK.on("click", () => actions.getPosts(1, "https://jsonplaceholder.typicode.cm/posts"))

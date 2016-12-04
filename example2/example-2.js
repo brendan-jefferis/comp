@@ -25,7 +25,7 @@ Example2.View = () => {
             DYNAMIC_ELEMENT: "[data-selector=dyn-1]",
             DYNAMIC_BUTTON: "[data-selector=dyn-2]",
         },
-        init: (actions, model, el) => {
+        init: (actions, el) => {
             el.CLEAR_BUTTON.on("click", actions.clear);
             el.INPUT_NAME.on("keyup", (e) => { actions.setName(e.currentTarget.value); });
             el.DYNAMIC_BUTTON.on("click", actions.foo);

@@ -49,7 +49,7 @@ Componentizer.Component = class Component {
             : () =>{};
 
         Object.assign(this, this.componentize(this.componentName, actions(model), render, model));
-        viewInit(this, model, elements);
+        viewInit(this, elements, model);
         
         if (componentizer.recorder && componentName !== "recorder") {
             componentizer.recorder.storeComponent(this, model);
