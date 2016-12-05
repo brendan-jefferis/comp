@@ -26,7 +26,7 @@ Basic read/write functionality. The state recorder is also introduced here.
 Componentizer will ensure that your view function is called when your jQuery AJAX or ES6 Promises are resolved.
 
 ####[Example 4](/example4) - Interacting with external elements
-While encapsulation of UI code is important, your layout should not be completely restricted by your code design. This way we avoid having to deal with parent-child relationships as all components are siblings with encapsulated state, publicly accessible logic (i.e., actions) and full write access to the DOM.
+While encapsulation of UI code is important, your layout should not be completely restricted by your code design. All components have encapsulated state; publicly accessible logic (i.e., actions); and full write access to the DOM. This means we can avoid having to deal with parent-child relationships as all components are siblings.
 
 
 TODO
