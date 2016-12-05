@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head lang="en">
+	<title>Example5 | Componentizer</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+	<h2>Example 5.</h2>
+	<p>Interaction between components</p>
+
+	<div data-component="greeter">
+		<h6>Greeter</h6>
+
+		<h4 data-selector="greeting"></h4>
+
+		<label for="greeter-name">Enter your name</label>
+		<input id="greeter-name" type="text" data-selector="greeter-name">
+
+		<label for="greeter-select">Select greeting</label>
+		<select id="greeter-select" name="greet" data-selector="greeter-select-greeting">
+			<option value="">-Select-</option>
+			<option value="hello">Hello</option>
+			<option value="sup">Sup</option>
+			<option value="waaaazzaaaaapp">Wazaaaap</option>
+			<option value="hallo">Hallo</option>
+		</select>
+
+		<button data-selector="show-greeter-modal">Set Modal content</button>
+	</div>
+
+	<div data-component="modal" style="display: none;" class="modal">
+		<div class="modal-container">
+			<div data-selector="modal-content" class="modal-content"></div>
+			<button data-selector="button-close">Close</button>
+		</div>
+	</div>
+
+	<script src="../lib/jquery-3.1.1.min.js"></script>
+	<script src="../componentizer.js"></script>
+	<script src="example-5-greeter.js"></script>
+	<script src="example-5-modal.js"></script>
+
+	<script>
+		_comp.create("greeter", Example5.Greeter.Actions, Example5.Greeter.View, {
+			name: "",
+			greeting: "",
+			fullGreeting: ""
+		});
+
+		_comp.create("modal", Example5.Modal.Actions, Example5.Modal.View, {
+			content: "",
+			showModal: false
+		});
+	</script>
+
+</body>
