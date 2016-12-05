@@ -1,7 +1,7 @@
 Componentizer
 =============
 
-A minimal library + design pattern to help organise your JS code into manageable components.
+A design pattern + minimal library to convert your JS modules into reusable components.
 
 Designed to be used instead of a framework, in cases where that might be overkill.
 
@@ -172,3 +172,29 @@ Componentizer will ensure that your view function is called when your jQuery AJA
 
 ####[Example 4](/example4) - Interacting with external elements
 While encapsulation of UI code is important, your layout should not be completely restricted by your code design. All components have encapsulated state; publicly accessible logic (i.e., actions); and full write access to the DOM. This means we can avoid having to deal with parent-child relationships as all components are siblings.
+
+####[Example 5](/example5) - Interacting with other components
+A component's actions are easily accessible internally, but they're also attached to the global componentizer object under their respective names, e.g.,
+
+```
+window.componentizer: {
+	components: {
+		ComponentOne: {
+			foo: (num) {},
+			get: (prop) {}
+		},
+		ComponentTwo: {
+			bar: () {},
+			get: (prop) {}
+		}
+	}
+}
+```
+
+This allows other components (or any external JS) to call these actions, e.g., 
+
+```
+componentizer.components.ComponentOne.foo(2);
+```
+
+Additionally, all components are given a get method for getting read-only access to properties from outside a component. If you find yourself using this too often, you may need to rethink your components.
