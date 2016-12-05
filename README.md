@@ -89,7 +89,7 @@ YourComponent.View = function() {
 		},
 		render: function(model) {
 			if (model.greeting && model.greeting !== "") {
-				GREETING.innerHTML = model.greeting = " world";
+				GREETING.innerHTML = model.greeting + " world";
 			}
 		}
 	}
@@ -99,6 +99,65 @@ YourComponent.View = function() {
 HTML elements that are present on page load can be stored in your View module and referred to in your init and render functions. Dynamic elements (i.e., elements that will be added after page load will be addressed later).
 
 Here we've hooked up an event listener to our button and added some render code to write to the DOM.
+
+#####Componentize it
+
+```
+componentizer.create("YourComponent", YourComponent.Actions, YourComponent.View, { greeting: "Goodbye" });
+```
+
+Turn your modules into a component, passing it a name, your Actions, your View and an (optional but recommended) initial model.
+
+Your page should now look something like this
+
+```
+<!DOCTYPE html>
+<head lang="en">
+	<meta charset="utf-8">
+	<title>Componentizer tutorial</title>
+</head>
+<body>
+	<div data-component="hello-world">
+	    <h2 data-selector="greeting"></h2>
+	    <button data-selector="say-hello">Say Hello</button>
+	</div>
+
+	<script src="componentizer.js"></script>
+
+	<script>
+		YourComponent = {};
+
+		YourComponent.Actions = function (model) {
+			return {
+				sayHello: function() {
+					model.greeting = "Hello";
+				}
+			}
+		}
+
+		YourComponent.View = function() {
+			const COMPONENT = document.querySelector("[data-component=hello-world]");
+
+			const BUTTON = COMPONENT.querySelector("[data-selector=say-hello]");
+			const GREETING = COMPONENT.querySelector("[data-selector=greeting]");
+
+			return {
+				init: function(actions) {
+					BUTTON.addEventListener("click", actions.sayHello);
+				},
+				render: function(model) {
+					if (model.greeting && model.greeting !== "") {
+						GREETING.innerHTML = model.greeting + " world";
+					}
+				}
+			}
+		}
+	</script>
+	<script>
+		componentizer.create("hello-world", YourComponent.Actions, YourComponent.View, { greeting: "Goodbye"});
+	</script>
+</body>
+```
 
 ##Examples
 
