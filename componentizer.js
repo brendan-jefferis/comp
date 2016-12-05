@@ -97,7 +97,7 @@ Componentizer.Component = class Component {
 
     confirmOrRegisterElements(selectors, elements = {}) {
         Object.keys(selectors).map((elName) => {
-            elements[elName] = elements[elName] && jQuery.contains(document.documentElement, elements[elName][0])
+            elements[elName] = elements[elName] && document.documentElement.contains(elements[elName][0])
                 ? elements[elName] = elements[elName]
                 : elements[elName] = $(selectors[elName]);
         });

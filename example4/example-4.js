@@ -20,9 +20,10 @@ Example4.Actions = (model) => {
     };
 };
 
-Example4.View = () => {const COMPONENT = $("[data-component=counter]");
-    const COUNTER = COMPONENT.find("[data-selector=count]");
+Example4.View = () => {
+    const COMPONENT = $("[data-component=counter]");
     
+    const COUNTER = COMPONENT.find("[data-selector=count]");
     const BUTTON_SUBTRACT = COMPONENT.find("[data-selector=button-subtract]");
     const BUTTON_ADD = COMPONENT.find("[data-selector=button-add]");
     const BUTTON_DOUBLE = COMPONENT.find("[data-selector=button-double]");
