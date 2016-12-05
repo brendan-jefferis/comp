@@ -28,7 +28,7 @@ Example1.View = () => {
     const OUTPUT = COMPONENT.find("[data-selector=example-1-output]");
 
     return {
-        init: (actions, model) => {
+        init: (actions) => {
             console.group("View");
             console.log("View init called... this is called once, after your component has been created");
             console.groupEnd();
