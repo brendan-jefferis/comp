@@ -25,9 +25,12 @@ Basic read/write functionality. The state recorder is also introduced here.
 ####[Example 3](/example3) - Async actions
 Componentizer will ensure that your view function is called when your jQuery AJAX or ES6 Promises are resolved.
 
+####[Example 4](/example4) - Interacting with external elements
+While encapsulation of UI code is important, your layout should not be completely restricted by your code design. This way we avoid having to deal with parent-child relationships as all components are siblings with encapsulated state, publicly accessible logic (i.e., actions) and full write access to the DOM.
+
+
 TODO
 ----
-- Example 4 Interacting with external elements
 - Example 5 Interacting with other components
 - Example 6 Targeting dynamic DOM elements
 - Example 7 Interop with .NET model binding

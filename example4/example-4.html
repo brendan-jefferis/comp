@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head lang="en">
+	<title>Example3 | Componentizer</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+	<h2>Example 4.</h2>
+	<p>Input and output with elements external to the component</p>
+
+	<div data-component="counter">
+        <h6>Counter</h6>
+
+        <h4>Count: <span data-selector="count"></span></h4>
+        <button data-selector="button-subtract">Subtract</button>
+        <button data-selector="button-add">Add</button>
+        <button data-selector="button-double">Double</button>
+        <button data-selector="button-reset">Reset</button>
+    </div>
+	
+	<div>
+		<p>Components should be written in such a way that their actions can be called by any other element. This means your model is still private to the component, but this privacy does not have to restrict layout decisions.</p>
+		<button data-selector="external-add">Call counter.add() from outside the component</button>
+	</div>
+
+	<div>
+		<p>All components have a <code>get</code> method that allows read-only access to properties on the component's model.</p>
+		<button data-selector="external-refresh">Get count</button>
+		<span>Count: <span data-selector="external-count"></span></span>
+	</div>
+
+	<script src="../lib/jquery-3.1.1.min.js"></script>
+	<script src="../componentizer.js"></script>
+	<script src="example-4.js"></script>
+	<script src="external-button.js"></script>
+
+	<script>
+		_comp.create("counter", Example4.Actions, Example4.View, { count: 0 });
+	</script>
+
+</body>
