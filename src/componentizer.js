@@ -39,12 +39,14 @@ Componentizer.Component = class Component {
 
         let _view = view && view();
         let viewInit = _view && _view.init ? _view.init : () => {};
+        let dynamicEvents = _view && _view.dynamicEvents ? _view.dynamicEvents : () => {};
         let selectors = _view && _view.el ? _view.el : {};
         let elements = this.confirmOrRegisterElements(selectors, {});
         let render = _view && _view.render
             ? (model) => {
                 elements = this.confirmOrRegisterElements(selectors, elements);
-                _view.render(model, elements);
+                _view.render(model);
+                dynamicEvents(model);
             }
             : () =>{};
 
@@ -88,7 +90,7 @@ Componentizer.Component = class Component {
                 if (updatedModel == null) {
                     throw new Error("No model received: aborting render");
                 }
-                render(updatedModel, elements);
+                render(updatedModel);
             })
             .catch((err) => {
                 if (typeof err === "string") {
