@@ -35,6 +35,34 @@
 		</div>
 	</div>
 
+	<div>
+		A component's actions are easily accessible internally, but they're also attached to the global componentizer object under their respective names, e.g.,
+
+		<pre>
+			window.componentizer: {
+				components: {
+					ComponentOne: {
+						foo: (num) {},
+						get: (prop) {}
+					},
+					ComponentTwo: {
+						bar: () {},
+						get: (prop) {}
+					}
+				}
+			}
+		</pre>
+
+
+		This allows other components (or any external JS) to call these actions, e.g.,
+
+		<pre>
+			componentizer.components.ComponentOne.foo(2);
+		</pre>
+
+		Additionally, all components are given a get method for getting read-only access to properties from outside a component. If you find yourself using this too often, you may need to rethink your components.
+	</div>
+
 	<script src="../lib/jquery-3.1.1.min.js"></script>
 	<script src="../componentizer.js"></script>
 	<script src="example-5-greeter.js"></script>

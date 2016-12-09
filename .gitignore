@@ -33,4 +33,6 @@ _ReSharper*/
 *.css
 *.css.map
 
+/node_modules
+
 todo.txt

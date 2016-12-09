@@ -1,0 +1,25 @@
+{
+  "name": "componentizer",
+  "version": "1.0.0",
+  "description": "A design pattern and micro-framework for creating JS components",
+  "main": "componentizer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel componentizer.js --out-file dist/componentizer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brendan-jefferis/componentizer.git"
+  },
+  "author": "Brendan Jefferis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brendan-jefferis/componentizer/issues"
+  },
+  "homepage": "https://github.com/brendan-jefferis/componentizer#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-latest": "^6.16.0"
+  }
+}
