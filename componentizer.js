@@ -1,7 +1,6 @@
 /**
  * Created by bjefferis on 23/11/2016.
  */
-import "babel-polyfill";
 
 class Componentizer {
 
