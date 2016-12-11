@@ -1,4 +1,4 @@
-Example6 = {};
+window.Example6 = {};
 
 Example6.Actions = (model) => {
 
@@ -62,14 +62,9 @@ Example6.View = () => {
 	}
 
 	return {
-		el: {
-			USER_DETAILS: "[data-selector=show-user-details]"
-		},
-		init: (actions) => {
+		init: (actions, model) => {
 			BUTTON.on("click", actions.getUsers);
-		},
-		dynamicEvents: (model) => {
-			COMPONENT.off().on("click", "[data-selector=show-user-details]", (e) => {
+			COMPONENT.on("click", "[data-selector=show-user-details]", (e) => {
 				var user = model.users.find((x) => { return x.id === parseInt(e.currentTarget.getAttribute("data-user-id"), 10); });
 				_comp.components.modal.show(renderUserDetails(user));
 			});

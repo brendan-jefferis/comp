@@ -9,8 +9,11 @@ Example6.Modal.Actions = (model) => {
 
     return {
         show: function(content) {
-            model.content = content.toString();
-            model.showModal = model.content != null && model.content.trim() !== "";
+            if (typeof content === "string") {
+                content.trim();
+            }
+            model.content = content;
+            model.showModal = model.content != null && model.content !== "";
         },
 
         close: function () {
@@ -29,13 +32,11 @@ Example6.Modal.View = () => {
     return {
         init: (actions, model) => {
             COMPONENT.children().on("click", (e) => { e.stopPropagation(); });
-            COMPONENT.on("click", (e) => {
-                actions.close();
-            });
+            COMPONENT.on("click", actions.close);
             BUTTON_CLOSE.on("click", actions.close);
         },
         render: (model) => {
-            if (model.content != null && model.content.trim() !== "") {
+            if (model.content != null && model.content !== "") {
                 MODAL_CONTENT.html(model.content);
             }
 
