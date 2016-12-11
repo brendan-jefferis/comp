@@ -39,23 +39,10 @@ Componentizer.Component = class Component {
 
         let _view = view && view();
         let viewInit = _view && _view.init ? _view.init : () => {};
-        let dynamicEvents = _view && _view.dynamicEvents ? _view.dynamicEvents : () => {};
-        let selectors = _view && _view.el ? _view.el : {};
-        let elements = this.confirmOrRegisterElements(selectors, {});
-        let render = _view && _view.render
-            ? (model) => {
-                elements = this.confirmOrRegisterElements(selectors, elements);
-                _view.render(model);
-                dynamicEvents(model);
-            }
-            : () =>{};
+        let render = _view && _view.render ? _view.render : () =>{};
 
         Object.assign(this, this.componentize(this.componentName, actions(model), render, model));
-        if (Object.keys(elements).length === 0 && elements.constructor === Object) {
-            viewInit(this, model);
-        } else {
-            viewInit(this, elements, model);
-        }
+        viewInit(this, model);
         
         if (componentizer.recorder && componentName !== "recorder") {
             componentizer.recorder.storeComponent(this, model);
@@ -99,15 +86,6 @@ Componentizer.Component = class Component {
                     console.error(`Error unhandled by component. Add a catch handler to your AJAX method.`);
                 }
             });
-    }
-
-    confirmOrRegisterElements(selectors, elements = {}) {
-        Object.keys(selectors).map((elName) => {
-            elements[elName] = elements[elName] && document.documentElement.contains(elements[elName][0])
-                ? elements[elName] = elements[elName]
-                : elements[elName] = $(selectors[elName]);
-        });
-        return elements;
     }
 };
 
