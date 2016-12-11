@@ -14,6 +14,18 @@
 		<div data-selector="user-list"></div>
 	</div>
 
+	<div>
+		<p>
+			To handle events on elements that will be added to the DOM after page load, simply use jQuery's delegation pattern, e.g.,
+		</p>
+		<code>
+			COMPONENT.on("click", "[data-selector=your-element]", actions.foo);
+		</code>
+		<p>
+			You can put this in your View.init with the rest of your event handlers.
+		</p>
+	</div>
+
 	<div data-component="modal" style="display: none;" class="modal">
 		<div class="modal-container">
 			<div data-selector="modal-content" class="modal-content"></div>

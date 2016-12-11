@@ -176,3 +176,5 @@ While encapsulation of UI code is important, your layout should not be completel
 ####[Example 5](/example5) - Interacting with other components
 In addition to being able to interact with other DOM elements, Components can also interact with each other with minimal effort.
 
+####[Example 6](/example6) - Dynamic elements
+Registering events with elements added to the DOM after page load.
