@@ -4,8 +4,11 @@
   "description": "A design pattern and micro-framework for creating JS components",
   "main": "componentizer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src -d dist"
+    "clean": "rimraf ./dist && mkdir dist",
+    "test": "ava",
+    "build": "babel src -d dist",
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "all": "yarn run flow && yarn run test && yarn run clean && yarn run build && yarn run test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -19,8 +22,11 @@
   "homepage": "https://github.com/brendan-jefferis/componentizer#readme",
   "dependencies": {},
   "devDependencies": {
+    "ava": "^0.17.0",
     "babel-cli": "^6.18.0",
-    "babel-polyfill": "^6.20.0",
-    "babel-preset-latest": "^6.16.0"
+    "babel-plugin-transform-flow-strip-types": "^6.18.0",
+    "babel-preset-latest": "^6.16.0",
+    "flow-bin": "^0.36.0",
+    "rimraf": "^2.5.4"
   }
 }
