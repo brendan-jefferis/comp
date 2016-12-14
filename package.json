@@ -7,7 +7,7 @@
     "clean": "rimraf ./dist && mkdir dist",
     "test": "ava",
     "build": "babel src -d dist",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "flow": "flow",
     "all": "yarn run flow && yarn run test && yarn run clean && yarn run build && yarn run test -- --watch"
   },
   "repository": {
