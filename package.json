@@ -1,32 +1,43 @@
 {
   "name": "componentizer",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "description": "A design pattern and micro-framework for creating JS components",
   "main": "componentizer.js",
   "scripts": {
-    "clean": "rimraf ./dist && mkdir dist",
-    "test": "ava",
-    "build": "babel src -d dist",
-    "flow": "flow",
-    "all": "yarn run flow && yarn run test && yarn run clean && yarn run build && yarn run test -- --watch"
+    "test": "ava src/**/*.spec.js",
+    "test:watch": "yarn run test -- --watch",
+    "clean-dist": "rimraf ./dist && mkdir dist",
+    "prebuild": "yarn run clean-dist",
+    "build:min": "webpack --config webpack.config.min.js",
+    "build:dev": "webpack --config webpack.config.dev.js",
+    "build:watch": "yarn build:dev -- --watch",
+    "build": "npm-run-all -p build:dev build:min",
+    "prestart": "babel-node tools/devStartMessage.js",
+    "start": "npm-run-all -p test:watch build:watch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brendan-jefferis/componentizer.git"
   },
   "author": "Brendan Jefferis",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/brendan-jefferis/componentizer/issues"
   },
   "homepage": "https://github.com/brendan-jefferis/componentizer#readme",
-  "dependencies": {},
+  "dependencies": {
+    "babel-polyfill": "~6.20.0",
+    "jquery": "3.1.1"
+  },
   "devDependencies": {
-    "ava": "^0.17.0",
+    "ava": "~0.17.0",
     "babel-cli": "^6.18.0",
-    "babel-plugin-transform-flow-strip-types": "^6.18.0",
+    "babel-core": "^6.21.0",
+    "babel-loader": "~6.2.10",
     "babel-preset-latest": "^6.16.0",
-    "flow-bin": "^0.36.0",
-    "rimraf": "^2.5.4"
+    "chalk": "^1.1.3",
+    "npm-run-all": "~3.1.2",
+    "rimraf": "~2.5.4",
+    "webpack": "2.2.0-rc.1"
   }
 }

@@ -3,7 +3,7 @@
  */
 Example6 = window.Example6 || {};
 
-Example6.Modal = {}
+Example6.Modal = {};
 
 Example6.Modal.Actions = (model) => {
 
@@ -30,7 +30,7 @@ Example6.Modal.View = () => {
     const BUTTON_CLOSE = COMPONENT.find("[data-selector=button-close]");
 
     return {
-        init: (actions, model) => {
+        init: (actions) => {
             COMPONENT.children().on("click", (e) => { e.stopPropagation(); });
             COMPONENT.on("click", actions.close);
             BUTTON_CLOSE.on("click", actions.close);

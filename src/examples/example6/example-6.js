@@ -1,3 +1,5 @@
+import comp from "src/componentizer";
+
 window.Example6 = {};
 
 Example6.Actions = (model) => {
@@ -75,4 +77,9 @@ Example6.View = () => {
 			}
 		}
 	}
-}
+};
+
+comp.create("example6", Example6.Actions, Example6.View, {
+    apiUrl: "https://jsonplaceholder.typicode.com",
+    users: []
+});
