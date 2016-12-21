@@ -72,32 +72,28 @@
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-
 class Componentizer {
-
-    createRecorder(actions, view = ()=>{}) {
-        let path = window.location.pathname;
-        let model = {
-            pageLoadTimestamp: Date.now(),
-            steps: [],
-            components: {},
-            recording: true,
-            sessionName: path.substr(1, path.indexOf('.')-1).split('/').join('_')
-        };
-        this.recorder = new Componentizer.Component("recorder", actions, view, model);
+    constructor() {
+        this.components = {};
     }
+    // createRecorder(actions, view = ()=>{}) {
+    //     let path = window.location.pathname;
+    //     let model = {
+    //         pageLoadTimestamp: Date.now(),
+    //         steps: [],
+    //         components: {},
+    //         recording: true,
+    //         sessionName: path.substr(1, path.indexOf('.')-1).split('/').join('_')
+    //     };
+    //     this.recorder = new Componentizer.Component("recorder", actions, view, model);
+    // }
 
     create(componentName, actions, view = ()=>{}, model = {}) {
-        if (this.components === undefined) {
-            this.components = {};
-        }
         this.components[componentName] = new Componentizer.Component(componentName, actions, view, model);
     }
 }
-/* harmony export (immutable) */ exports["default"] = Componentizer;
-;
 
-Componentizer.Component = class Component {
+Componentizer.Component = class {
     constructor (componentName, actions, view, model) {
         if (componentName == null || componentName === "") {
             throw new Error("Your component needs a name");
@@ -114,15 +110,15 @@ Componentizer.Component = class Component {
         let viewInit = _view && _view.init ? _view.init : () => {};
         let render = _view && _view.render ? _view.render : () =>{};
 
-        Object.assign(this, this.componentize(this.componentName, actions(model), render, model));
+        Object.assign(this, this.componentize(actions(model), render, model));
         viewInit(this, model);
 
-        if (componentizer.recorder && componentName !== "recorder") {
-            componentizer.recorder.storeComponent(this, model);
-        }
+        // if (componentizer.recorder && componentName !== "recorder") {
+        //     componentizer.recorder.storeComponent(this, model);
+        // }
     }
 
-    componentize(componentName, actions, render, model) {
+    componentize(actions, render, model) {
         render(model);
         let component = {};
         Object.keys(actions).map((action) => {
@@ -130,9 +126,9 @@ Componentizer.Component = class Component {
 
                 let returnValue = actions[action].apply(actions, args);
 
-                if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
-                    componentizer.recorder.recordStep(componentName, model, action, args);
-                }
+                // if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
+                //     componentizer.recorder.recordStep(componentName, model, action, args);
+                // }
 
                 if (returnValue && returnValue.then) {
                     this.handlePromise(returnValue, render);
@@ -160,7 +156,12 @@ Componentizer.Component = class Component {
                 }
             });
     }
-};
+}
+
+const comp = new Componentizer();
+Object.freeze(comp);
+
+/* harmony default export */ exports["default"] = comp;
 
 /***/ }
 /******/ ]);

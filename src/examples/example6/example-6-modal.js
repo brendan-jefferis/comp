@@ -1,7 +1,6 @@
-/**
- * Created by bjefferis on 23/11/2016.
- */
-Example6 = window.Example6 || {};
+import comp from "../../componentizer";
+
+window.Example6 = window.Example6 ? window.Example6 : {};
 
 Example6.Modal = {};
 
@@ -48,3 +47,5 @@ Example6.Modal.View = () => {
         }
     };
 };
+
+comp.create("modal", Example6.Modal.Actions, Example6.Modal.View);

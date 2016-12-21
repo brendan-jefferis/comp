@@ -1,6 +1,6 @@
-import comp from "src/componentizer";
+import comp from "../../componentizer"
 
-window.Example6 = {};
+window.Example6 = window.Example6 ? window.Example6 : {};
 
 Example6.Actions = (model) => {
 
@@ -67,8 +67,11 @@ Example6.View = () => {
 		init: (actions, model) => {
 			BUTTON.on("click", actions.getUsers);
 			COMPONENT.on("click", "[data-selector=show-user-details]", (e) => {
-				var user = model.users.find((x) => { return x.id === parseInt(e.currentTarget.getAttribute("data-user-id"), 10); });
-				_comp.components.modal.show(renderUserDetails(user));
+				const user = model.users.find((x) => { return x.id === parseInt(e.currentTarget.getAttribute("data-user-id"), 10); });
+
+				if (comp.components.modal) {
+                    comp.components.modal.show(renderUserDetails(user));
+                }
 			});
 		},
 		render: (model) => {
