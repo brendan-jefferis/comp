@@ -4,7 +4,7 @@
   "description": "A design pattern and micro-framework for creating JS components",
   "main": "componentizer.js",
   "scripts": {
-    "test": "ava src/**/*.spec.js",
+    "test": "ava",
     "test:watch": "yarn run test -- --watch",
     "clean-dist": "rimraf ./dist && mkdir dist",
     "prebuild": "yarn run clean-dist",
@@ -36,6 +36,7 @@
     "babel-core": "^6.21.0",
     "babel-loader": "~6.2.10",
     "babel-preset-latest": "^6.16.0",
+    "babel-register": "~6.18.0",
     "chalk": "^1.1.3",
     "css-loader": "^0.26.1",
     "node-sass": "^4.1.1",
@@ -44,5 +45,18 @@
     "sass-loader": "^4.1.0",
     "style-loader": "^0.13.1",
     "webpack": "2.2.0-rc.1"
+  },
+  "ava": {
+    "files": [
+      "src/**/*.spec.js"
+    ],
+    "source": [
+      "src/**/*.js",
+      "!dist/**/*"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
   }
 }
