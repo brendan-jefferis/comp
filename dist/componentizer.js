@@ -156,7 +156,7 @@ Componentizer.Component = class {
                 }
             });
     }
-}
+};
 
 const comp = new Componentizer();
 Object.freeze(comp);
