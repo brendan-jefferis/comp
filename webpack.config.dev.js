@@ -7,5 +7,10 @@ module.exports = {
     output: {
         path: path.resolve(__dirname),
         filename: "componentizer.js"
-    }
+    },
+    module: {
+        loaders: [
+            { test: /\.js$/, use: "babel-loader?cacheDirectory=true", exclude: /node_modules/ }
+        ]
+    },
 };

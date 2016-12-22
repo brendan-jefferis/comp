@@ -68,10 +68,19 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-class Componentizer {
-    constructor() {
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Componentizer = function () {
+    function Componentizer() {
+        _classCallCheck(this, Componentizer);
+
         this.components = {};
     }
     // createRecorder(actions, view = ()=>{}) {
@@ -86,27 +95,37 @@ class Componentizer {
     //     this.recorder = new Componentizer.Component("recorder", actions, view, model);
     // }
 
-    create(componentName, actions, view = ()=>{}, model = {}) {
-        this.components[componentName] = new Componentizer.Component(componentName, actions, view, model);
-    }
-}
+    _createClass(Componentizer, [{
+        key: "create",
+        value: function create(componentName, actions) {
+            var view = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
+            var model = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
-Componentizer.Component = class {
-    constructor (componentName, actions, view, model) {
+            this.components[componentName] = new Componentizer.Component(componentName, actions, view, model);
+        }
+    }]);
+
+    return Componentizer;
+}();
+
+Componentizer.Component = function () {
+    function _class(componentName, actions, view, model) {
+        _classCallCheck(this, _class);
+
         if (componentName == null || componentName === "") {
             throw new Error("Your component needs a name");
         }
 
         if (actions == null) {
-            const example = "// It must be a function that takes a model and returns an object of functions, e.g.\r\n\r\nYourComponent.Actions = function (model) {\r\n    return {\r\n        sayHello: () { console.log('Hi.'); },\r\n        greet: (name) { console.log('Hello, ' + name); }\r\n    }\r\n}";
-            throw new Error(`${componentName} needs some actions! Here's an example of an Actions function:\r\n\r\n${example}\r\n\r\n`);
+            var example = "// It must be a function that takes a model and returns an object of functions, e.g.\r\n\r\nYourComponent.Actions = function (model) {\r\n    return {\r\n        sayHello: () { console.log('Hi.'); },\r\n        greet: (name) { console.log('Hello, ' + name); }\r\n    }\r\n}";
+            throw new Error(componentName + " needs some actions! Here's an example of an Actions function:\r\n\r\n" + example + "\r\n\r\n");
         }
 
         this.componentName = componentName;
 
-        let _view = view && view();
-        let viewInit = _view && _view.init ? _view.init : () => {};
-        let render = _view && _view.render ? _view.render : () =>{};
+        var _view = view && view();
+        var viewInit = _view && _view.init ? _view.init : function () {};
+        var render = _view && _view.render ? _view.render : function () {};
 
         Object.assign(this, this.componentize(actions(model), render, model));
         viewInit(this, model);
@@ -116,53 +135,64 @@ Componentizer.Component = class {
         // }
     }
 
-    componentize(actions, render, model) {
-        render(model);
-        let component = {};
-        Object.keys(actions).map((action) => {
-            component[action] = (...args) => {
+    _createClass(_class, [{
+        key: "componentize",
+        value: function componentize(actions, render, model) {
+            var _this = this;
 
-                let returnValue = actions[action].apply(actions, args);
+            render(model);
+            var component = {};
+            Object.keys(actions).map(function (action) {
+                component[action] = function () {
+                    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                        args[_key] = arguments[_key];
+                    }
 
-                // if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
-                //     componentizer.recorder.recordStep(componentName, model, action, args);
-                // }
+                    var returnValue = actions[action].apply(actions, args);
 
-                if (returnValue && returnValue.then) {
-                    this.handlePromise(returnValue, render);
-                }
-                render(model);
-            }
-        }, this);
-        component.get = (prop) => model[prop];
-        return component;
-    }
+                    // if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
+                    //     componentizer.recorder.recordStep(componentName, model, action, args);
+                    // }
 
-    handlePromise(promise, render) {
-        promise
-            .then((updatedModel)=> {
+                    if (returnValue && returnValue.then) {
+                        _this.handlePromise(returnValue, render);
+                    }
+                    render(model);
+                };
+            }, this);
+            component.get = function (prop) {
+                return model[prop];
+            };
+            return component;
+        }
+    }, {
+        key: "handlePromise",
+        value: function handlePromise(promise, render) {
+            promise.then(function (updatedModel) {
                 if (updatedModel == null) {
                     throw new Error("No model received: aborting render");
                 }
                 render(updatedModel);
-            })
-            .catch((err) => {
+            }).catch(function (err) {
                 if (typeof err === "string") {
                     console.error(err);
                 } else {
-                    console.error(`Error unhandled by component. Add a catch handler to your AJAX method.`);
+                    console.error("Error unhandled by component. Add a catch handler to your AJAX method.");
                 }
             });
-    }
-};
+        }
+    }]);
 
-const comp = new Componentizer();
+    return _class;
+}();
+
+var comp = new Componentizer();
 Object.freeze(comp);
 
-if(typeof module !== "undefined" && typeof module.exports !== "undefined") {
-    exports = module.exports = comp
+if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+    exports = module.exports = comp;
 } else {
-    window.comp = comp
+    window.comp = comp;
 }
 
 /***/ }
