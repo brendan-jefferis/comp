@@ -16,6 +16,15 @@ I use jQuery in the examples for DOM manipulation but it's not required by Compo
 <script src="componentizer.js"></script>
 ```
 
+#####Or install locally to your project with npm/yarn
+
+```
+npm install @brendan-jefferis/componentizer -S
+
+or
+
+yarn add @brendan-jefferis/componentizer
+```
 
 #####Declare your component
 
