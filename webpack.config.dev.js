@@ -5,7 +5,7 @@ module.exports = {
         app: path.resolve(__dirname, "src/componentizer.js")
     },
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname),
         filename: "componentizer.js"
     }
 };
