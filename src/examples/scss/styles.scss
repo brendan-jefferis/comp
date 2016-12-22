@@ -1,0 +1,63 @@
+* { box-sizing: border-box; }
+
+body {
+  font-family: sans-serif;
+}
+
+a {
+  color: blue;
+}
+
+[data-component] {
+  border: 1px dotted #ccc;
+  margin: 10px;
+  padding: 10px;
+
+  h6 {
+    color: #aaa;
+    font-size: 10px;
+    margin: 0;
+  }
+}
+
+.modal {
+  border: none;
+  margin: 0;
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0, 0, 0, .5);
+  top: 0;
+  left: 0;
+
+  .modal-container {
+    background: #fff;
+    position: absolute;
+    top: 20%;
+    transform: translate(50%);
+    min-width: 320px;
+    width: 50%;
+    box-shadow: 0 6px 20px rgba(50, 50, 50, .2);
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+
+  .modal-content {
+    margin-bottom: 30px;
+  }
+}
+
+.validation {
+  font-size: 10px;
+  color: crimson;
+}
+
+.error-message {
+  background: crimson;
+  color: #fff;
+  padding: 10px;
+  border-radius: 2px;
+  display: none;
+}

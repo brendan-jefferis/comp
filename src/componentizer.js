@@ -1,37 +1,32 @@
-/**
- * Created by bjefferis on 23/11/2016.
- */
-
 class Componentizer {
-
-    createRecorder(actions, view = ()=>{}) {
-        let path = window.location.pathname;
-        let model = {
-            pageLoadTimestamp: Date.now(),
-            steps: [],
-            components: {},
-            recording: true,
-            sessionName: path.substr(1, path.indexOf('.')-1).split('/').join('_')
-        };
-        this.recorder = new Componentizer.Component("recorder", actions, view, model);
+    constructor() {
+        this.components = {};
     }
+    // createRecorder(actions, view = ()=>{}) {
+    //     let path = window.location.pathname;
+    //     let model = {
+    //         pageLoadTimestamp: Date.now(),
+    //         steps: [],
+    //         components: {},
+    //         recording: true,
+    //         sessionName: path.substr(1, path.indexOf('.')-1).split('/').join('_')
+    //     };
+    //     this.recorder = new Componentizer.Component("recorder", actions, view, model);
+    // }
 
     create(componentName, actions, view = ()=>{}, model = {}) {
-        if (this.components === undefined) {
-            this.components = {};
-        }
         this.components[componentName] = new Componentizer.Component(componentName, actions, view, model);
     }
-};
+}
 
-Componentizer.Component = class Component {
+Componentizer.Component = class {
     constructor (componentName, actions, view, model) {
         if (componentName == null || componentName === "") {
             throw new Error("Your component needs a name");
         }
 
         if (actions == null) {
-            var example = "// It must be a function that takes a model and returns an object of functions, e.g.\r\n\r\nYourComponent.Actions = function (model) {\r\n    return {\r\n        sayHello: () { console.log('Hi.'); },\r\n        greet: (name) { console.log('Hello, ' + name); }\r\n    }\r\n}"
+            const example = "// It must be a function that takes a model and returns an object of functions, e.g.\r\n\r\nYourComponent.Actions = function (model) {\r\n    return {\r\n        sayHello: () { console.log('Hi.'); },\r\n        greet: (name) { console.log('Hello, ' + name); }\r\n    }\r\n}";
             throw new Error(`${componentName} needs some actions! Here's an example of an Actions function:\r\n\r\n${example}\r\n\r\n`);
         }
 
@@ -41,15 +36,15 @@ Componentizer.Component = class Component {
         let viewInit = _view && _view.init ? _view.init : () => {};
         let render = _view && _view.render ? _view.render : () =>{};
 
-        Object.assign(this, this.componentize(this.componentName, actions(model), render, model));
+        Object.assign(this, this.componentize(actions(model), render, model));
         viewInit(this, model);
-        
-        if (componentizer.recorder && componentName !== "recorder") {
-            componentizer.recorder.storeComponent(this, model);
-        }
+
+        // if (componentizer.recorder && componentName !== "recorder") {
+        //     componentizer.recorder.storeComponent(this, model);
+        // }
     }
 
-    componentize(componentName, actions, render, model) {
+    componentize(actions, render, model) {
         render(model);
         let component = {};
         Object.keys(actions).map((action) => {
@@ -57,9 +52,9 @@ Componentizer.Component = class Component {
 
                 let returnValue = actions[action].apply(actions, args);
 
-                if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
-                    componentizer.recorder.recordStep(componentName, model, action, args);
-                }
+                // if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
+                //     componentizer.recorder.recordStep(componentName, model, action, args);
+                // }
 
                 if (returnValue && returnValue.then) {
                     this.handlePromise(returnValue, render);
@@ -89,4 +84,11 @@ Componentizer.Component = class Component {
     }
 };
 
-window.componentizer = window._comp = new Componentizer();
+const comp = new Componentizer();
+Object.freeze(comp);
+
+if(typeof module !== "undefined" && typeof module.exports !== "undefined") {
+    exports = module.exports = comp
+} else {
+    window.comp = comp
+}
