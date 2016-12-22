@@ -68,10 +68,8 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class Componentizer {
     constructor() {
         this.components = {};
@@ -161,7 +159,11 @@ Componentizer.Component = class {
 const comp = new Componentizer();
 Object.freeze(comp);
 
-/* harmony default export */ exports["default"] = comp;
+if(typeof module !== "undefined" && typeof module.exports !== "undefined") {
+    exports = module.exports = comp
+} else {
+    window.comp = comp
+}
 
 /***/ }
 /******/ ]);

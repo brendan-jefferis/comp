@@ -87,11 +87,8 @@ Componentizer.Component = class {
 const comp = new Componentizer();
 Object.freeze(comp);
 
-if (typeof exports !== 'undefined') {
-    if(typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = comp
-    }
-}
-else {
+if(typeof module !== "undefined" && typeof module.exports !== "undefined") {
+    exports = module.exports = comp
+} else {
     window.comp = comp
 }
