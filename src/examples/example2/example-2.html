@@ -10,8 +10,8 @@
 
 	<div data-component="example-2">
 		<p>
-			<label id="example-2-your-name">Enter your name</label>
-			<input type="text" for="example-2-your-name" data-selector="example-2-your-name">
+			<label for="example-2-your-name">Enter your name</label>
+			<input type="text" id="example-2-your-name" data-selector="example-2-your-name">
 			<button data-selector="example-2-clear">Clear</button>
 		</p>
 
@@ -19,11 +19,7 @@
 	</div>
 
 	<script src="../lib/jquery-3.1.1.min.js"></script>
-	<script src="../src/componentizer.js"></script>
+	<script src="../../componentizer.js"></script>
 	<script src="example-2.js"></script>
-
-	<script>
-		_comp.create("example2", Example2.Actions, Example2.View/*, { name: "Jim" }*/);
-	</script>
 
 </body>

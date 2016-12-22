@@ -28,11 +28,9 @@ Example5.Modal.View = () => {
     const BUTTON_CLOSE = COMPONENT.find("[data-selector=button-close]");
 
     return {
-        init: (actions, model) => {
+        init: (actions) => {
             COMPONENT.children().on("click", (e) => { e.stopPropagation(); });
-            COMPONENT.on("click", (e) => {
-                actions.close();
-            });
+            COMPONENT.on("click", actions.close);
             BUTTON_CLOSE.on("click", actions.close);
         },
         render: (model) => {
@@ -48,3 +46,8 @@ Example5.Modal.View = () => {
         }
     };
 };
+
+comp.create("modal", Example5.Modal.Actions, Example5.Modal.View, {
+    content: "",
+    showModal: false
+});

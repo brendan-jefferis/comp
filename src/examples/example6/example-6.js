@@ -1,5 +1,3 @@
-import comp from "../../componentizer"
-
 window.Example6 = window.Example6 ? window.Example6 : {};
 
 Example6.Actions = (model) => {

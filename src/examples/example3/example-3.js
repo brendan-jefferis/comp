@@ -62,7 +62,7 @@ Example3.JQuery.View = () => {
                     $("<hr/>")
                 )
             : "";
-    };
+    }
 
     return {
         init: (actions) => {
@@ -111,12 +111,12 @@ Example3.ES6.Actions = (model) => {
                     }
                 }, 800);
             })
-            .catch((result) => {
+            .catch(() => {
                 model.errorMessage = "Error: less than 5";
                 return model;
             })
-            .then((model) => {
-                return model;
+            .then((result) => {
+                return result;
             });
         },
         clear: () => {
@@ -133,7 +133,7 @@ Example3.ES6.View = () => {
     const ERROR_MESSAGE = COMPONENT.find("[data-selector=es6-error-message]");
 
     return {
-        init: (actions, model) => {
+        init: (actions) => {
             BUTTON_GET_NUMBER.on("click", actions.getRandomNumber);
         },
         render: (model) => {
@@ -148,3 +148,11 @@ Example3.ES6.View = () => {
         }
     };
 };
+
+comp.create("example3JQuery", Example3.JQuery.Actions, Example3.JQuery.View, {
+    apiUrl: "https://jsonplaceholder.typicode.com",
+    posts: [],
+    errorMessage: ""
+});
+
+comp.create("example3ES6", Example3.ES6.Actions, Example3.ES6.View);

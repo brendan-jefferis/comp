@@ -42,3 +42,5 @@ Example1.View = () => {
         }
     };
 };
+
+comp.create("example1", Example1.Actions, Example1.View);

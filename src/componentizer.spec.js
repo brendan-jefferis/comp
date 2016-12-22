@@ -22,7 +22,10 @@ const Mock = {
             //             model.asyncNum = asyncNum;
             //             model.renderCalled = false;
             //             res(model);
-            //         }, 1);
+            //         }, 1000);
+            //     })
+            //     .then(result => {
+            //         return result;
             //     });
             // }
         }
@@ -103,11 +106,11 @@ test("View.render should be called after each action is called", t => {
     t.is(result, true);
 });
 
-test.todo("Should call View.render after async action complete"/*, t => {
+test.todo("Should call View.render after async action complete"/*, async t => {
     comp.create("mock", Mock.Actions, Mock.View, model);
 
-    comp.components.mock.asyncAction(6);
-    const asyncNum = await comp.components.mock.get("asyncNum");
+    await comp.components.mock.asyncAction(6);
+    const asyncNum = comp.components.mock.get("asyncNum");
     //const renderCalled = comp.components.mock.get("renderCalled");
 
     t.is(asyncNum, 6);

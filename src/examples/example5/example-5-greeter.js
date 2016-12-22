@@ -46,7 +46,7 @@ Example5.Greeter.View = () => {
         init: (actions, model) => {
             INPUT_NAME.on("keyup", (e) => { actions.setName(e.currentTarget.value); });
             SELECT_GREETING.on("change", (e) => { actions.setGreeting(e.currentTarget.value); });
-            BUTTONS_SHOW_MODAL.on("click", (e) => { componentizer.components.modal.show(model.fullGreeting); });
+            BUTTONS_SHOW_MODAL.on("click", () => { comp.components.modal.show(model.fullGreeting); });
         },
         render: (model) => {
             GREETING.html(model.fullGreeting);
@@ -59,3 +59,9 @@ Example5.Greeter.View = () => {
         }
     };
 };
+
+comp.create("greeter", Example5.Greeter.Actions, Example5.Greeter.View, {
+    name: "",
+    greeting: "",
+    fullGreeting: ""
+});

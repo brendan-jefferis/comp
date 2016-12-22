@@ -16,28 +16,26 @@ Example2.Actions = (model) => {
 
 Example2.View = () => {
 
+    const COMPONENT = $("[data-component=example-2]");
+    const INPUT_NAME = COMPONENT.find("[data-selector=example-2-your-name]");
+    const OUTPUT = COMPONENT.find("[data-selector=example-2-output]");
+    const CLEAR_BUTTON = COMPONENT.find("[data-selector=example-2-clear]");
+    const DYNAMIC_BUTTON = COMPONENT.find("[data-selector=dyn-2]");
+    
     return {
-        el: {
-            COMPONENT: "[data-component=example-2]",
-            INPUT_NAME: "[data-selector=example-2-your-name]",
-            OUTPUT: "[data-selector=example-2-output]",
-            CLEAR_BUTTON: "[data-selector=example-2-clear]",
-            DYNAMIC_ELEMENT: "[data-selector=dyn-1]",
-            DYNAMIC_BUTTON: "[data-selector=dyn-2]",
+        init: (actions) => {
+            CLEAR_BUTTON.on("click", actions.clear);
+            INPUT_NAME.on("keyup", (e) => { actions.setName(e.currentTarget.value); });
+            DYNAMIC_BUTTON.on("click", actions.foo);
         },
-        init: (actions, model, el) => {
-            el.CLEAR_BUTTON.on("click", actions.clear);
-            el.INPUT_NAME.on("keyup", (e) => { actions.setName(e.currentTarget.value); });
-            el.DYNAMIC_BUTTON.on("click", actions.foo);
-        },
-        render: (model, el) => {
-            if (el.INPUT_NAME.val() !== model.name) {
-                el.INPUT_NAME.val(model.name);
+        render: (model) => {
+            if (INPUT_NAME.val() !== model.name) {
+                INPUT_NAME.val(model.name);
             }
-            el.CLEAR_BUTTON.prop("disabled", model.name == null || model.name === "");
+            CLEAR_BUTTON.prop("disabled", model.name == null || model.name === "");
 
             let greeting = (model.name != null && model.name !== "") ? `Hello ${model.name}` : "";
-            el.OUTPUT.html(greeting);
+            OUTPUT.html(greeting);
 
             if (model.foo) {
                 console.log(model.foo + " " + Date.now())
@@ -45,3 +43,5 @@ Example2.View = () => {
         }
     };
 };
+
+comp.create("example2", Example2.Actions, Example2.View, { name: "" });

@@ -41,3 +41,5 @@ Example4.View = () => {
         }
     }
 };
+
+comp.create("counter", Example4.Actions, Example4.View, { count: 0 });
