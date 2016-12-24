@@ -2,42 +2,32 @@ import test from "ava";
 import comp from "./componentizer.js";
 
 const model = {
-    num: 0,
-    asyncNum: 0,
-    initCalled: false,
-    renderCalled: false,
-    renderCalledAfterAction: false
+    num: 0
 };
 
 const Mock = {
     Actions: (model) => {
         return {
+            empty: () => {},
             double: (num) => { model.num = num * 2 },
-            setRenderCalledFalse: () => {
-                model.renderCalledAfterAction = false;
-            },
-            // asyncAction: (asyncNum) => {
-            //     return new Promise((res) => {
-            //         setTimeout(() => {
-            //             model.asyncNum = asyncNum;
-            //             model.renderCalled = false;
-            //             res(model);
-            //         }, 1000);
-            //     })
-            //     .then(result => {
-            //         return result;
-            //     });
-            // }
+            asyncAction: () => {
+                return new Promise((res) => {
+                    setTimeout(() => {
+                        res(model);
+                    }, 500);
+                })
+                .then(result => {
+                    return result;
+                });
+            }
         }
     },
     View: () => {
         return {
             init: (actions, model) => {
-                model.initCalled = true;
+                
             },
             render: (model) => {
-                model.renderCalled = true;
-                model.renderCalledAfterAction = true;
             }
         }
     }
@@ -45,7 +35,7 @@ const Mock = {
 
 test("Should throw error if no component name supplied", t => {
     const error = t.throws(() => {
-        comp.create(null, Mock.Actions, Mock.View)
+        comp.create(null, Mock.Actions)
     }, Error);
 
     t.is(error.message, "Your component needs a name");
@@ -60,13 +50,13 @@ test("Should throw error if no Actions supplied", t => {
 });
 
 test("Should store component by name in shared components object", t => {
-    comp.create("mock", Mock.Actions, Mock.View, model);
+    comp.create("mock", Mock.Actions, null, model);
 
     t.truthy(comp.components.mock);
 });
 
 test("Should be able to access model properties with getter function", t => {
-    comp.create("mock", Mock.Actions, Mock.View, model);
+    comp.create("mock", Mock.Actions, null, model);
 
     const result = comp.components.mock.get("num");
 
@@ -74,7 +64,7 @@ test("Should be able to access model properties with getter function", t => {
 });
 
 test("Should have public actions", t => {
-    comp.create("mock", Mock.Actions, Mock.View, model);
+    comp.create("mock", Mock.Actions, null, model);
 
     comp.components.mock.double(2);
 
@@ -82,36 +72,53 @@ test("Should have public actions", t => {
 });
 
 test("View.init should be called if present", t => {
-    comp.create("mock", Mock.Actions, Mock.View, model);
+    t.plan(1);
 
-    const result = comp.components.mock.get("initCalled");
-
-    t.is(result, true);
+    comp.create("mock", Mock.Actions, () => {
+        return {
+            init: model => {
+                t.pass();
+            }
+        }
+    }, model);
 });
 
 test("View.render should be called if present", t => {
-    comp.create("mock", Mock.Actions, Mock.View, model);
+    t.plan(1);
 
-    const result = comp.components.mock.get("renderCalled");
-
-    t.is(result, true);
+    comp.create("mock", Mock.Actions, () => {
+        return {
+            render: model => {
+                t.pass();
+            }
+        }
+    }, model);
 });
 
 test("View.render should be called after each action is called", t => {
-    comp.create("mock", Mock.Actions, Mock.View, model);
+    t.plan(2);
 
-    comp.components.mock.setRenderCalledFalse();
-    const result = comp.components.mock.get("renderCalledAfterAction");
+    comp.create("mock", Mock.Actions, () => {
+        return {
+            render: model => {
+                t.pass();
+            }
+        }
+    }, model);
 
-    t.is(result, true);
+    comp.components.mock.empty();
 });
 
-test.todo("Should call View.render after async action complete"/*, async t => {
-    comp.create("mock", Mock.Actions, Mock.View, model);
+test("Should call View.render after async action complete", t => {
+    t.plan(2);
 
-    await comp.components.mock.asyncAction(6);
-    const asyncNum = comp.components.mock.get("asyncNum");
-    //const renderCalled = comp.components.mock.get("renderCalled");
+    comp.create("mock", Mock.Actions, () => {
+        return {
+            render: model => {
+                t.pass();
+            }
+        }
+    }, model);
 
-    t.is(asyncNum, 6);
-}*/);
+    comp.components.mock.asyncAction();
+});
