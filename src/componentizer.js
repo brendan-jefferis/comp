@@ -34,9 +34,9 @@ Componentizer.Component = class {
 
         let _view = view && view();
         let viewInit = _view && _view.init ? _view.init : () => {};
-        let render = _view && _view.render ? _view.render : () =>{};
+        let viewRender = _view && _view.render ? _view.render : () => {};
 
-        Object.assign(this, this.componentize(actions(model), render, model));
+        Object.assign(this, this.componentize(actions(model), viewRender, model));
         viewInit(this, model);
 
         // if (componentizer.recorder && componentName !== "recorder") {

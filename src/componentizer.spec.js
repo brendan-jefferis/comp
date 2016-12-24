@@ -21,15 +21,6 @@ const Mock = {
                 });
             }
         }
-    },
-    View: () => {
-        return {
-            init: (actions, model) => {
-                
-            },
-            render: (model) => {
-            }
-        }
     }
 };
 
@@ -42,11 +33,13 @@ test("Should throw error if no component name supplied", t => {
 });
 
 test("Should throw error if no Actions supplied", t => {
+    t.plan(2);
+
     const error = t.throws(() => {
         comp.create("mock")
     });
 
-    t.is(error.message.substr(0, 24), "mock needs some actions!")
+    t.is(error.message.substr(0, 24), "mock needs some actions!");
 });
 
 test("Should store component by name in shared components object", t => {
@@ -71,6 +64,12 @@ test("Should have public actions", t => {
     t.is(comp.components.mock.get("num"), 4);
 });
 
+test("View.init should be optional", t => {
+    t.notThrows(() => {
+        comp.create("mock", Mock.Actions, null, model);
+    });
+});
+
 test("View.init should be called if present", t => {
     t.plan(1);
 
@@ -79,8 +78,16 @@ test("View.init should be called if present", t => {
             init: model => {
                 t.pass();
             }
-        }
+        };
     }, model);
+});
+
+test("View.render should be optional", t => {
+    t.notThrows(() => {
+        comp.create("mock", Mock.Actions, () => {
+            return {};
+        });
+    });
 });
 
 test("View.render should be called if present", t => {
