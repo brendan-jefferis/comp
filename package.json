@@ -2,13 +2,13 @@
   "name": "@brendan-jefferis/componentizer",
   "version": "1.0.0-beta.5",
   "description": "A design pattern and micro-framework for creating JS components",
-  "main": "componentizer.js",
+  "main": "comp.js",
   "engines": {
     "node": ">=4.4.0"
   },
   "files": [
-    "componentizer.js",
-    "componentizer.min.js"
+    "comp.js",
+    "comp.min.js"
   ],
   "scripts": {
     "test": "ava",
