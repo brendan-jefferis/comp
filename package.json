@@ -15,11 +15,11 @@
     "test:watch": "yarn run test -- --watch",
     "sass-compile": "node-sass ./src/examples/scss/ -o ./src/examples/css/ --source-map true --output-style compressed",
     "sass-compile:watch": "yarn run sass-compile && yarn run sass-compile -- --watch ./src/examples/scss/",
-    "build:min": "webpack --config webpack.config.min.js",
-    "build:dev": "webpack --config webpack.config.dev.js",
-    "build:min:watch": "webpack --config webpack.config.min.js -- --watch",
+    "build:min": "babel src/comp.js --out-file comp.min.js --presets=babili --source-maps",
+    "build:dev": "babel src/comp.js --out-file comp.js",
+    "build:min:watch": "yarn run build:min -- --watch",
     "build:dev:watch": "yarn run build:dev -- --watch",
-    "build:watch": "npm-run-all build:dev:watch build:min:watch",
+    "build:watch": "npm-run-all -p build:dev:watch build:min:watch",
     "build": "npm-run-all -p build:dev build:min",
     "prestart": "babel-node tools/devStartMessage.js",
     "start": "npm-run-all -p test:watch sass-compile:watch build:watch"
@@ -39,12 +39,11 @@
     "ava": "~0.17.0",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",
-    "babel-loader": "~6.2.10",
+    "babel-preset-babili": "^0.0.9",
     "babel-preset-latest": "^6.16.0",
     "chalk": "^1.1.3",
     "node-sass": "^4.1.1",
-    "npm-run-all": "~3.1.2",
-    "webpack": "2.2.0-rc.1"
+    "npm-run-all": "~3.1.2"
   },
   "ava": {
     "files": [

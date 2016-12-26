@@ -1,85 +1,12 @@
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
-/******/ 			return installedModules[moduleId].exports;
-
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-
-
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ function(module, exports, __webpack_require__) {
-
 "use strict";
-
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Componentizer = function () {
-    function Componentizer() {
-        _classCallCheck(this, Componentizer);
+var Comp = function () {
+    function Comp() {
+        _classCallCheck(this, Comp);
 
         this.components = {};
     }
@@ -92,32 +19,32 @@ var Componentizer = function () {
     //         recording: true,
     //         sessionName: path.substr(1, path.indexOf('.')-1).split('/').join('_')
     //     };
-    //     this.recorder = new Componentizer.Component("recorder", actions, view, model);
+    //     this.recorder = new Component("recorder", actions, view, model);
     // }
 
-    _createClass(Componentizer, [{
+    _createClass(Comp, [{
         key: "create",
         value: function create(componentName, actions) {
             var view = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
             var model = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
-            this.components[componentName] = new Componentizer.Component(componentName, actions, view, model);
+            this.components[componentName] = new Component(componentName, actions, view, model);
         }
     }]);
 
-    return Componentizer;
+    return Comp;
 }();
 
-Componentizer.Component = function () {
-    function _class(componentName, actions, view, model) {
-        _classCallCheck(this, _class);
+var Component = function () {
+    function Component(componentName, actions, view, model) {
+        _classCallCheck(this, Component);
 
         if (componentName == null || componentName === "") {
             throw new Error("Your component needs a name");
         }
 
         if (actions == null) {
-            var example = "// It must be a function that takes a model and returns an object of functions, e.g.\r\n\r\nYourComponent.Actions = function (model) {\r\n    return {\r\n        sayHello: () { console.log('Hi.'); },\r\n        greet: (name) { console.log('Hello, ' + name); }\r\n    }\r\n}";
+            var example = "// It must be a function that takes a model and returns an object of functions, e.g.\r\n\r\nYourComponent.Actions = function (model) {\r\n    return {\r\n        sayHello: function () { console.log('Hi.'); },\r\n        greet: function (name) { console.log('Hello, ' + name); }\r\n    }\r\n}";
             throw new Error(componentName + " needs some actions! Here's an example of an Actions function:\r\n\r\n" + example + "\r\n\r\n");
         }
 
@@ -125,9 +52,9 @@ Componentizer.Component = function () {
 
         var _view = view && view();
         var viewInit = _view && _view.init ? _view.init : function () {};
-        var render = _view && _view.render ? _view.render : function () {};
+        var viewRender = _view && _view.render ? _view.render : function () {};
 
-        Object.assign(this, this.componentize(actions(model), render, model));
+        Object.assign(this, this.componentize(actions(model), viewRender, model));
         viewInit(this, model);
 
         // if (componentizer.recorder && componentName !== "recorder") {
@@ -135,7 +62,7 @@ Componentizer.Component = function () {
         // }
     }
 
-    _createClass(_class, [{
+    _createClass(Component, [{
         key: "componentize",
         value: function componentize(actions, render, model) {
             var _this = this;
@@ -183,17 +110,16 @@ Componentizer.Component = function () {
         }
     }]);
 
-    return _class;
+    return Component;
 }();
 
-var comp = new Componentizer();
-Object.freeze(comp);
+var comp = new Comp();
 
-if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
-    exports = module.exports = comp;
+if (typeof exports != 'undefined' && !exports.nodeType) {
+    if (typeof module != 'undefined' && !module.nodeType && module.exports) {
+        exports = module.exports = comp;
+    }
+    exports.comp = comp;
 } else {
     window.comp = comp;
 }
-
-/***/ }
-/******/ ]);

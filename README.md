@@ -13,7 +13,7 @@ I use jQuery in the examples for DOM manipulation but it's not required by Compo
 #####Add the library to your html
 
 ```
-<script src="componentizer.js"></script>
+<script src="comp.js"></script>
 ```
 
 #####Or install locally to your project with npm/yarn
@@ -131,7 +131,7 @@ Your page should now look something like this
 	    <button data-selector="say-hello">Say Hello</button>
 	</div>
 
-	<script src="componentizer.js"></script>
+	<script src="comp.js"></script>
 
 	<script>
 		YourComponent = {};

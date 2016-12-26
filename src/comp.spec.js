@@ -1,5 +1,5 @@
 import test from "ava";
-import comp from "./componentizer.js";
+import comp from "./comp.js";
 
 const model = {
     num: 0
@@ -75,7 +75,7 @@ test("View.init should be called if present", t => {
 
     comp.create("mock", Mock.Actions, () => {
         return {
-            init: model => {
+            init: () => {
                 t.pass();
             }
         };
@@ -95,7 +95,7 @@ test("View.render should be called if present", t => {
 
     comp.create("mock", Mock.Actions, () => {
         return {
-            render: model => {
+            render: () => {
                 t.pass();
             }
         }
@@ -107,7 +107,7 @@ test("View.render should be called after each action is called", t => {
 
     comp.create("mock", Mock.Actions, () => {
         return {
-            render: model => {
+            render: () => {
                 t.pass();
             }
         }
@@ -121,7 +121,7 @@ test("Should call View.render after async action complete", t => {
 
     comp.create("mock", Mock.Actions, () => {
         return {
-            render: model => {
+            render: () => {
                 t.pass();
             }
         }
