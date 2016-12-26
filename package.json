@@ -1,6 +1,6 @@
 {
   "name": "@brendan-jefferis/componentizer",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "A design pattern and micro-framework for creating JS components",
   "main": "componentizer.js",
   "engines": {
