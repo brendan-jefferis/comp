@@ -90,7 +90,6 @@ if (typeof exports != 'undefined' && !exports.nodeType) {
     if (typeof module != 'undefined' && !module.nodeType && module.exports) {
         exports = module.exports = comp;
     }
-    exports.comp = comp;
 } else {
     window.comp = comp;
 }
