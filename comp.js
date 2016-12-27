@@ -67,7 +67,11 @@ var Component = function () {
         value: function componentize(actions, render, model) {
             var _this = this;
 
-            render(model);
+            var html = render(model);
+            var cachedHtml = html;
+            if (typeof document !== "undefined" && html) {
+                document.querySelector("[data-component=" + this.componentName + "]").innerHTML = html;
+            }
             var component = {};
             Object.keys(actions).map(function (action) {
                 component[action] = function () {
@@ -84,12 +88,20 @@ var Component = function () {
                     if (returnValue && returnValue.then) {
                         _this.handlePromise(returnValue, render);
                     }
-                    render(model);
+                    html = render(model);
+                    if (typeof document !== "undefined" && html && html !== cachedHtml) {
+                        document.querySelector("[data-component=" + _this.componentName + "]").innerHTML = html;
+                        cachedHtml = html;
+                    }
                 };
             }, this);
             component.get = function (prop) {
                 return model[prop];
             };
+
+            if (typeof document !== "undefined") {
+                this.registerEventDelegation(this.componentName, component);
+            }
             return component;
         }
     }, {
@@ -107,6 +119,70 @@ var Component = function () {
                     console.error("Error unhandled by component. Add a catch handler to your AJAX method.");
                 }
             });
+        }
+    }, {
+        key: "registerEventDelegation",
+        value: function registerEventDelegation(name, actions) {
+            var componentHtmlTarget = document.querySelector("[data-component=" + name + "]");
+            if (componentHtmlTarget === null) {
+                return;
+            }
+
+            Object.keys(Event.prototype).map(function (ev, i) {
+                var _this2 = this;
+
+                if (i >= 10 && i <= 19) {
+                    componentHtmlTarget.addEventListener(ev.toLowerCase(), function (e) {
+                        var target = _this2.getTarget(e);
+                        var action = _this2.getAction(e, target);
+                        if (actions[action.name] == null) {
+                            return;
+                        }
+
+                        if (action.args === "") {
+                            actions[action.name]();
+                        } else {
+                            actions[action.name].apply(action, action.args);
+                        }
+                    });
+                }
+            }, this);
+        }
+    }, {
+        key: "getTarget",
+        value: function getTarget(e) {
+            e = e || window.event;
+            return e.target || e.srcElement;
+        }
+    }, {
+        key: "getAction",
+        value: function getAction(e, target) {
+            var actionStr = target.dataset[e.type] || "";
+
+            return {
+                name: this.getActionName(actionStr),
+                args: this.extractArgs(actionStr, target)
+            };
+        }
+    }, {
+        key: "getActionName",
+        value: function getActionName(actionStr) {
+            var nameResult = actionStr.match(/[^(]*/);
+            return nameResult ? nameResult[0] : "";
+        }
+    }, {
+        key: "extractArgs",
+        value: function extractArgs(actionStr, target) {
+            var args = /\(\s*([^)]+?)\s*\)/.exec(actionStr);
+            if (!args || args[1] == null) {
+                return "";
+            }
+
+            args = args[1].split(/\s*,\s*/).map(function (arg) {
+                return arg.match(/(value)/) ? this.value : arg;
+            }, target);
+
+            return args;
         }
     }]);
 

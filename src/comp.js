@@ -45,7 +45,11 @@ class Component {
     }
 
     componentize(actions, render, model) {
-        render(model);
+        let html = render(model);
+        let cachedHtml = html;
+        if (typeof document !== "undefined" && html) {
+            document.querySelector(`[data-component=${this.componentName}]`).innerHTML = html;
+        }
         let component = {};
         Object.keys(actions).map((action) => {
             component[action] = (...args) => {
@@ -59,10 +63,18 @@ class Component {
                 if (returnValue && returnValue.then) {
                     this.handlePromise(returnValue, render);
                 }
-                render(model);
+                html = render(model);
+                if (typeof document !== "undefined" && html && html !== cachedHtml) {
+                    document.querySelector(`[data-component=${this.componentName}]`).innerHTML = html;
+                    cachedHtml = html;
+                }
             }
         }, this);
         component.get = (prop) => model[prop];
+
+        if (typeof document !== "undefined") {
+            this.registerEventDelegation(this.componentName, component);
+        }
         return component;
     }
 
@@ -81,6 +93,63 @@ class Component {
                     console.error(`Error unhandled by component. Add a catch handler to your AJAX method.`);
                 }
             });
+    }
+
+    registerEventDelegation(name, actions) {
+        const componentHtmlTarget = document.querySelector(`[data-component=${name}]`);
+        if (componentHtmlTarget === null) {
+            return;
+        }
+
+        Object.keys(Event.prototype).map(function (ev, i) {
+            if (i >= 10 && i <= 19) {
+                componentHtmlTarget.addEventListener(ev.toLowerCase(), e => {
+                    const target = this.getTarget(e);
+                    const action = this.getAction(e, target);
+                    if (actions[action.name] == null) {
+                        return;
+                    }
+
+                    if (action.args === "") {
+                        actions[action.name]();
+                    } else {
+                        actions[action.name].apply(action, action.args);
+                    }
+                });
+            }
+        }, this);
+    }
+
+    getTarget(e) {
+        e = e || window.event;
+        return e.target || e.srcElement;
+    }
+
+    getAction(e, target) {
+        const actionStr = target.dataset[e.type] || "";
+
+        return {
+            name: this.getActionName(actionStr),
+            args: this.extractArgs(actionStr, target)
+        }
+    }
+
+    getActionName(actionStr) {
+        const nameResult = actionStr.match(/[^(]*/);
+        return nameResult ? nameResult[0] : "";
+    }
+
+    extractArgs(actionStr, target) {
+        let args = /\(\s*([^)]+?)\s*\)/.exec(actionStr);
+        if (!args || args[1] == null) {
+            return "";
+        }
+
+        args = args[1].split(/\s*,\s*/).map(function (arg) {
+            return arg.match(/(value)/) ? this.value : arg;
+        }, target);
+
+        return args;
     }
 }
 
