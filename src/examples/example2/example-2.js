@@ -2,8 +2,7 @@ Example2 = {};
 
 const model = {
     name: "b",
-    num: 0,
-    message: "waiting.."
+    num: 0
 };
 
 Example2.Actions = (model) => {
@@ -35,11 +34,10 @@ Example2.View = () => {
                         <option value="5">5</option>
                     </select>
                     <label for="example-2-your-name">Enter your name</label>
-                    <input type="text" id="example-2-your-name" data-keyup="setName(this.value)" value="${model.name}">
+                    <input type="text" id="example-2-your-name" data-change="setName(this.value)" value="${model.name}">
                     <button data-click="clear">Clear</button>
                 </p>
 
-                <h4>${model.message}</h4>
                 <h1>${model.name} ${model.num}</h1>
             `
         }

@@ -70,7 +70,10 @@ var Component = function () {
             var html = render(model);
             var cachedHtml = html;
             if (typeof document !== "undefined" && html) {
-                document.querySelector("[data-component=" + this.componentName + "]").innerHTML = html;
+                var target = document.querySelector("[data-component=" + this.componentName + "]");
+                if (target) {
+                    target.innerHTML = html;
+                }
             }
             var component = {};
             Object.keys(actions).map(function (action) {
@@ -90,8 +93,11 @@ var Component = function () {
                     }
                     html = render(model);
                     if (typeof document !== "undefined" && html && html !== cachedHtml) {
-                        document.querySelector("[data-component=" + _this.componentName + "]").innerHTML = html;
-                        cachedHtml = html;
+                        var _target = document.querySelector("[data-component=" + _this.componentName + "]");
+                        if (_target) {
+                            _target.innerHTML = html;
+                            cachedHtml = html;
+                        }
                     }
                 };
             }, this);

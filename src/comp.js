@@ -48,7 +48,10 @@ class Component {
         let html = render(model);
         let cachedHtml = html;
         if (typeof document !== "undefined" && html) {
-            document.querySelector(`[data-component=${this.componentName}]`).innerHTML = html;
+            let target = document.querySelector(`[data-component=${this.componentName}]`);
+            if (target) {
+                target.innerHTML = html;
+            }
         }
         let component = {};
         Object.keys(actions).map((action) => {
@@ -65,8 +68,11 @@ class Component {
                 }
                 html = render(model);
                 if (typeof document !== "undefined" && html && html !== cachedHtml) {
-                    document.querySelector(`[data-component=${this.componentName}]`).innerHTML = html;
-                    cachedHtml = html;
+                    let target = document.querySelector(`[data-component=${this.componentName}]`);
+                    if (target) {
+                        target.innerHTML = html;
+                        cachedHtml = html;
+                    }
                 }
             }
         }, this);
