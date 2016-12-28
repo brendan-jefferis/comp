@@ -1,11 +1,31 @@
 Recorder = {};
 
+// createRecorder(actions, view = ()=>{}) {
+//     let path = window.location.pathname;
+//     let model = {
+//         pageLoadTimestamp: Date.now(),
+//         steps: [],
+//         components: {},
+//         recording: true,
+//         sessionName: path.substr(1, path.indexOf('.')-1).split('/').join('_')
+//     };
+//     this.recorder = new Component("recorder", actions, view, model);
+// }
+
+// if (componentizer.recorder && componentName !== "recorder") {
+//     componentizer.recorder.storeComponent(this, model);
+// }
+
+// if (componentizer.recorder && componentName !== "recorder" && componentizer.recorder.get("recording")) {
+//     componentizer.recorder.recordStep(componentName, model, action, args);
+// }
+
 Recorder.Actions = (model) => {
 
 	function runStep(step) {
 		let component = model.components[step.componentName];
         component[step.action].apply(component, step.args);
-	};
+	}
 
 	return {
 		replay: () => {

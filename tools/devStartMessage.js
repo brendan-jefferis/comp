@@ -1,30 +1,10 @@
-import chalk from "chalk";
+const chalk = require("chalk");
 
 console.log(chalk.green(`
-${chalk.blue("╔═╗┌─┐┌┬┐┌─┐")}            		    O_
-${chalk.blue("║  │ ││││├─┘")}	                        /  >
-${chalk.blue("╚═╝└─┘┴ ┴┴o")} 	                       -  >   ^\\
-				     /   >  ^ /   
-				    (O)  > ^ /   / / /  
-       _____                        |            \\|//
-      /  __ \\                      _/      /     / _/
-     /  /  | |                    /       /     / /
-   _/  |___/ /			_/      ------_/ / 
- ==_|  \\____/    	      _/       /  ______/
-     \\   \\                 __/           |\\
-      |   \\_          ____/              / \\      _                    
-       \\    \\________/                  |\\  \\----/_V
-        \\_                              / \\_______ V
-          \\__                /       \\ /          V
-             \\               \\        \\
-              \\______         \\_       \\
-                     \\__________\\_      \\ 
-                        /    /    \\_    | 
-                       |   _/       \\   |
-                      /  _/          \\  |
-                     |  /            |  |
-                     \\  \\__          |   \\__
-                     /\\____=\\       /\\_____=\\
+${chalk.blue("____ ____ _  _ ___")}
+${chalk.blue(`|___ [__] |\\/| |--' . v${process.env.npm_package_version}`)}
+
+${chalk.blue(process.env.npm_package_description)}
 
 ${chalk.yellow("Running in dev mode...")}
 `));
