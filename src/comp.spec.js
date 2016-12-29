@@ -195,14 +195,4 @@ test("Should write to target element if rendered HTML has changed", t => {
     t.is(title.innerHTML, "New title");
 });
 
-test("Should not write to target element if rendered HTML has not changed", t => {
-    const c = t.context;
-    const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
-
-    const target = document.querySelector("[data-component=mock]");
-    target.appendChild(document.createElement("em"));
-    mock.setTitle("Mock title");
-    const extra = target.querySelector("em");
-
-    t.is(extra.tagName, "EM");
-});
+test.todo("Should retain focused element after render");

@@ -7,7 +7,7 @@ Example1.Actions = (model) => {
     console.groupEnd();
 
     return {
-        randomNumber: () => {
+        randomNumber() {
             console.group("Actions");
             console.log(`Calling actions.randomNumber`);
             model.number = Math.floor(Math.random()* 10 + 1);
@@ -28,13 +28,13 @@ Example1.View = () => {
     const OUTPUT = COMPONENT.find("[data-selector=example-1-output]");
 
     return {
-        init: (actions) => {
+        init(actions) {
             console.group("View");
             console.log("View init called... this is called once, after your component has been created");
             console.groupEnd();
             BUTTON_FOO.on("click", actions.randomNumber);
         },
-        render: (model) => {
+        render(model) {
             console.group("View");
             console.log("View render called... this is called on page load, then every time the model is updated");
             console.groupEnd();
@@ -43,4 +43,4 @@ Example1.View = () => {
     };
 };
 
-comp.create("example1", Example1.Actions, Example1.View);
+window.comp.create("example1", Example1.Actions, Example1.View, { number: 0 });

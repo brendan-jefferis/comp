@@ -1,4 +1,5 @@
 import * as compEvents from "./comp-events";
+import setDom from "set-dom";
 
 const components = {};
 
@@ -50,14 +51,18 @@ function create(name, actions, view, model) {
 
     let _view = view && view();
     let viewInit = _view && _view.init ? _view.init : () => {};
-    let cachedViewHtml = "";
     let viewRender = _view && _view.render
         ? (_model) => {
-            const html = _view.render(_model);
-            if (typeof document !== "undefined" && html && html !== cachedViewHtml) {
+            const htmlString = _view.render(_model);
+            if (typeof document !== "undefined" && htmlString) {
                 let target = document.querySelector(`[data-component=${name}]`);
                 if (target) {
-                    target.innerHTML = cachedViewHtml = html;
+                    let container = document.createElement("div");
+                    container.innerHTML = htmlString;
+                    if (target.firstChild === null) {
+                        target.appendChild(document.createElement("div"));
+                    }
+                    setDom(target.firstChild, container.innerHTML);
                 }
             }
         }
