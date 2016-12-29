@@ -22,6 +22,17 @@ test.beforeEach(t => {
                 setTitle(title) {
                     model.title = title;
                 },
+                asyncSetTitle(title) {
+                    return new Promise((res) => {
+                        setTimeout(() => {
+                            model.tile = title;
+                            res(model);
+                        }, 500);
+                    })
+                    .then(result => {
+                        return result;
+                    });
+                },
                 asyncAction() {
                     return new Promise((res) => {
                         setTimeout(() => {
@@ -195,5 +206,3 @@ test("Should not write to target element if rendered HTML has not changed", t =>
 
     t.is(extra.tagName, "EM");
 });
-
-test.todo("Should write to target element if rendered HTML has changed for async actions");

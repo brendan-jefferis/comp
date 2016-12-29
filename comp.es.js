@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/componentizer/issues
 *
-* Date: 2016-12-28T23:25:47.887Z 
+* Date: 2016-12-29T00:06:29.277Z 
 */
 function registerEventDelegator(component) {
     var componentHtmlTarget = document.querySelector("[data-component=" + component.name + "]");
@@ -80,14 +80,7 @@ var compEvents = Object.freeze({
 var components = {};
 
 function componentize(name, actions, render, model) {
-    var html = render(model);
-    var cachedHtml = html;
-    if (typeof document !== "undefined" && html) {
-        var target = document.querySelector("[data-component=" + name + "]");
-        if (target) {
-            target.innerHTML = html;
-        }
-    }
+    render(model);
     var component = {};
     Object.keys(actions).map(function (action) {
         component[action] = function () {
@@ -100,14 +93,7 @@ function componentize(name, actions, render, model) {
             if (returnValue && returnValue.then) {
                 handlePromise(returnValue, render);
             }
-            html = render(model);
-            if (typeof document !== "undefined" && html && html !== cachedHtml) {
-                var _target = document.querySelector("[data-component=" + name + "]");
-                if (_target) {
-                    _target.innerHTML = html;
-                    cachedHtml = html;
-                }
-            }
+            render(model);
         };
     }, this);
     component.name = name;
@@ -144,7 +130,16 @@ function create(name, actions, view, model) {
 
     var _view = view && view();
     var viewInit = _view && _view.init ? _view.init : function () {};
-    var viewRender = _view && _view.render ? _view.render : function () {};
+    var cachedViewHtml = "";
+    var viewRender = _view && _view.render ? function (_model) {
+        var html = _view.render(_model);
+        if (typeof document !== "undefined" && html && html !== cachedViewHtml) {
+            var target = document.querySelector("[data-component=" + name + "]");
+            if (target) {
+                target.innerHTML = cachedViewHtml = html;
+            }
+        }
+    } : function () {};
 
     var component = componentize(name, actions(model), viewRender, model);
     components[name] = component;

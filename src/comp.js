@@ -3,14 +3,7 @@ import * as compEvents from "./comp-events";
 const components = {};
 
 function componentize(name, actions, render, model) {
-    let html = render(model);
-    let cachedHtml = html;
-    if (typeof document !== "undefined" && html) {
-        let target = document.querySelector(`[data-component=${name}]`);
-        if (target) {
-            target.innerHTML = html;
-        }
-    }
+    render(model);
     let component = {};
     Object.keys(actions).map((action) => {
         component[action] = (...args) => {
@@ -20,14 +13,7 @@ function componentize(name, actions, render, model) {
             if (returnValue && returnValue.then) {
                 handlePromise(returnValue, render);
             }
-            html = render(model);
-            if (typeof document !== "undefined" && html && html !== cachedHtml) {
-                let target = document.querySelector(`[data-component=${name}]`);
-                if (target) {
-                    target.innerHTML = html;
-                    cachedHtml = html;
-                }
-            }
+            render(model);
         }
     }, this);
     component.name = name;
@@ -63,10 +49,19 @@ function create(name, actions, view, model) {
     }
 
     let _view = view && view();
-    let viewInit = _view && _view.init ? _view.init : () => {
-        };
-    let viewRender = _view && _view.render ? _view.render : () => {
-        };
+    let viewInit = _view && _view.init ? _view.init : () => {};
+    let cachedViewHtml = "";
+    let viewRender = _view && _view.render
+        ? (_model) => {
+            const html = _view.render(_model);
+            if (typeof document !== "undefined" && html && html !== cachedViewHtml) {
+                let target = document.querySelector(`[data-component=${name}]`);
+                if (target) {
+                    target.innerHTML = cachedViewHtml = html;
+                }
+            }
+        }
+        : () => {};
 
     let component = componentize(name, actions(model), viewRender, model);
     components[name] = component;
