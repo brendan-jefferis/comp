@@ -38,9 +38,11 @@ test.beforeEach(t => {
                     return `
                         <h1>${model.title}</h1>
                         <input type="text" data-change="setTitle(this.value)" value="${model.title}">
+                        <input type="checkbox" data-change="empty(this.checked)" checked>
                         <a data-click="setSum(2, 3)">Set sum</a>
                         <button data-click="clearTitle">Click</button>
                         <p data-click="unknownAction"></p>
+                        <h4 data-change="empty(this.innerHTML)">h4 text</h4>
                     `;
                 }
             }
@@ -133,14 +135,23 @@ test("Should extract action arguments from event", t => {
 
 test.todo("Should call action on delegated event");
 
-test("Should translate 'this.value' argument to correct element value", t => {
+test.todo("Should throw error if unknown action specified");
+
+test("Should extract element attribute values (e.g., this.value, this.innerHTML) from data-[event] arguments", t => {
     const c = t.context;
     const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
     const event = new MouseEvent("change");
-    const element = document.querySelector("input[type=text]");
-    element.value = "New title";
+    const input = document.querySelector("input[type=text]");
+    input.value = "New title";
+    const checkbox = document.querySelector("input[type=checkbox]");
+    const h4 = document.querySelector("h4");
 
-    const action = compEvents.getEventActionFromElement(event, element);
+    const inputAction = compEvents.getEventActionFromElement(event, input);
+    const checkboxAction = compEvents.getEventActionFromElement(event, checkbox);
+    const h4Action = compEvents.getEventActionFromElement(event, h4);
 
-    t.deepEqual(action.args, ["New title"]);
+    t.plan(3);
+    t.deepEqual(inputAction.args, ["New title"]);
+    t.deepEqual(checkboxAction.args, [true]);
+    t.deepEqual(h4Action.args, ["h4 text"]);
 });

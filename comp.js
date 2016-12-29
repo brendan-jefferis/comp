@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2016-12-29T19:54:52.293Z 
+* Date: 2016-12-29T20:00:21.156Z 
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -69,8 +69,8 @@ function extractArguments(str, target) {
     }
 
     args = args[1].split(/\s*,\s*/).map(function (arg) {
-        // TODO extract any element property
-        return arg.match(/(value)/) ? this.value : arg;
+        var attributeReference = /(this)(?:\.)(\w+)/ig.exec(arg);
+        return attributeReference != null && attributeReference[2] ? this[attributeReference[2]] : arg;
     }, target);
 
     return args;

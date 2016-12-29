@@ -51,8 +51,10 @@ export function extractArguments(str, target) {
     }
 
     args = args[1].split(/\s*,\s*/).map(function (arg) {
-        // TODO extract any element property
-        return arg.match(/(value)/) ? this.value : arg;
+        const attributeReference = /(this)(?:\.)(\w+)/ig.exec(arg);
+        return attributeReference != null && attributeReference[2]
+            ? this[attributeReference[2]]
+            : arg;
     }, target);
 
     return args;
