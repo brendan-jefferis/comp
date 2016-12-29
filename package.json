@@ -1,27 +1,23 @@
 {
   "name": "@brendan-jefferis/componentizer",
   "version": "1.0.0-beta.7",
-  "description": "A design pattern and micro-framework for creating JS components",
-  "main": "comp.js",
+  "description": "A design pattern and micro-framework for creating UI components",
+  "main": "comp.es.js",
   "engines": {
     "node": ">=4.4.0"
   },
   "files": [
-    "comp.js",
-    "comp.min.js"
+    "comp.es.js"
   ],
   "scripts": {
-    "test": "ava",
-    "test:watch": "yarn run test -- --watch",
+    "test": "nyc ava --verbose",
+    "test:watch": "ava --verbose --watch",
     "sass-compile": "node-sass ./src/examples/scss/ -o ./src/examples/css/ --source-map true --output-style compressed",
     "sass-compile:watch": "yarn run sass-compile && yarn run sass-compile -- --watch ./src/examples/scss/",
-    "build:min": "babel src/comp.js --out-file comp.min.js --presets=babili --source-maps",
-    "build:dev": "babel src/comp.js --out-file comp.js",
-    "build:min:watch": "yarn run build:min -- --watch",
-    "build:dev:watch": "yarn run build:dev -- --watch",
-    "build:watch": "npm-run-all -p build:dev:watch build:min:watch",
-    "build": "npm-run-all -p build:dev build:min",
-    "prestart": "babel-node tools/devStartMessage.js",
+    "build": "rollup -c",
+    "postbuild": "uglifyjs comp.min.js -m --comments all -o comp.min.js --source-map comp.min.js.map",
+    "build:watch": "yarn run build -- --watch",
+    "prestart": "node tools/devStartMessage.js",
     "start": "npm-run-all -p test:watch sass-compile:watch build:watch"
   },
   "repository": {
@@ -37,13 +33,18 @@
   "dependencies": {},
   "devDependencies": {
     "ava": "~0.17.0",
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.21.0",
-    "babel-preset-babili": "^0.0.9",
+    "babel-preset-es2015-rollup": "^3.0.0",
     "babel-preset-latest": "^6.16.0",
+    "browser-env": "^2.0.19",
     "chalk": "^1.1.3",
     "node-sass": "^4.1.1",
-    "npm-run-all": "~3.1.2"
+    "npm-run-all": "~3.1.2",
+    "nyc": "^10.0.0",
+    "rollup": "^0.38.1",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-watch": "^2.5.0",
+    "sinon": "^1.17.6",
+    "uglify-js": "^2.7.5"
   },
   "ava": {
     "files": [
@@ -54,7 +55,8 @@
       "!dist/**/*"
     ],
     "require": [
-      "babel-register"
+      "babel-register",
+      "./src/helpers/setup-browser-env.js"
     ],
     "babel": "inherit"
   }

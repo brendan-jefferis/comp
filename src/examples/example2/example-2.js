@@ -1,47 +1,47 @@
 Example2 = {};
 
+const model = {
+    name: "b",
+    num: 0
+};
+
 Example2.Actions = (model) => {
     return {
         setName: (name) => {
             model.name = name;
         },
-        foo: () => {
-            model.foo = "yep";
+        setNumber: (num) => {
+            model.num = num;
         },
         clear: () => {
             model.name = "";
+            model.num = 0;
         }
     };
 };
 
 Example2.View = () => {
-
-    const COMPONENT = $("[data-component=example-2]");
-    const INPUT_NAME = COMPONENT.find("[data-selector=example-2-your-name]");
-    const OUTPUT = COMPONENT.find("[data-selector=example-2-output]");
-    const CLEAR_BUTTON = COMPONENT.find("[data-selector=example-2-clear]");
-    const DYNAMIC_BUTTON = COMPONENT.find("[data-selector=dyn-2]");
-    
     return {
-        init: (actions) => {
-            CLEAR_BUTTON.on("click", actions.clear);
-            INPUT_NAME.on("keyup", (e) => { actions.setName(e.currentTarget.value); });
-            DYNAMIC_BUTTON.on("click", actions.foo);
-        },
         render: (model) => {
-            if (INPUT_NAME.val() !== model.name) {
-                INPUT_NAME.val(model.name);
-            }
-            CLEAR_BUTTON.prop("disabled", model.name == null || model.name === "");
+            return `
+                <p>
+                    <label for="number">Choose a number</label>
+                    <select id="number" data-change="setNumber(this.value)">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="example-2-your-name">Enter your name</label>
+                    <input type="text" id="example-2-your-name" data-change="setName(this.value)" value="${model.name}">
+                    <button data-click="clear">Clear</button>
+                </p>
 
-            let greeting = (model.name != null && model.name !== "") ? `Hello ${model.name}` : "";
-            OUTPUT.html(greeting);
-
-            if (model.foo) {
-                console.log(model.foo + " " + Date.now())
-            }
+                <h1>${model.name} ${model.num}</h1>
+            `
         }
     };
 };
 
-comp.create("example2", Example2.Actions, Example2.View, { name: "" });
+comp.create("example2", Example2.Actions, Example2.View, model);

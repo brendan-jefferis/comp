@@ -10,12 +10,6 @@
 *
 * Date: 2016-12-29T00:06:29.277Z 
 */
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.comp = factory());
-}(this, (function () { 'use strict';
-
 function registerEventDelegator(component) {
     var componentHtmlTarget = document.querySelector("[data-component=" + component.name + "]");
     if (componentHtmlTarget === null) {
@@ -164,6 +158,4 @@ var comp = {
     create: create
 };
 
-return comp;
-
-})));
+export default comp;
