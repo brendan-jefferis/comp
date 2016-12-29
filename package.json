@@ -1,6 +1,6 @@
 {
-  "name": "@brendan-jefferis/componentizer",
-  "version": "1.0.0-beta.10",
+  "name": "comp",
+  "version": "1.0.1",
   "description": "A design pattern and micro-framework for creating UI components",
   "main": "comp.js",
   "engines": {
@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brendan-jefferis/componentizer.git"
+    "url": "git+https://github.com/brendan-jefferis/comp.git"
   },
   "author": "Brendan Jefferis",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/brendan-jefferis/componentizer/issues"
+    "url": "https://github.com/brendan-jefferis/comp/issues"
   },
-  "homepage": "https://github.com/brendan-jefferis/componentizer#readme",
+  "homepage": "https://github.com/brendan-jefferis/comp#readme",
   "dependencies": {},
   "devDependencies": {
     "ava": "~0.17.0",

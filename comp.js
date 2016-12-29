@@ -1,14 +1,14 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.0.0-beta.9
+*  |___ [__] |\/| |--' . v1.0.1
 * 
 * A design pattern and micro-framework for creating UI components
 *
 * Copyright Brendan Jefferis and other contributors
 * Released under the MIT license
 * 
-* Issues? Please visit https://github.com/brendan-jefferis/componentizer/issues
+* Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2016-12-29T00:45:50.497Z 
+* Date: 2016-12-29T01:03:43.166Z 
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -150,7 +150,7 @@ function create(name, actions, view, model) {
     var component = componentize(name, actions(model), viewRender, model);
     components[name] = component;
 
-    if (document != null && compEvents) {
+    if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
         component = registerEventDelegator(component);
     }
 

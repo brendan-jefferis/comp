@@ -66,7 +66,7 @@ function create(name, actions, view, model) {
     let component = componentize(name, actions(model), viewRender, model);
     components[name] = component;
 
-    if (document != null && compEvents) {
+    if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
         component = compEvents.registerEventDelegator(component);
     }
 
