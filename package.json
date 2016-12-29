@@ -1,13 +1,13 @@
 {
   "name": "@brendan-jefferis/componentizer",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "description": "A design pattern and micro-framework for creating UI components",
-  "main": "comp.es.js",
+  "main": "comp.js",
   "engines": {
     "node": ">=4.4.0"
   },
   "files": [
-    "comp.es.js"
+    "comp.js"
   ],
   "scripts": {
     "test": "nyc ava --verbose",

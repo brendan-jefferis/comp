@@ -22,10 +22,6 @@ export default {
             moduleName: "comp",
         },
         {
-            dest: "comp.es.js",
-            format: "es"
-        },
-        {
             dest: "comp.min.js",
             format: "umd",
             moduleName: "comp"
