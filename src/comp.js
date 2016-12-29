@@ -57,12 +57,11 @@ function create(name, actions, view, model) {
             if (typeof document !== "undefined" && htmlString) {
                 let target = document.querySelector(`[data-component=${name}]`);
                 if (target) {
-                    let container = document.createElement("div");
-                    container.innerHTML = htmlString;
-                    if (target.firstChild === null) {
+                    if (target.innerHTML === "") {
                         target.innerHTML = htmlString;
+                    } else {
+                        setDom(target.firstElementChild, htmlString);
                     }
-                    setDom(target.firstChild, container.innerHTML);
                 }
             }
         }

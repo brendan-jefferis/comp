@@ -500,12 +500,11 @@ function create(name, actions, view, model) {
         if (typeof document !== "undefined" && htmlString) {
             var target = document.querySelector("[data-component=" + name + "]");
             if (target) {
-                var container = document.createElement("div");
-                container.innerHTML = htmlString;
-                if (target.firstChild === null) {
+                if (target.innerHTML === "") {
                     target.innerHTML = htmlString;
+                } else {
+                    index(target.firstElementChild, htmlString);
                 }
-                index(target.firstChild, container.innerHTML);
             }
         }
     } : function () {};
