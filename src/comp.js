@@ -60,7 +60,7 @@ function create(name, actions, view, model) {
                     let container = document.createElement("div");
                     container.innerHTML = htmlString;
                     if (target.firstChild === null) {
-                        target.appendChild(document.createElement("div"));
+                        target.innerHTML = htmlString;
                     }
                     setDom(target.firstChild, container.innerHTML);
                 }
