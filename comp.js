@@ -1,5 +1,5 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.0.0-beta.8
+*  |___ [__] |\/| |--' . v1.0.0-beta.9
 * 
 * A design pattern and micro-framework for creating UI components
 *
@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/componentizer/issues
 *
-* Date: 2016-12-29T00:37:18.248Z 
+* Date: 2016-12-29T00:45:50.497Z 
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
