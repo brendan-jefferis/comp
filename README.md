@@ -5,6 +5,8 @@ A design pattern and micro-framework for creating UI components.
 
 Designed to be used instead of a framework, in cases where that might be overkill.
 
+> Warning: this is a work in progress and is not yet ready for use
+
 ###Features
 - Virtual dom diffing (using [set-dom](https://www.npmjs.com/package/set-dom))
 - Write declarative views with ES6 template strings (using [html-template-tag](https://www.npmjs.com/package/html-template-tag))
