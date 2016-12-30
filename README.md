@@ -1,7 +1,7 @@
 Comp.
 =====
 
-A design pattern and micro-framework for creating UI components
+A design pattern and micro-framework for creating UI components.
 
 Designed to be used instead of a framework, in cases where that might be overkill.
 
@@ -25,8 +25,9 @@ with a few key differences:
 - It currently doesn't use immutable data
 
 
-###Get started
-#####[Download comp](https://github.com/brendan-jefferis/comp/blob/master/comp.js) and add to your html
+Get started
+-----------
+####[Download comp](https://github.com/brendan-jefferis/comp/blob/master/comp.js) and add to your html
 Add a container div with a `data-component` attribute and give it a name.
 
 ```
@@ -35,7 +36,7 @@ Add a container div with a `data-component` attribute and give it a name.
 <script src="comp.js"></script>
 ```
 
-#####Or install locally to your project with npm/yarn
+####Or install locally to your project with npm/yarn
 
 ```
 npm install comp -S
@@ -47,8 +48,7 @@ yarn add comp
 
 Then add your import/require statement at the top of your `hello-world.js` file as usual
 
-
-#####Declare your component
+####Declare your component
 
 ```
 // hello-world.js
@@ -56,7 +56,7 @@ Then add your import/require statement at the top of your `hello-world.js` file 
 MyComponent = {};
 ```
 
-#####Declare a model and give it some defaults
+####Declare a model and give it some defaults
 This step is not required but highly recommended (it'll save a few lines of null-or-undefined checking later on)
 
 ```
@@ -67,7 +67,7 @@ var model = {
 };
 ```
 
-#####Add some Actions
+####Add some Actions
 
 ```
 // hello-world.js
@@ -85,7 +85,7 @@ This must be a function that takes a model and returns an object of functions (r
 
 These will be used exclusively for changing your model.
 
-#####Add a View
+####Add a View
 
 A Comp View is simply a function that returns a render method and an optional init method. init will be passed your
 actions, render will be passed your model and an HTML helper for working with ES6 template strings
@@ -112,7 +112,7 @@ MyComponent.View = function() {
 }
 ```
 
-#####Create your component
+####Create your component
 
 ```
 // hello-world.js
@@ -172,9 +172,10 @@ Your code should now look something like this..
 })();
 ```
 
-###Further details
+Further details
+---------------
 
-#####The Comp global object
+####The Comp global object
 Comp has a simple API:
 
 `components`    An object containing all components on the current page
@@ -193,13 +194,13 @@ access to any property on the component's model, e.g.
 comp.components.HelloWorld.get("greeting") // "Sup"
 ```
 
-#####Notes
+####Notes
 - Your component's name must match your HTML container's data-component attribute if you want to use ES6 string
   templates, virtual-dom diffing and event delegation
 - Currently, values passed as arguments are treated as strings - except for references to the element's attributes
   e.g., `<input type="text" data-change="setGreeting(this.value)">` - this works for any HTML element attribute
 - The event delegation adds a single event listener to the HTML container, and delegates events to child elements
-  that use the `data-[event]` attribute, e.g/. `data-click` `data-change` `data-keyup` etc
+  that use the `data-[event]` attribute, e.g., `data-click` `data-change` `data-keyup` etc
 
   The currently supported events are
     - `click`
@@ -213,9 +214,8 @@ comp.components.HelloWorld.get("greeting") // "Sup"
     - `select`
     - `change`
 
-```
 
-#####Writing a View with jQuery
+####Writing a View with jQuery
 
 Comp will call your View's render function, but doesn't care what's in it (unless it returns a template string as
 explained above). This means that you're free to implement your view code however you like.
