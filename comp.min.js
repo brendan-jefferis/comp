@@ -8,12 +8,12 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2016-12-29T20:00:21.156Z 
+* Date: 2016-12-29T21:00:15.116Z 
 */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.comp = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.comp = factory());
 }(this, (function () { 'use strict';
 
 function registerEventDelegator(component) {
@@ -442,6 +442,24 @@ function assert (val, msg) {
   if (!val) throw new Error('set-dom: ' + msg)
 }
 
+function unwrapExports (x) {
+	return x && x.__esModule ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var index$2 = createCommonjsModule(function (module, exports) {
+"use strict";Object.defineProperty(exports,"__esModule",{value:true});var chars={"&":"&amp;",">":"&gt;","<":"&lt;",'"':"&quot;","'":"&#39;","`":"&#96;"};var re=new RegExp(Object.keys(chars).join("|"),"g");exports["default"]=function(){var str=arguments.length<=0||arguments[0]===undefined?"":arguments[0];return String(str).replace(re,function(match){return chars[match]})};module.exports=exports["default"];
+});
+
+var index$1 = createCommonjsModule(function (module, exports) {
+"use strict";Object.defineProperty(exports,"__esModule",{value:true});function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{"default":obj}}var _htmlEs6cape=index$2;var _htmlEs6cape2=_interopRequireDefault(_htmlEs6cape);exports["default"]=function(literals){for(var _len=arguments.length,substs=Array(_len>1?_len-1:0),_key=1;_key<_len;_key++){substs[_key-1]=arguments[_key];}return literals.raw.reduce(function(acc,lit,i){var subst=substs[i-1];if(Array.isArray(subst)){subst=subst.join("");}else{subst=(0,_htmlEs6cape2["default"])(subst);}return acc+subst+lit})};module.exports=exports["default"];
+});
+
+var html = unwrapExports(index$1);
+
 var components = {};
 
 function componentize(name, actions, render, model) {
@@ -496,7 +514,7 @@ function create(name, actions, view, model) {
     var _view = view && view();
     var viewInit = _view && _view.init ? _view.init : function () {};
     var viewRender = _view && _view.render ? function (_model) {
-        var htmlString = _view.render(_model);
+        var htmlString = _view.render(_model, html);
         if (typeof document !== "undefined" && htmlString) {
             var target = document.querySelector("[data-component=" + name + "]");
             if (target) {

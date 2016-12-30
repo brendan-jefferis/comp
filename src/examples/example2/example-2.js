@@ -40,8 +40,8 @@ Example2.View = () => {
     }
 
     return {
-        render: (model) => {
-            return `
+        render: (model, html) => {
+            return html`
                 <div>
                     <p>
                         <label for="number">Choose a number</label>
@@ -51,7 +51,7 @@ Example2.View = () => {
                         </select>
                         <label for="example-2-your-name">Enter your name</label>
                         <input type="text" id="example-2-your-name" data-keyup="setName(this.value)" value="${model.name}">
-                        <button data-click="setOption(this.innerText)">Clear</button>
+                        <button data-click="clear">Clear</button>
                         
                         <ul>
                             ${model.list.map(i => renderListItemAsRadio(i, "list"))}

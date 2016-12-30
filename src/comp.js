@@ -1,5 +1,6 @@
 import * as compEvents from "./comp-events";
 import setDom from "set-dom";
+import html from "html-template-tag";
 
 const components = {};
 
@@ -53,7 +54,7 @@ function create(name, actions, view, model) {
     let viewInit = _view && _view.init ? _view.init : () => {};
     let viewRender = _view && _view.render
         ? (_model) => {
-            const htmlString = _view.render(_model);
+            const htmlString = _view.render(_model, html);
             if (typeof document !== "undefined" && htmlString) {
                 let target = document.querySelector(`[data-component=${name}]`);
                 if (target) {
