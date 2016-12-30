@@ -1,44 +1,81 @@
-Componentizer
-=============
+Comp.
+=====
 
-A design pattern + minimal library to convert your JS modules into reusable components.
+A design pattern and micro-framework for creating UI components
 
 Designed to be used instead of a framework, in cases where that might be overkill.
 
-No external dependencies, Componentizer code is around 3K.
+###Features
+- Virtual dom diffing (using [set-dom](https://www.npmjs.com/package/set-dom))
+- Write declarative views with ES6 template strings (using [html-template-tag](https://www.npmjs.com/package/html-template-tag))
+- Built-in event delegation
+- Lightweight and not overly opinionated
+- Components as siblings rather than parent/child with easy cross-component interop
+- Easy to learn, with very few proprietary concepts to remember
 
-I use jQuery in the examples for DOM manipulation but it's not required by Componentizer.
+###Architecture
+Comp borrows the model/update/view pattern and one-way data flow from the Elm Architecture and React/Flux,
+with a few key differences:
+
+- All Comp components are siblings (no nesting or parent/child relationships)
+- Actions (i.e., the "update" bit) are expressed with functions rather than a switch block
+- While model and state remain internal to each component, a component's Actions can be called
+  from external sources, e.g., other components, the console etc. This allow easy interop
+  between components and allows your layout to be more loosely-coupled to your logic.
+- It currently doesn't use immutable data
+
 
 ###Get started
-#####Add the library to your html
+#####[Download comp](https://github.com/brendan-jefferis/comp/blob/master/comp.js) and add to your html
+Add a container div with a `data-component` attribute and give it a name.
 
 ```
+<div data-component="HelloWorld"></div>
+
 <script src="comp.js"></script>
 ```
 
 #####Or install locally to your project with npm/yarn
 
 ```
-npm install @brendan-jefferis/componentizer -S
+npm install comp -S
 
 or
 
-yarn add @brendan-jefferis/componentizer
+yarn add comp
 ```
+
+Then add your import/require statement at the top of your `hello-world.js` file as usual
+
 
 #####Declare your component
 
 ```
-YourComponent = {};
+// hello-world.js
+
+MyComponent = {};
 ```
 
-#####Add an Actions module
+#####Declare a model and give it some defaults
+This step is not required but highly recommended (it'll save a few lines of null-or-undefined checking later on)
 
 ```
-YourComponent.Actions = function (model) {
+// hello-world.js
+
+var model = {
+    greeting: ""
+};
+```
+
+#####Add some Actions
+
+```
+// hello-world.js
+
+MyComponent.Actions = function (model) {
 	return {
-		sayHello: function() {
-			model.greeting = "Hello";
+		setGreeting: function(greeting) {
+			model.greeting = greeting || "";
 		}
 	}
 }
@@ -48,45 +85,143 @@ This must be a function that takes a model and returns an object of functions (r
 
 These will be used exclusively for changing your model.
 
-Componentizer will wrap each action with a function that ensures that your View's render is called after every action.
+#####Add a View
 
-#####Add a View module
+A Comp View is simply a function that returns a render method and an optional init method. init will be passed your
+actions, render will be passed your model and an HTML helper for working with ES6 template strings
 
-This must be a function that returns an object containing an init and a render function.
+Comp will ensure that the render function is called after every action.
 
 ```
-YourComponent.View = function() {
-	return {
-		init: function(actions) {
+// hello-world.js
 
-		},
-		render: function(model) {
-
-		}
-	}
+MyComponent.View = function() {
+    return {
+        init: (actions) {
+            // initialize some things here if you need to
+        },
+        render: (model, html) {
+            return html`
+                <div>
+                    <h1>${model.greeting} world</h1>
+                    <input type="text" data-keyup="setGreeting(this.value)">
+                </div>
+            `
+        }
+    }
 }
 ```
 
-init is called once, on creation of a new component and will be passed your actions. This is the ideal place to put your event listeners.
-
-render is called after an action is called. This is where you should put write-only DOM operations
-
-#####Add some HTML
+#####Create your component
 
 ```
-<div data-component="hello-world">
-	<h2 data-selector="greeting"></h2>
-	<button data-selector="say-hello">Say Hello</button>
-</div>
+// hello-world.js
+
+comp.create("HelloWorld", HelloWorld.Actions, HelloWorld.View, model);
 ```
 
-There's no real significance to using data-component and data-selector here - I just prefer using selectors like this as a convention over class or id for targeting DOM elements.
-
-
-#####Making it do stuff
+Your code should now look something like this..
 
 ```
-YourComponent.View = function() {
+// index.html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Hello World</title>
+    </head>
+    <body>
+
+        <div data-component="HelloWorld"></div>
+
+        <script src="comp.js"></script>
+        <script src="hello-world.js"></script>
+    </body>
+</html>
+```
+
+```
+// hello-world.js
+(function () {
+    let HelloWorld = {};
+
+    const model = {
+        greeting: "Hello"
+    };
+
+    HelloWorld.Actions = function(model) {
+        return {
+            setGreeting: function(greeting) {
+                model.greeting = greeting || "";
+            }
+        }
+    };
+
+    HelloWorld.View = function() {
+        return {
+            render: function(model, html) {
+                return html`
+                    <h1>${model.greeting} world!</h1>
+                    <input type="text" data-keyup="setGreeting(this.value)">
+                `;
+            }
+        }
+    };
+
+    comp.create("HelloWorld", HelloWorld.Actions, HelloWorld.View, model);
+})();
+```
+
+###Further details
+
+#####The Comp global object
+Comp has a simple API:
+
+`components`    An object containing all components on the current page
+`create(name, actions, view, model)` Creates a new component and adds it to components
+
+You can call a component's actions externally via the Comp global object like so:
+
+```
+comp.components.HelloWorld.setGreeting("Sup");
+```
+
+When a component is created, a special method is added to the list of actions called `get`, which allows read-only
+access to any property on the component's model, e.g.
+
+```
+comp.components.HelloWorld.get("greeting") // "Sup"
+```
+
+#####Notes
+- Your component's name must match your HTML container's data-component attribute if you want to use ES6 string
+  templates, virtual-dom diffing and event delegation
+- Currently, values passed as arguments are treated as strings - except for references to the element's attributes
+  e.g., `<input type="text" data-change="setGreeting(this.value)">` - this works for any HTML element attribute
+- The event delegation adds a single event listener to the HTML container, and delegates events to child elements
+  that use the `data-[event]` attribute, e.g/. `data-click` `data-change` `data-keyup` etc
+
+  The currently supported events are
+    - `click`
+    - `dblclick`
+    - `keydown`
+    - `keyup`
+    - `keypress`
+    - `dragdrop`
+    - `focus`
+    - `blur`
+    - `select`
+    - `change`
+
+```
+
+#####Writing a View with jQuery
+
+Comp will call your View's render function, but doesn't care what's in it (unless it returns a template string as
+explained above). This means that you're free to implement your view code however you like.
+
+```
+HelloWorld.View = function() {
 	const COMPONENT = document.querySelector("[data-component=hello-world]");
 
 	const BUTTON = COMPONENT.querySelector("[data-selector=say-hello]");
@@ -104,86 +239,3 @@ YourComponent.View = function() {
 	}
 }
 ```
-
-HTML elements that are present on page load can be stored in your View module and referred to in your init and render functions. Dynamic elements (i.e., elements that will be added after page load will be addressed later).
-
-Here we've hooked up an event listener to our button and added some render code to write to the DOM.
-
-#####Componentize it
-
-```
-componentizer.create("YourComponent", YourComponent.Actions, YourComponent.View, { greeting: "Goodbye" });
-```
-
-Turn your modules into a component, passing it a name, your Actions, your View and an (optional but recommended) initial model.
-
-Your page should now look something like this
-
-```
-<!DOCTYPE html>
-<head lang="en">
-	<meta charset="utf-8">
-	<title>Componentizer tutorial</title>
-</head>
-<body>
-	<div data-component="hello-world">
-	    <h2 data-selector="greeting"></h2>
-	    <button data-selector="say-hello">Say Hello</button>
-	</div>
-
-	<script src="comp.js"></script>
-
-	<script>
-		YourComponent = {};
-
-		YourComponent.Actions = function (model) {
-			return {
-				sayHello: function() {
-					model.greeting = "Hello";
-				}
-			}
-		}
-
-		YourComponent.View = function() {
-			const COMPONENT = document.querySelector("[data-component=hello-world]");
-
-			const BUTTON = COMPONENT.querySelector("[data-selector=say-hello]");
-			const GREETING = COMPONENT.querySelector("[data-selector=greeting]");
-
-			return {
-				init: function(actions) {
-					BUTTON.addEventListener("click", actions.sayHello);
-				},
-				render: function(model) {
-					if (model.greeting && model.greeting !== "") {
-						GREETING.innerHTML = model.greeting + " world";
-					}
-				}
-			}
-		}
-	</script>
-	<script>
-		componentizer.create("hello-world", YourComponent.Actions, YourComponent.View, { greeting: "Goodbye"});
-	</script>
-</body>
-```
-
-##Examples
-
-####[Example 1](/example1) - Core functionality
-Simplest implementation (with console log statements to demonstrate when key component functions are called)
-
-####[Example 2](/example1) - Simple component
-Basic read/write functionality. The state recorder is also introduced here.
-
-####[Example 3](/example3) - Async actions
-Componentizer will ensure that your view function is called when your jQuery AJAX or ES6 Promises are resolved.
-
-####[Example 4](/example4) - Interacting with external elements
-While encapsulation of UI code is important, your layout should not be completely restricted by your code design. All components have encapsulated state; publicly accessible logic (i.e., actions); and full write access to the DOM. This means we can avoid having to deal with parent-child relationships as all components are siblings.
-
-####[Example 5](/example5) - Interacting with other components
-In addition to being able to interact with other DOM elements, Components can also interact with each other with minimal effort.
-
-####[Example 6](/example6) - Dynamic elements
-Registering events with elements added to the DOM after page load.
