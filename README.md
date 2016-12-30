@@ -40,9 +40,10 @@ Add a container div with a `data-component` attribute and give it a name.
 
 ```
 npm install comp -S
-
+```
 or
 
+```
 yarn add comp
 ```
 
@@ -81,13 +82,13 @@ MyComponent.Actions = function (model) {
 }
 ```
 
-This must be a function that takes a model and returns an object of functions (referred to as actions).
+This must be a function that **takes a model** and **returns an object of functions** (referred to as actions).
 
 These will be used exclusively for changing your model.
 
 ####Add a View
 
-A Comp View is simply a function that returns a render method and an optional init method. init will be passed your
+A Comp View is simply a function that **returns a render method** and an optional init method. init will be passed your
 actions, render will be passed your model and an HTML helper for working with ES6 template strings
 
 Comp will ensure that the render function is called after every action.
@@ -179,6 +180,7 @@ Further details
 Comp has a simple API:
 
 `components`    An object containing all components on the current page
+
 `create(name, actions, view, model)` Creates a new component and adds it to components
 
 You can call a component's actions externally via the Comp global object like so:
@@ -197,7 +199,7 @@ comp.components.HelloWorld.get("greeting") // "Sup"
 ####Notes
 - Your component's name must match your HTML container's data-component attribute if you want to use ES6 string
   templates, virtual-dom diffing and event delegation
-- Currently, values passed as arguments are treated as strings - except for references to the element's attributes
+- Currently, values passed as arguments in a `data-[event]` attribute are treated as strings - except for references to the element's attributes, which will be treated as the actual values (not the literal string "this.value")
   e.g., `<input type="text" data-change="setGreeting(this.value)">` - this works for any HTML element attribute
 - The event delegation adds a single event listener to the HTML container, and delegates events to child elements
   that use the `data-[event]` attribute, e.g., `data-click` `data-change` `data-keyup` etc
@@ -218,7 +220,7 @@ comp.components.HelloWorld.get("greeting") // "Sup"
 ####Writing a View with jQuery
 
 Comp will call your View's render function, but doesn't care what's in it (unless it returns a template string as
-explained above). This means that you're free to implement your view code however you like.
+explained above). This means that you're free to implement your view code however you like. Here's an example using jQuery with manual event handling and DOM operations.
 
 ```
 HelloWorld.View = function() {
