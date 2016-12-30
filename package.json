@@ -12,7 +12,7 @@
   "scripts": {
     "test": "nyc ava --verbose",
     "test:watch": "ava --verbose --watch",
-    "sass-compile": "node-sass ./src/examples/scss/ -o ./src/examples/css/ --source-map true --output-style compressed",
+    "sass-compile": "node-sass ./examples/scss/ -o ./examples/css/ --source-map true --output-style compressed",
     "sass-compile:watch": "yarn run sass-compile && yarn run sass-compile -- --watch ./src/examples/scss/",
     "build": "rollup -c",
     "postbuild": "uglifyjs comp.min.js -m --comments all -o comp.min.js --source-map comp.min.js.map",
