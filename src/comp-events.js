@@ -51,10 +51,17 @@ export function extractArguments(str, target) {
     }
 
     args = args[1].split(/\s*,\s*/).map(function (arg) {
-        const attributeReference = /(this)(?:\.)(\w+)/ig.exec(arg);
-        return attributeReference != null && attributeReference[2]
-            ? this[attributeReference[2]]
-            : arg;
+        const argList = arg.split(".");
+        if (argList.length === 1 && argList.indexOf("this") === -1) {
+            return arg;
+        }
+
+        const dataset = (argList.indexOf("dataset") === 1)
+            ? Object.assign({}, target.dataset)
+            : null;
+
+        return dataset ? dataset[argList[2]] : target[argList[1]];
+
     }, target);
 
     return args;

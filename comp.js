@@ -1,5 +1,5 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.0.1
+*  |___ [__] |\/| |--' . v1.1.1
 * 
 * A design pattern and micro-framework for creating UI components
 *
@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2016-12-30T09:53:35.886Z 
+* Date: 2016-12-31T09:58:19.387Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -69,8 +69,14 @@ function extractArguments(str, target) {
     }
 
     args = args[1].split(/\s*,\s*/).map(function (arg) {
-        var attributeReference = /(this)(?:\.)(\w+)/ig.exec(arg);
-        return attributeReference != null && attributeReference[2] ? this[attributeReference[2]] : arg;
+        var argList = arg.split(".");
+        if (argList.length === 1 && argList.indexOf("this") === -1) {
+            return arg;
+        }
+
+        var dataset = argList.indexOf("dataset") === 1 ? Object.assign({}, target.dataset) : null;
+
+        return dataset ? dataset[argList[2]] : target[argList[1]];
     }, target);
 
     return args;
