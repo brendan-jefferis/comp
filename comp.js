@@ -8,13 +8,28 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2016-12-31T09:58:19.387Z 
+* Date: 2017-01-01T02:00:26.559Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global.comp = factory());
 }(this, (function () { 'use strict';
+
+function inspectSyntax(str) {
+    try {
+        new Function(str);
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            throw new SyntaxError(e);
+        }
+    }
+}
+
+function getEventTarget(event) {
+    event = event || window.event;
+    return event.target || event.srcElement;
+}
 
 function registerEventDelegator(component) {
     var componentHtmlTarget = document.querySelector("[data-component=" + component.name + "]");
@@ -25,17 +40,7 @@ function registerEventDelegator(component) {
     Object.keys(Event.prototype).map(function (ev, i) {
         if (i >= 10 && i <= 19) {
             componentHtmlTarget.addEventListener(ev.toLowerCase(), function (e) {
-                var target = getEventTarget(e);
-                var action = getEventActionFromElement(e, target);
-                if (component[action.name] == null) {
-                    return;
-                }
-
-                if (action.args === "") {
-                    component[action.name]();
-                } else {
-                    component[action.name].apply(action, action.args);
-                }
+                return delegateEvent(e, component, componentHtmlTarget);
             });
         }
     }, this);
@@ -43,17 +48,49 @@ function registerEventDelegator(component) {
     return component;
 }
 
-function getEventTarget(event) {
-    event = event || window.event;
-    return event.target || event.srcElement;
+function delegateEvent(e, component, componentHtmlTarget) {
+    var target = getEventTarget(e);
+    var action = getEventActionFromElement(e, target, componentHtmlTarget);
+    if (action.name === "") {
+        return;
+    }
+
+    if (component[action.name] == null) {
+        throw new Error("Could not find action " + action.name + " in component " + component.name);
+    }
+
+    if (action.args === "") {
+        component[action.name]();
+    } else {
+        component[action.name].apply(action, action.args);
+    }
 }
 
-function getEventActionFromElement(event, element) {
+function bubbleUntilActionFound(event, element, root) {
     var actionStr = element.getAttribute("data-" + [event.type]) || "";
+    if (actionStr !== "" || element === root) {
+        try {
+            inspectSyntax(actionStr, element);
+        } catch (e) {
+            var tempDiv = document.createElement("div");
+            tempDiv.appendChild(element.cloneNode(false));
+            throw new SyntaxError("\r\n\r\nElement: " + tempDiv.innerHTML + "\r\nEvent: data-" + [event.type] + "\r\nAction: " + actionStr + "\r\n\r\n" + e);
+        }
+        return {
+            name: actionStr,
+            element: element
+        };
+    }
+
+    return bubbleUntilActionFound(event, element.parentNode, root);
+}
+
+function getEventActionFromElement(event, element, root) {
+    var action = bubbleUntilActionFound(event, element, root);
 
     return {
-        name: extractActionName(actionStr),
-        args: extractArguments(actionStr, element)
+        name: extractActionName(action.name),
+        args: extractArguments(action.name, action.element)
     };
 }
 
@@ -84,7 +121,8 @@ function extractArguments(str, target) {
 
 var compEvents = Object.freeze({
 	registerEventDelegator: registerEventDelegator,
-	getEventTarget: getEventTarget,
+	delegateEvent: delegateEvent,
+	bubbleUntilActionFound: bubbleUntilActionFound,
 	getEventActionFromElement: getEventActionFromElement,
 	extractActionName: extractActionName,
 	extractArguments: extractArguments

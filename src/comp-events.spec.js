@@ -2,17 +2,15 @@ import test from "ava";
 import comp from "./comp";
 import * as compEvents from "./comp-events";
 
-// TODO use sinon to check if functions have been called
-
 test.beforeEach(t => {
     document.body.innerHTML = `<div data-component="mock"></div>`;
 
-    t.context.model = {
+    const model = {
         num: 0,
         title: "Mock title"
     };
 
-    t.context.Mock = {
+    const Mock = {
         Actions(model) {
             return {
                 empty() {},
@@ -39,20 +37,27 @@ test.beforeEach(t => {
                         <h1>${model.title}</h1>
                         <input type="text" data-change="setTitle(this.value)" value="${model.title}">
                         <input type="checkbox" data-change="empty(this.checked)" checked>
-                        <a data-click="setSum(2, 3)">Set sum</a>
+                        <a id="test-set-num" data-click="setSum(2, 3)">Set sum</a>
                         <button data-click="clearTitle">Click</button>
-                        <p data-click="unknownAction"></p>
+                        <p id="test-unknown-action" data-click="unknownAction"></p>
+                        <p id="test-syntax-error" data-click="setGreeting(1,2"></p>
                         <h4 data-change="empty(this.innerHTML)">h4 text</h4>
+                        <div id="test-bubbling-bounds" data-click="setTitle(should not hit)">
+                            <div id="test-bubbling" data-click="setTitle(bubbled)">
+                                <span>span text</span>
+                                <p>p text</p>
+                            </div>
+                        </div>
                     `;
                 }
             }
         }
     };
+
+    t.context.mock = comp.create("mock", Mock.Actions, Mock.View, model);
 });
 
 test("Should add delegate event listeners to target element", t => {
-    const c = t.context;
-    const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
     t.plan(7);
 
     let f = EventTarget.prototype.addEventListener;
@@ -64,45 +69,16 @@ test("Should add delegate event listeners to target element", t => {
         }
     };
 
-    compEvents.registerEventDelegator(mock);
+    compEvents.registerEventDelegator(t.context.mock);
 });
 
 test("Should return component if no matching HTML target found", t => {
-   const c = t.context;
-   const mock = comp.create("foo", c.Mock.Actions, c.Mock.View, c.model);
+   const result = compEvents.registerEventDelegator(t.context.mock);
 
-   const result = compEvents.registerEventDelegator(mock);
-
-   t.is(result, mock);
-});
-
-test("Should identify event target", t => {
-    const c = t.context;
-    comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
-    const event = new MouseEvent("click");
-    const button = document.querySelector("button");
-    Object.defineProperty(event, "target", { value: button, enumerable: true });
-
-    const target = compEvents.getEventTarget(event);
-
-    t.is(target, button);
-});
-
-test("Should identify event target on legacy browsers", t => {
-    const c = t.context;
-    const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
-    const event = new MouseEvent("click");
-    const button = document.querySelector("button");
-    Object.defineProperty(event, "srcElement", { value: button, enumerable: true });
-
-    const target = compEvents.getEventTarget(event);
-
-    t.is(target, button);
+   t.is(result, t.context.mock);
 });
 
 test("Should extract action name from event", t => {
-    const c = t.context;
-    const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
     const event = new MouseEvent("click");
     const element = document.querySelector("button");
 
@@ -112,8 +88,6 @@ test("Should extract action name from event", t => {
 });
 
 test("Should extract action name ignoring parentheses from event", t => {
-    const c = t.context;
-    const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
     const event = new MouseEvent("change");
     const element = document.querySelector("input[type=text]");
 
@@ -123,8 +97,6 @@ test("Should extract action name ignoring parentheses from event", t => {
 });
 
 test("Should extract action arguments from event", t => {
-    const c = t.context;
-    const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
     const event = new MouseEvent("click");
     const element = document.querySelector("a");
 
@@ -133,13 +105,53 @@ test("Should extract action arguments from event", t => {
     t.deepEqual(action.args, ["2","3"]);
 });
 
-test.todo("Should call action on delegated event");
+test("Should exit silently if no data-[event] action found", t => {
+    const event = new MouseEvent("change");
+    const element = document.querySelector("#test-unknown-action");
+    const root = document.querySelector("[data-component=mock]");
+    Object.defineProperty(event, "target", { value: element, enumerable: true });
 
-test.todo("Should throw error if unknown action specified");
+    t.notThrows(() => {
+        compEvents.delegateEvent(event, t.context.mock, root);
+    }, Error);
+});
+
+test("Should throw error if unknown action specified", t => {
+    const event = new MouseEvent("click");
+    const element = document.querySelector("#test-unknown-action");
+    const root = document.querySelector("[data-component=mock]");
+    Object.defineProperty(event, "target", { value: element, enumerable: true });
+
+    t.plan(2);
+    const error = t.throws(() => {
+        compEvents.delegateEvent(event, t.context.mock, root);
+    }, Error);
+    t.is(error.message.substr(0, 21), "Could not find action");
+});
+
+test("Should call action if known action specified", t => {
+    const event = new MouseEvent("click");
+    const element = document.querySelector("#test-set-num");
+    const root = document.querySelector("[data-component=mock]");
+    Object.defineProperty(event, "target", { value: element, enumerable: true });
+
+    compEvents.delegateEvent(event, t.context.mock, root);
+
+    t.is(t.context.mock.get("num"), 5);
+});
+
+test("Should throw error if data-[event] action contains syntax error", t => {
+    const event = new MouseEvent("click");
+    const element = document.querySelector("#test-syntax-error");
+    const root = document.querySelector("[data-component=mock]");
+    Object.defineProperty(event, "target", { value: element, enumerable: true });
+
+    t.throws(() => {
+        compEvents.delegateEvent(event, t.context.mock, root);
+    }, SyntaxError);
+});
 
 test("Should extract element attribute values (e.g., this.value, this.innerHTML) from data-[event] arguments", t => {
-    const c = t.context;
-    const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
     const event = new MouseEvent("change");
     const input = document.querySelector("input[type=text]");
     input.value = "New title";
@@ -154,4 +166,34 @@ test("Should extract element attribute values (e.g., this.value, this.innerHTML)
     t.deepEqual(inputAction.args, ["New title"]);
     t.deepEqual(checkboxAction.args, [true]);
     t.deepEqual(h4Action.args, ["h4 text"]);
+});
+
+test("Should use bubbling to look for data-[event] on closest ancestor node", t => {
+    const event = new MouseEvent("click");
+    const span = document.querySelector("#test-bubbling span");
+    const root = document.querySelector("[data-component=mock]");
+
+    const action = compEvents.bubbleUntilActionFound(event, span, root);
+
+    t.is(action.name, "setTitle(bubbled)");
+});
+
+test("Bubbling should stop at root if data-[event] not found", t => {
+    const event = new MouseEvent("change");
+    const span = document.querySelector("#test-bubbling span");
+    const root = document.querySelector("[data-component=mock]");
+
+    const action = compEvents.bubbleUntilActionFound(event, span, root);
+
+    t.is(action.element, root);
+});
+
+test("Bubbling should stop at closest ancestor node with matching data-[event]", t => {
+    const event = new MouseEvent("click");
+    const span = document.querySelector("#test-bubbling span");
+    const root = document.querySelector("[data-component=mock]");
+
+    const action = compEvents.bubbleUntilActionFound(event, span, root);
+
+    t.not(action.name, "setTitle(should not hit)");
 });
