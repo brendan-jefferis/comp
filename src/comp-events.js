@@ -1,5 +1,6 @@
 import inspectSyntax from "./lib/inspect-syntax";
 import getEventTarget from "./lib/get-event-target";
+import suggestActions from "./lib/suggest-actions";
 
 export function registerEventDelegator(component) {
     const componentHtmlTarget = document.querySelector(`[data-component=${component.name}]`);
@@ -24,7 +25,9 @@ export function delegateEvent(e, component, componentHtmlTarget) {
     }
 
     if (component[action.name] == null) {
-        throw new Error(`Could not find action ${action.name} in component ${component.name}`);
+        const suggestions = suggestActions(action.name, component);
+        const suggestionsMessage = suggestions.length ? `\r\n\r\nDid you mean\r\n\r\n${suggestions.map(x => `${component.name}.${x.term}\n`).join("")}\r` : "";
+        throw new Error(`Could not find action ${action.name} in component ${component.name}${suggestionsMessage}`);
     }
 
     if (action.args === "") {

@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-01-01T02:00:26.559Z 
+* Date: 2017-01-02T05:19:58.860Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -29,6 +29,80 @@ function inspectSyntax(str) {
 function getEventTarget(event) {
     event = event || window.event;
     return event.target || event.srcElement;
+}
+
+/* eslint-disable no-nested-ternary */
+var arr = [];
+var charCodeCache = [];
+
+var index = function (a, b) {
+	if (a === b) {
+		return 0;
+	}
+
+	var aLen = a.length;
+	var bLen = b.length;
+
+	if (aLen === 0) {
+		return bLen;
+	}
+
+	if (bLen === 0) {
+		return aLen;
+	}
+
+	var bCharCode;
+	var ret;
+	var tmp;
+	var tmp2;
+	var i = 0;
+	var j = 0;
+
+	while (i < aLen) {
+		charCodeCache[i] = a.charCodeAt(i);
+		arr[i] = ++i;
+	}
+
+	while (j < bLen) {
+		bCharCode = b.charCodeAt(j);
+		tmp = j++;
+		ret = j;
+
+		for (i = 0; i < aLen; i++) {
+			tmp2 = bCharCode === charCodeCache[i] ? tmp : tmp + 1;
+			tmp = arr[i];
+			ret = arr[i] = tmp > ret ? tmp2 > ret ? ret + 1 : tmp2 : tmp2 > tmp ? tmp + 1 : tmp2;
+		}
+	}
+
+	return ret;
+};
+
+var threshold = 3;
+
+function suggestActions(str, component) {
+    if (str == null) {
+        throw new Error("suggestActions requires a string argument to use as a query");
+    }
+
+    if (component == null) {
+        throw new Error("suggestActions requires a component to search for actions");
+    }
+
+    var suggestions = [];
+
+    Object.keys(component).map(function (actionName) {
+        var distance = index(str, actionName);
+        if (distance > threshold) {
+            return;
+        }
+
+        suggestions.push({ term: actionName, distance: distance });
+    });
+
+    return suggestions.sort(function (a, b) {
+        return a.distance > b.distance;
+    });
 }
 
 function registerEventDelegator(component) {
@@ -56,7 +130,11 @@ function delegateEvent(e, component, componentHtmlTarget) {
     }
 
     if (component[action.name] == null) {
-        throw new Error("Could not find action " + action.name + " in component " + component.name);
+        var suggestions = suggestActions(action.name, component);
+        var suggestionsMessage = suggestions.length ? "\r\n\r\nDid you mean\r\n\r\n" + suggestions.map(function (x) {
+            return component.name + "." + x.term + "\n";
+        }).join("") + "\r" : "";
+        throw new Error("Could not find action " + action.name + " in component " + component.name + suggestionsMessage);
     }
 
     if (action.args === "") {
@@ -188,7 +266,7 @@ setDOM.KEY = 'data-key';
 setDOM.IGNORE = 'data-ignore';
 setDOM.CHECKSUM = 'data-checksum';
 
-var index = setDOM;
+var index$1 = setDOM;
 
 /**
  * @description
@@ -494,15 +572,15 @@ function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var index$2 = createCommonjsModule(function (module, exports) {
+var index$3 = createCommonjsModule(function (module, exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:true});var chars={"&":"&amp;",">":"&gt;","<":"&lt;",'"':"&quot;","'":"&#39;","`":"&#96;"};var re=new RegExp(Object.keys(chars).join("|"),"g");exports["default"]=function(){var str=arguments.length<=0||arguments[0]===undefined?"":arguments[0];return String(str).replace(re,function(match){return chars[match]})};module.exports=exports["default"];
 });
 
-var index$1 = createCommonjsModule(function (module, exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:true});function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{"default":obj}}var _htmlEs6cape=index$2;var _htmlEs6cape2=_interopRequireDefault(_htmlEs6cape);exports["default"]=function(literals){for(var _len=arguments.length,substs=Array(_len>1?_len-1:0),_key=1;_key<_len;_key++){substs[_key-1]=arguments[_key];}return literals.raw.reduce(function(acc,lit,i){var subst=substs[i-1];if(Array.isArray(subst)){subst=subst.join("");}else{subst=(0,_htmlEs6cape2["default"])(subst);}return acc+subst+lit})};module.exports=exports["default"];
+var index$2 = createCommonjsModule(function (module, exports) {
+"use strict";Object.defineProperty(exports,"__esModule",{value:true});function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{"default":obj}}var _htmlEs6cape=index$3;var _htmlEs6cape2=_interopRequireDefault(_htmlEs6cape);exports["default"]=function(literals){for(var _len=arguments.length,substs=Array(_len>1?_len-1:0),_key=1;_key<_len;_key++){substs[_key-1]=arguments[_key];}return literals.raw.reduce(function(acc,lit,i){var subst=substs[i-1];if(Array.isArray(subst)){subst=subst.join("");}else{subst=(0,_htmlEs6cape2["default"])(subst);}return acc+subst+lit})};module.exports=exports["default"];
 });
 
-var html = unwrapExports(index$1);
+var html = unwrapExports(index$2);
 
 var components = {};
 
@@ -565,7 +643,7 @@ function create(name, actions, view, model) {
                 if (target.innerHTML === "") {
                     target.innerHTML = htmlString;
                 } else {
-                    index(target.firstElementChild, htmlString);
+                    index$1(target.firstElementChild, htmlString);
                 }
             }
         }
