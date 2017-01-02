@@ -3,7 +3,9 @@ Comp.
 
 A design pattern and micro-framework for creating UI components.
 
-Designed to be used instead of a framework, in cases where that might be overkill.
+Not intended to be the Next Big Thing, more of a stepping stone to make your code and development experience more Elm-like but with less of a commitment to functional programming, more flexibility in working with existing JS code and a shallower learning curve.
+
+> Warning: this is a work in progress and is not yet ready for use
 
 ###Features
 - Virtual dom diffing (using [set-dom](https://www.npmjs.com/package/set-dom))
@@ -12,10 +14,10 @@ Designed to be used instead of a framework, in cases where that might be overkil
 - Lightweight and not overly opinionated
 - Components as siblings rather than parent/child with easy cross-component interop
 - Easy to learn, with very few proprietary concepts to remember
+- Designed to promote an easy future refactor job to migrate your JavaScript code to Elm or something Elm-like (but probably Elm, let's face it).
 
 ###Architecture
-Comp borrows the model/update/view pattern and one-way data flow from the Elm Architecture and React/Flux,
-with a few key differences:
+Comp borrows the model/update/view pattern and one-way data flow from the Elm Architecture and React/Flux, with a few key differences:
 
 - All Comp components are siblings (no nesting or parent/child relationships)
 - Actions (i.e., the "update" bit) are expressed with functions rather than a switch block
@@ -25,21 +27,13 @@ with a few key differences:
 - It currently doesn't use immutable data
 
 
-Get started
+Install
 -----------
-####[Download comp](https://github.com/brendan-jefferis/comp/blob/master/comp.js) and add to your html
-Add a container div with a `data-component` attribute and give it a name.
+
+####npm/yarn
 
 ```
-<div data-component="HelloWorld"></div>
-
-<script src="comp.js"></script>
-```
-
-####Or install locally to your project with npm/yarn
-
-```
-npm install comp -S
+npm install comp --save
 ```
 or
 
@@ -47,12 +41,66 @@ or
 yarn add comp
 ```
 
-Then add your import/require statement at the top of your `hello-world.js` file as usual
+####Static JS
+
+[Download comp.js (or comp.min.js)](https://github.com/brendan-jefferis/comp) and add to your HTML
+
+Usage
+-----
+
+```
+<body>
+    ...
+    <div data-component="helloWorld"></div>
+    ...
+</body>
+```
+
+```
+// hello-world.js
+import comp from "comp";
+
+const model = {
+    greeting: ""
+};
+
+const HelloWorld = {
+
+    Actions = function (model) {
+        return {
+            setGreeting: function(greeting) {
+                model.greeting = greeting || "";
+            }
+        }
+    },
+
+    View = function() {
+        return {
+            init: (actions) {
+                // initialize some things here if you need to
+            },
+            render: (model, html) {
+                return html`
+                    <div>
+                        <h1>${model.greeting} world</h1>
+                        <input type="text" data-keyup="setGreeting(this.value)">
+                    </div>
+                `
+            }
+        }
+    }
+};
+
+comp.create("helloWorld", HelloWorld.Actions, HelloWorld.View, model);
+```
+
+Details
+-------
 
 ####Declare your component
 
 ```
-// hello-world.js
+// my-component.js
 
 MyComponent = {};
 ```
@@ -61,22 +109,22 @@ MyComponent = {};
 This step is not required but highly recommended (it'll save a few lines of null-or-undefined checking later on)
 
 ```
-// hello-world.js
+// my-component.js
 
 var model = {
-    greeting: ""
+    foo: ""
 };
 ```
 
 ####Add some Actions
 
 ```
-// hello-world.js
+// my-component.js
 
 MyComponent.Actions = function (model) {
 	return {
-		setGreeting: function(greeting) {
-			model.greeting = greeting || "";
+		setFoo(value) {
+			model.foo = value;
 		}
 	}
 }
@@ -94,7 +142,7 @@ actions, render will be passed your model and an HTML helper for working with ES
 Comp will ensure that the render function is called after every action.
 
 ```
-// hello-world.js
+// my-component.js
 
 MyComponent.View = function() {
     return {
@@ -104,76 +152,34 @@ MyComponent.View = function() {
         render: (model, html) {
             return html`
                 <div>
-                    <h1>${model.greeting} world</h1>
-                    <input type="text" data-keyup="setGreeting(this.value)">
+                    <h1>${model.foo}</h1>
+                    <input type="text" data-keyup="setFoo(this.value)">
                 </div>
             `
         }
     }
 }
 ```
+####Add an HTML container element
+
+```
+//index.html
+<body>
+	...
+	<div data-component="myComponent"></div>
+	...
+</body>
+```
 
 ####Create your component
+The name you provide must match the data-component attribute of the container element
 
 ```
-// hello-world.js
-
-comp.create("HelloWorld", HelloWorld.Actions, HelloWorld.View, model);
+// my-component.js
+comp.create("myComponent", MyComponent.Actions, MyComponent.View, model);
 ```
 
-Your code should now look something like this..
-
-```
-// index.html
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Hello World</title>
-    </head>
-    <body>
-
-        <div data-component="HelloWorld"></div>
-
-        <script src="comp.js"></script>
-        <script src="hello-world.js"></script>
-    </body>
-</html>
-```
-
-```
-// hello-world.js
-(function () {
-    let HelloWorld = {};
-
-    const model = {
-        greeting: "Hello"
-    };
-
-    HelloWorld.Actions = function(model) {
-        return {
-            setGreeting: function(greeting) {
-                model.greeting = greeting || "";
-            }
-        }
-    };
-
-    HelloWorld.View = function() {
-        return {
-            render: function(model, html) {
-                return html`
-                    <h1>${model.greeting} world!</h1>
-                    <input type="text" data-keyup="setGreeting(this.value)">
-                `;
-            }
-        }
-    };
-
-    comp.create("HelloWorld", HelloWorld.Actions, HelloWorld.View, model);
-})();
-```
-
-Further details
+Additional info
 ---------------
 
 ####The Comp global object
@@ -181,7 +187,7 @@ Comp has a simple API:
 
 `components`    An object containing all components on the current page
 
-`create(name, actions, view, model)` Creates a new component and adds it to components
+`create(name:string, actions:(model: Object) -> Object, view:() -> Object, model:Object)` Creates a new component and adds it to components
 
 You can call a component's actions externally via the Comp global object like so:
 
