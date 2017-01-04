@@ -4,6 +4,11 @@ node_js:
   - "6.1"
   - "5.11"
 
+os:
+  - linux
+  - windows
+  - osx
+
 cache:
   yarn: true
   directories:
