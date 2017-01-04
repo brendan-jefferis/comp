@@ -2,6 +2,9 @@ Comp.
 =====
 
 [![Build Status](https://travis-ci.org/brendan-jefferis/comp.svg?branch=master)](https://travis-ci.org/brendan-jefferis/comp)
+[![Coverage Status](https://coveralls.io/repos/github/brendan-jefferis/comp/badge.svg)](https://coveralls.io/github/brendan-jefferis/comp)
+[![Dependency Status](https://gemnasium.com/badges/github.com/brendan-jefferis/comp.svg)](https://gemnasium.com/github.com/brendan-jefferis/comp)
+[![NSP Status](https://nodesecurity.io/orgs/brendan-jefferis/projects/c309fea5-4d7e-4334-8729-7c8598f7662e/badge)](https://nodesecurity.io/orgs/brendan-jefferis/projects/c309fea5-4d7e-4334-8729-7c8598f7662e)
 
 A design pattern and micro-framework for creating UI components.
 
