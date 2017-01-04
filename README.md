@@ -1,6 +1,8 @@
 Comp.
 =====
 
+[![Build Status](https://travis-ci.org/brendan-jefferis/comp.svg?branch=master)](https://travis-ci.org/brendan-jefferis/comp)
+
 A design pattern and micro-framework for creating UI components.
 
 Not intended to be the Next Big Thing, more of a stepping stone to make your code and development experience more Elm-like but with less of a commitment to functional programming, more flexibility in working with existing JS code and a shallower learning curve.
