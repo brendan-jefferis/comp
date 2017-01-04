@@ -17,8 +17,9 @@
     "build": "rollup -c",
     "postbuild": "uglifyjs comp.min.js -m --comments all -o comp.min.js --source-map comp.min.js.map",
     "build:watch": "yarn run build -- --watch",
+    "security-check": "nsp check",
     "prestart": "node tools/devStartMessage.js",
-    "start": "npm-run-all -p test:watch sass-compile:watch build:watch"
+    "start": "npm-run-all -p security-check test:watch sass-compile:watch build:watch"
   },
   "repository": {
     "type": "git",
@@ -44,12 +45,13 @@
     "coveralls": "^2.11.15",
     "node-sass": "^4.1.1",
     "npm-run-all": "~3.1.2",
+    "nsp": "^2.6.2",
     "nyc": "^10.0.0",
-    "rollup": "^0.38.1",
+    "rollup": "^0.40.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^6.0.1",
     "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-watch": "^2.5.0",
+    "rollup-watch": "2.5.0",
     "sinon": "^1.17.6",
     "uglify-js": "^2.7.5"
   },

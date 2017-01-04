@@ -1,4 +1,5 @@
 import test from "ava";
+import sinon from "sinon";
 import comp from "./comp";
 import * as compEvents from "./comp-events";
 
@@ -37,6 +38,7 @@ test.beforeEach(t => {
                         <h1>${model.title}</h1>
                         <input type="text" data-change="setTitle(this.value)" value="${model.title}">
                         <input type="checkbox" data-change="empty(this.checked)" checked>
+                        <a id="test-no-args" data-click="empty">No args</a>
                         <a id="test-set-num" data-click="setSum(2, 3)">Set sum</a>
                         <button data-click="clearTitle">Click</button>
                         <p id="test-unknown-action" data-click="unknownAction"></p>
@@ -55,6 +57,15 @@ test.beforeEach(t => {
     };
 
     t.context.mock = comp.create("mock", Mock.Actions, Mock.View, model);
+});
+
+test("Should return unmodified component if component HTML target cannot be found", t => {
+    let compHTML = document.querySelector("[data-component=mock]");
+    compHTML.setAttribute("data-component", "foo");
+
+    const result = compEvents.registerEventDelegator(t.context.mock);
+
+    t.is(result, t.context.mock);
 });
 
 test("Should add delegate event listeners to target element", t => {
@@ -98,7 +109,7 @@ test("Should extract action name ignoring parentheses from event", t => {
 
 test("Should extract action arguments from event", t => {
     const event = new MouseEvent("click");
-    const element = document.querySelector("a");
+    const element = document.querySelector("#test-set-num");
 
     const action = compEvents.getEventActionFromElement(event, element);
 
@@ -130,6 +141,34 @@ test("Should throw error if unknown action specified", t => {
 });
 
 test("Should call action if known action specified", t => {
+    let spy = sinon.spy();
+    const Mock = {
+        Actions() {
+            return {
+                empty() {}
+            }
+        },
+        View() {
+            return {
+                render() {
+                    spy();
+                }
+            }
+        }
+    };
+    const mock = comp.create("mock", Mock.Actions, Mock.View);
+
+    const event = new MouseEvent("click");
+    const element = document.querySelector("#test-no-args");
+    const root = document.querySelector("[data-component=mock]");
+    Object.defineProperty(event, "target", { value: element, enumerable: true });
+
+    compEvents.delegateEvent(event, t.context.mock, root);
+
+    t.true(spy.called);
+});
+
+test("Should call action if known action specified (with args)", t => {
     const event = new MouseEvent("click");
     const element = document.querySelector("#test-set-num");
     const root = document.querySelector("[data-component=mock]");
