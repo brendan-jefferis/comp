@@ -1,5 +1,4 @@
 import test from "ava";
-import sinon from "sinon";
 import comp from "./comp";
 import * as compEvents from "./comp-events";
 
@@ -14,21 +13,8 @@ test.beforeEach(t => {
     const Mock = {
         Actions(model) {
             return {
-                empty() {},
                 setSum(a, b) { model.num = parseInt(a, 10) + parseInt(b, 10); },
-                double(num) { model.num = num * 2 },
-                setTitle(title) { model.title = title; },
-                clearTitle() { model.title = ""; },
-                asyncAction() {
-                    return new Promise((res) => {
-                        setTimeout(() => {
-                            res(model);
-                        }, 500);
-                    })
-                    .then(result => {
-                        return result;
-                    });
-                }
+                setTitle(title) { model.title = title; }
             }
         },
         View() {
@@ -40,7 +26,7 @@ test.beforeEach(t => {
                         <input type="checkbox" data-change="empty(this.checked)" checked>
                         <a id="test-no-args" data-click="empty">No args</a>
                         <a id="test-set-num" data-click="setSum(2, 3)">Set sum</a>
-                        <button data-click="clearTitle">Click</button>
+                        <button data-click="empty">Click</button>
                         <p id="test-unknown-action" data-click="unknownAction"></p>
                         <p id="test-syntax-error" data-click="setGreeting(1,2"></p>
                         <h4 data-change="empty(this.innerHTML)">h4 text</h4>
@@ -95,7 +81,7 @@ test("Should extract action name from event", t => {
 
     const action = compEvents.getEventActionFromElement(event, element);
 
-    t.is(action.name, "clearTitle");
+    t.is(action.name, "empty");
 });
 
 test("Should extract action name ignoring parentheses from event", t => {
@@ -141,34 +127,6 @@ test("Should throw error if unknown action specified", t => {
 });
 
 test("Should call action if known action specified", t => {
-    let spy = sinon.spy();
-    const Mock = {
-        Actions() {
-            return {
-                empty() {}
-            }
-        },
-        View() {
-            return {
-                render() {
-                    spy();
-                }
-            }
-        }
-    };
-    const mock = comp.create("mock", Mock.Actions, Mock.View);
-
-    const event = new MouseEvent("click");
-    const element = document.querySelector("#test-no-args");
-    const root = document.querySelector("[data-component=mock]");
-    Object.defineProperty(event, "target", { value: element, enumerable: true });
-
-    compEvents.delegateEvent(event, t.context.mock, root);
-
-    t.true(spy.called);
-});
-
-test("Should call action if known action specified (with args)", t => {
     const event = new MouseEvent("click");
     const element = document.querySelector("#test-set-num");
     const root = document.querySelector("[data-component=mock]");
