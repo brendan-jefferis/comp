@@ -13,8 +13,8 @@ test.beforeEach(t => {
     const Mock = {
         Actions(model) {
             return {
-                setSum(a, b) { model.num = parseInt(a, 10) + parseInt(b, 10); },
-                setTitle(title) { model.title = title; }
+                empty() { model.num = 5},
+                setSum(a, b) { model.num = parseInt(a, 10) + parseInt(b, 10); }
             }
         },
         View() {
@@ -127,6 +127,17 @@ test("Should throw error if unknown action specified", t => {
 });
 
 test("Should call action if known action specified", t => {
+    const event = new MouseEvent("click");
+    const element = document.querySelector("#test-no-args");
+    const root = document.querySelector("[data-component=mock]");
+    Object.defineProperty(event, "target", { value: element, enumerable: true });
+
+    compEvents.delegateEvent(event, t.context.mock, root);
+
+    t.pass();
+});
+
+test("Should call action if known action specified (with args)", t => {
     const event = new MouseEvent("click");
     const element = document.querySelector("#test-set-num");
     const root = document.querySelector("[data-component=mock]");
