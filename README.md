@@ -10,16 +10,14 @@ A design pattern and micro-framework for creating UI components.
 
 Not intended to be the Next Big Thing, more of a stepping stone to make your code and development experience more Elm-like but with less of a commitment to functional programming, more flexibility in working with existing JS code and a shallower learning curve.
 
-> Warning: this is a work in progress and is not yet ready for use
-
 ###Features
 - Virtual dom diffing (using [set-dom](https://www.npmjs.com/package/set-dom))
-- Write declarative views with ES6 template strings (using [html-template-tag](https://www.npmjs.com/package/html-template-tag))
+- Write declarative views with ES6 template strings
 - Built-in event delegation
 - Lightweight and not overly opinionated
 - Components as siblings rather than parent/child with easy cross-component interop
 - Easy to learn, with very few proprietary concepts to remember
-- Designed to promote an easy future refactor job to migrate your JavaScript code to Elm or something Elm-like (but probably Elm, let's face it).
+- Designed to promote an easy future refactor job to migrate your JavaScript code to Elm or something Elm-like.
 
 ###Architecture
 Comp borrows the model/update/view pattern and one-way data flow from the Elm Architecture and React/Flux, with a few key differences:

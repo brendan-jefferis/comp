@@ -1,6 +1,6 @@
 import * as compEvents from "./comp-events";
 import setDom from "set-dom";
-import html from "html-template-tag";
+import html from "./lib/html-template";
 
 const components = {};
 

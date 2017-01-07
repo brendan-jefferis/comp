@@ -1,5 +1,5 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.2.0
+*  |___ [__] |\/| |--' . v1.3.0
 * 
 * A design pattern and micro-framework for creating UI components
 *
@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-01-04T03:44:55.576Z 
+* Date: 2017-01-07T01:25:08.709Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -572,15 +572,30 @@ function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var index$3 = createCommonjsModule(function (module, exports) {
+var index$2 = createCommonjsModule(function (module, exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:true});var chars={"&":"&amp;",">":"&gt;","<":"&lt;",'"':"&quot;","'":"&#39;","`":"&#96;"};var re=new RegExp(Object.keys(chars).join("|"),"g");exports["default"]=function(){var str=arguments.length<=0||arguments[0]===undefined?"":arguments[0];return String(str).replace(re,function(match){return chars[match]})};module.exports=exports["default"];
 });
 
-var index$2 = createCommonjsModule(function (module, exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:true});function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{"default":obj}}var _htmlEs6cape=index$3;var _htmlEs6cape2=_interopRequireDefault(_htmlEs6cape);exports["default"]=function(literals){for(var _len=arguments.length,substs=Array(_len>1?_len-1:0),_key=1;_key<_len;_key++){substs[_key-1]=arguments[_key];}return literals.raw.reduce(function(acc,lit,i){var subst=substs[i-1];if(Array.isArray(subst)){subst=subst.join("");}else{subst=(0,_htmlEs6cape2["default"])(subst);}return acc+subst+lit})};module.exports=exports["default"];
-});
+var htmlEscape = unwrapExports(index$2);
 
-var html = unwrapExports(index$2);
+// Source: http://www.2ality.com/2015/01/template-strings-html.html#comment-2078932192
+var html = (function (literals) {
+    for (var _len = arguments.length, substs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        substs[_key - 1] = arguments[_key];
+    }
+
+    return literals.raw.reduce(function (acc, lit, i) {
+        var subst = substs[i - 1];
+        if (Array.isArray(subst)) {
+            subst = subst.join('');
+        }
+        if (acc.endsWith('@')) {
+            subst = htmlEscape(subst);
+            acc = acc.slice(0, -1);
+        }
+        return acc + subst + lit;
+    });
+});
 
 var components = {};
 

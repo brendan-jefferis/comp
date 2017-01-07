@@ -1,6 +1,6 @@
 {
   "name": "comp",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A design pattern and micro-framework for creating UI components",
   "main": "comp.js",
   "engines": {
@@ -13,7 +13,7 @@
     "test": "nyc ava --verbose",
     "test:watch": "ava --verbose --watch",
     "sass-compile": "node-sass ./examples/scss/ -o ./examples/css/ --source-map true --output-style compressed",
-    "sass-compile:watch": "yarn run sass-compile && yarn run sass-compile -- --watch ./src/examples/scss/",
+    "sass-compile:watch": "yarn run sass-compile && yarn run sass-compile -- --watch ./examples/scss/",
     "build": "rollup -c",
     "postbuild": "uglifyjs comp.min.js -m --comments all -o comp.min.js --source-map comp.min.js.map",
     "build:watch": "yarn run build -- --watch",
@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/brendan-jefferis/comp#readme",
   "dependencies": {
-    "html-template-tag": "^1.0.0",
+    "html-es6cape": "^1.0.5",
     "leven": "^2.0.0",
     "set-dom": "~6.0.0"
   },
