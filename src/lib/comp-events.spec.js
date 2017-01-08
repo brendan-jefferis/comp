@@ -1,5 +1,5 @@
 import test from "ava";
-import comp from "./comp";
+import comp from "../comp";
 import * as compEvents from "./comp-events";
 
 test.beforeEach(t => {

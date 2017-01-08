@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-01-07T04:57:39.970Z 
+* Date: 2017-01-08T09:14:09.274Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -597,6 +597,25 @@ var html = (function (literals) {
     });
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+function renderAfterAsync(promise, render) {
+    return promise.then(function (updatedModel) {
+        if (updatedModel == null) {
+            throw new Error("No model received - aborting render");
+        }
+        render(updatedModel);
+    }).catch(function (err) {
+        err = (typeof err === "undefined" ? "undefined" : _typeof(err)) === "object" ? err : err + "\r\nError unhandled by component. Add a catch handler in your action.";
+        console.error(err);
+        return err;
+    });
+}
+
 var components = {};
 
 function componentize(name, actions, render, model) {
@@ -611,7 +630,7 @@ function componentize(name, actions, render, model) {
             var returnValue = actions[action].apply(actions, args);
 
             if (returnValue && returnValue.then) {
-                handlePromise(returnValue, render);
+                renderAfterAsync(returnValue, render);
             }
             render(model);
         };
@@ -621,21 +640,6 @@ function componentize(name, actions, render, model) {
         return model[prop];
     };
     return component;
-}
-
-function handlePromise(promise, render) {
-    promise.then(function (updatedModel) {
-        if (updatedModel == null) {
-            throw new Error("No model received: aborting render");
-        }
-        render(updatedModel);
-    }).catch(function (err) {
-        if (typeof err === "string") {
-            console.error(err);
-        } else {
-            console.error("Error unhandled by component. Add a catch handler to your AJAX method.");
-        }
-    });
 }
 
 function create(name, actions, view, model) {

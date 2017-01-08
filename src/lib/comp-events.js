@@ -1,6 +1,6 @@
-import inspectSyntax from "./lib/inspect-syntax";
-import getEventTarget from "./lib/get-event-target";
-import suggestActions from "./lib/suggest-actions";
+import inspectSyntax from "./inspect-syntax";
+import getEventTarget from "./get-event-target";
+import suggestActions from "./suggest-actions";
 
 export function registerEventDelegator(component) {
     const componentHtmlTarget = document.querySelector(`[data-component=${component.name}]`);

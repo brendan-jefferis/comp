@@ -1,6 +1,7 @@
-import * as compEvents from "./comp-events";
+import * as compEvents from "./lib/comp-events";
 import setDom from "set-dom";
 import html from "./lib/html-template";
+import renderAfterAsync from "./lib/render-after-async";
 
 const components = {};
 
@@ -13,7 +14,7 @@ function componentize(name, actions, render, model) {
             let returnValue = actions[action].apply(actions, args);
 
             if (returnValue && returnValue.then) {
-                handlePromise(returnValue, render);
+                renderAfterAsync(returnValue, render);
             }
             render(model);
         }
@@ -21,23 +22,6 @@ function componentize(name, actions, render, model) {
     component.name = name;
     component.get = (prop) => model[prop];
     return component;
-}
-
-function handlePromise(promise, render) {
-    promise
-        .then((updatedModel) => {
-            if (updatedModel == null) {
-                throw new Error("No model received: aborting render");
-            }
-            render(updatedModel);
-        })
-        .catch((err) => {
-            if (typeof err === "string") {
-                console.error(err);
-            } else {
-                console.error(`Error unhandled by component. Add a catch handler to your AJAX method.`);
-            }
-        });
 }
 
 function create(name, actions, view, model) {

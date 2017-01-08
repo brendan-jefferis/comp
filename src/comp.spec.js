@@ -22,26 +22,8 @@ test.beforeEach(t => {
                 setTitle(title) {
                     model.title = title;
                 },
-                asyncSetTitle(title) {
-                    return new Promise((res) => {
-                        setTimeout(() => {
-                            model.tile = title;
-                            res(model);
-                        }, 500);
-                    })
-                    .then(result => {
-                        return result;
-                    });
-                },
                 asyncAction() {
-                    return new Promise((res) => {
-                        setTimeout(() => {
-                            res(model);
-                        }, 500);
-                    })
-                    .then(result => {
-                        return result;
-                    });
+                    return Promise.resolve(3);
                 }
             }
         },
@@ -149,8 +131,6 @@ test("View.render should be called if present", t => {
 
 test("View.render should be called after each action is called", t => {
     const c = t.context;
-    t.plan(2);
-
     const mock = comp.create("mock", c.Mock.Actions, () => {
         return {
             render: () => {
@@ -159,21 +139,21 @@ test("View.render should be called after each action is called", t => {
         }
     }, c.model);
 
+    t.plan(2);
     mock.empty();
 });
 
-test("Should call View.render after async action complete", t => {
+test("View render should be called after async action is called", async t => {
     const c = t.context;
-    t.plan(2);
-
     const mock = comp.create("mock", c.Mock.Actions, () => {
         return {
-            render: () => {
+            render() {
                 t.pass();
             }
         }
-    }, c.model);
+    });
 
+    t.plan(3);
     mock.asyncAction();
 });
 
