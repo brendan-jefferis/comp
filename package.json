@@ -2,6 +2,7 @@
   "name": "comp",
   "version": "1.3.1",
   "description": "A design pattern and micro-framework for creating UI components",
+  "keywords": ["model", "update", "view", "one way data", "virtual dom", "elm", "architecture", "react", "ui", "framework", "component", "comp"],
   "main": "comp.js",
   "engines": {
     "node": ">=4.4.0"
