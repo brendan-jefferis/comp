@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-01-08T09:14:09.274Z 
+* Date: 2017-01-14T06:13:07.901Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -123,6 +123,7 @@ function registerEventDelegator(component) {
 }
 
 function delegateEvent(e, component, componentHtmlTarget) {
+    e.stopPropagation();
     var target = getEventTarget(e);
     var action = getEventActionFromElement(e, target, componentHtmlTarget);
     if (action.name === "") {

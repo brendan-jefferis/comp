@@ -15,19 +15,17 @@ Not intended to be the Next Big Thing, more of a stepping stone to make your cod
 - Write declarative views with ES6 template strings
 - Built-in event delegation
 - Lightweight and not overly opinionated
-- Components as siblings rather than parent/child with easy cross-component interop
 - Easy to learn, with very few proprietary concepts to remember
 - Designed to promote an easy future refactor job to migrate your JavaScript code to Elm or something Elm-like.
 
 ###Architecture
 Comp borrows the model/update/view pattern and one-way data flow from the Elm Architecture and React/Flux, with a few key differences:
 
-- All Comp components are siblings (no nesting or parent/child relationships)
 - Actions (i.e., the "update" bit) are expressed with functions rather than a switch block
 - While model and state remain internal to each component, a component's Actions can be called
   from external sources, e.g., other components, the console etc. This allow easy interop
   between components and allows your layout to be more loosely-coupled to your logic.
-- It currently doesn't use immutable data
+- The model is not immutable
 
 
 Install

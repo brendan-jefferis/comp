@@ -18,6 +18,7 @@ export function registerEventDelegator(component) {
 }
 
 export function delegateEvent(e, component, componentHtmlTarget) {
+    e.stopPropagation();
     const target = getEventTarget(e);
     const action = getEventActionFromElement(e, target, componentHtmlTarget);
     if (action.name === "") {
