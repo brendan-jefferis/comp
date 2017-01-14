@@ -1,6 +1,6 @@
 {
   "name": "comp",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "A design pattern and micro-framework for creating UI components",
   "main": "comp.js",
   "engines": {
@@ -10,6 +10,7 @@
     "comp.js"
   ],
   "scripts": {
+    "purge": "rimraf node_modules && yarn clean && yarn install",
     "test": "nyc ava --verbose",
     "test:watch": "ava --verbose --watch",
     "sass-compile": "node-sass ./examples/scss/ -o ./examples/css/ --source-map true --output-style compressed",
@@ -47,6 +48,7 @@
     "npm-run-all": "~3.1.2",
     "nsp": "^2.6.2",
     "nyc": "^10.0.0",
+    "rimraf": "^2.5.4",
     "rollup": "^0.40.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^6.0.1",
