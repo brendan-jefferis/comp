@@ -1,6 +1,7 @@
 Comp.
 =====
 
+[![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 [![Build Status](https://travis-ci.org/brendan-jefferis/comp.svg?branch=master)](https://travis-ci.org/brendan-jefferis/comp)
 [![Coverage Status](https://coveralls.io/repos/github/brendan-jefferis/comp/badge.svg?branch=master)](https://coveralls.io/github/brendan-jefferis/comp?branch=master)
 [![Dependency Status](https://gemnasium.com/badges/github.com/brendan-jefferis/comp.svg)](https://gemnasium.com/github.com/brendan-jefferis/comp)

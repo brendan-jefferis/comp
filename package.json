@@ -53,6 +53,7 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-watch": "2.5.0",
     "sinon": "^1.17.6",
+    "stability-badges": "^0.1.1",
     "uglify-js": "^2.7.5"
   },
   "ava": {

@@ -1,4 +1,4 @@
-import * as compEvents from "./lib/comp-events";
+
 import setDom from "set-dom";
 import html from "./lib/html-template";
 import renderAfterAsync from "./lib/render-after-async";
