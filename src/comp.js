@@ -1,7 +1,8 @@
-
+import * as compEvents from "./lib/comp-events";
 import setDom from "set-dom";
 import html from "./lib/html-template";
 import renderAfterAsync from "./lib/render-after-async";
+import { findChildComponents } from "./lib/render-children";
 
 const components = {};
 
@@ -21,6 +22,7 @@ function componentize(name, actions, render, model) {
     }, this);
     component.name = name;
     component.get = (prop) => model[prop];
+    component.render = () => render(model);
     return component;
 }
 
@@ -42,10 +44,14 @@ function create(name, actions, view, model) {
             if (typeof document !== "undefined" && htmlString) {
                 let target = document.querySelector(`[data-component=${name}]`);
                 if (target) {
+                    const childComponents = findChildComponents(target);
                     if (target.innerHTML === "") {
                         target.innerHTML = htmlString;
                     } else {
                         setDom(target.firstElementChild, htmlString);
+                    }
+                    if (childComponents.length) {
+                        childComponents.map(x => components[x].render());
                     }
                 }
             }
