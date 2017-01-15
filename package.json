@@ -1,6 +1,6 @@
 {
   "name": "comp",
-  "version": "1.3.4",
+  "version": "1.4.0",
   "description": "A design pattern and micro-framework for creating UI components",
   "main": "comp.js",
   "engines": {
