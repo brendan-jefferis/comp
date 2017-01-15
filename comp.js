@@ -8,13 +8,207 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-01-14T22:06:03.062Z 
+* Date: 2017-01-15T05:48:54.287Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global.comp = factory());
 }(this, (function () { 'use strict';
+
+function inspectSyntax(str) {
+    try {
+        new Function(str);
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            throw new SyntaxError(e);
+        }
+    }
+}
+
+function getEventTarget(event) {
+    event = event || window.event;
+    return event.target || event.srcElement;
+}
+
+/* eslint-disable no-nested-ternary */
+var arr = [];
+var charCodeCache = [];
+
+var index = function (a, b) {
+	if (a === b) {
+		return 0;
+	}
+
+	var aLen = a.length;
+	var bLen = b.length;
+
+	if (aLen === 0) {
+		return bLen;
+	}
+
+	if (bLen === 0) {
+		return aLen;
+	}
+
+	var bCharCode;
+	var ret;
+	var tmp;
+	var tmp2;
+	var i = 0;
+	var j = 0;
+
+	while (i < aLen) {
+		charCodeCache[i] = a.charCodeAt(i);
+		arr[i] = ++i;
+	}
+
+	while (j < bLen) {
+		bCharCode = b.charCodeAt(j);
+		tmp = j++;
+		ret = j;
+
+		for (i = 0; i < aLen; i++) {
+			tmp2 = bCharCode === charCodeCache[i] ? tmp : tmp + 1;
+			tmp = arr[i];
+			ret = arr[i] = tmp > ret ? tmp2 > ret ? ret + 1 : tmp2 : tmp2 > tmp ? tmp + 1 : tmp2;
+		}
+	}
+
+	return ret;
+};
+
+var threshold = 3;
+
+function suggestActions(str, component) {
+    if (str == null) {
+        throw new Error("suggestActions requires a string argument to use as a query");
+    }
+
+    if (component == null) {
+        throw new Error("suggestActions requires a component to search for actions");
+    }
+
+    var suggestions = [];
+
+    Object.keys(component).map(function (actionName) {
+        var distance = index(str, actionName);
+        if (distance > threshold) {
+            return;
+        }
+
+        suggestions.push({ term: actionName, distance: distance });
+    });
+
+    return suggestions.sort(function (a, b) {
+        return a.distance > b.distance;
+    });
+}
+
+function registerEventDelegator(components) {
+    Object.keys(Event.prototype).map(function (ev, i) {
+        if (i >= 10 && i <= 19) {
+            document.body.addEventListener(ev.toLowerCase(), function (e) {
+                delegateEvent(e, components);
+            });
+        }
+    }, this);
+}
+
+function delegateEvent(e, components) {
+    e.stopPropagation();
+    var target = getEventTarget(e);
+    if (target.nodeName === "BODY") {
+        return;
+    }
+    var componentHtmlTarget = getComponentHtmlTarget(target);
+    var component = components[componentHtmlTarget.getAttribute("data-component")];
+    var action = getEventActionFromElement(e, target, componentHtmlTarget);
+    if (action.name === "") {
+        return;
+    }
+
+    if (component[action.name] == null) {
+        var suggestions = suggestActions(action.name, component);
+        var suggestionsMessage = suggestions.length ? "\r\n\r\nDid you mean\r\n\r\n" + suggestions.map(function (x) {
+            return component.name + "." + x.term + "\n";
+        }).join("") + "\r" : "";
+        throw new Error("Could not find action " + action.name + " in component " + component.name + suggestionsMessage);
+    }
+
+    if (action.args === "") {
+        component[action.name]();
+    } else {
+        component[action.name].apply(action, action.args);
+    }
+}
+
+function bubbleUntilActionFound(event, element, root) {
+    var actionStr = element.getAttribute("data-" + [event.type]) || "";
+    if (actionStr !== "" || element === root) {
+        try {
+            inspectSyntax(actionStr, element);
+        } catch (e) {
+            var tempDiv = document.createElement("div");
+            tempDiv.appendChild(element.cloneNode(false));
+            throw new SyntaxError("\r\n\r\nElement: " + tempDiv.innerHTML + "\r\nEvent: data-" + [event.type] + "\r\nAction: " + actionStr + "\r\n\r\n" + e);
+        }
+        return {
+            name: actionStr,
+            element: element
+        };
+    }
+
+    return bubbleUntilActionFound(event, element.parentNode, root);
+}
+
+function getComponentHtmlTarget(eventTarget) {
+    return eventTarget.closest("[data-component]");
+}
+
+function getEventActionFromElement(event, element, root) {
+    var action = bubbleUntilActionFound(event, element, root);
+
+    return {
+        name: extractActionName(action.name),
+        args: extractArguments(action.name, action.element)
+    };
+}
+
+function extractActionName(str) {
+    var nameResult = str.match(/[^(]*/);
+    return nameResult ? nameResult[0] : "";
+}
+
+function extractArguments(str, target) {
+    var args = /\(\s*([^)]+?)\s*\)/.exec(str);
+    if (!args || args[1] == null) {
+        return "";
+    }
+
+    args = args[1].split(/\s*,\s*/).map(function (arg) {
+        var argList = arg.split(".");
+        if (argList.length === 1 && argList.indexOf("this") === -1) {
+            return arg;
+        }
+
+        var dataset = argList.indexOf("dataset") === 1 ? Object.assign({}, target.dataset) : null;
+
+        return dataset ? dataset[argList[2]] : target[argList[1]];
+    }, target);
+
+    return args;
+}
+
+var compEvents = Object.freeze({
+	registerEventDelegator: registerEventDelegator,
+	delegateEvent: delegateEvent,
+	bubbleUntilActionFound: bubbleUntilActionFound,
+	getComponentHtmlTarget: getComponentHtmlTarget,
+	getEventActionFromElement: getEventActionFromElement,
+	extractActionName: extractActionName,
+	extractArguments: extractArguments
+});
 
 var parser = new window.DOMParser();
 var htmlType = 'text/html';
@@ -76,7 +270,7 @@ setDOM.KEY = 'data-key';
 setDOM.IGNORE = 'data-ignore';
 setDOM.CHECKSUM = 'data-checksum';
 
-var index = setDOM;
+var index$1 = setDOM;
 
 /**
  * @description
@@ -382,11 +576,11 @@ function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var index$1 = createCommonjsModule(function (module, exports) {
+var index$2 = createCommonjsModule(function (module, exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:true});var chars={"&":"&amp;",">":"&gt;","<":"&lt;",'"':"&quot;","'":"&#39;","`":"&#96;"};var re=new RegExp(Object.keys(chars).join("|"),"g");exports["default"]=function(){var str=arguments.length<=0||arguments[0]===undefined?"":arguments[0];return String(str).replace(re,function(match){return chars[match]})};module.exports=exports["default"];
 });
 
-var htmlEscape = unwrapExports(index$1);
+var htmlEscape = unwrapExports(index$2);
 
 // Source: http://www.2ality.com/2015/01/template-strings-html.html#comment-2078932192
 var html = (function (literals) {
@@ -426,6 +620,16 @@ function renderAfterAsync(promise, render) {
     });
 }
 
+function findChildComponents(root) {
+    if (root == null) {
+        throw new Error("InvalidArgument: DOM element expected");
+    }
+
+    return Array.prototype.map.call(root.querySelectorAll("[data-component]"), function (x) {
+        return x.getAttribute("data-component");
+    });
+}
+
 var components = {};
 
 function componentize(name, actions, render, model) {
@@ -449,6 +653,9 @@ function componentize(name, actions, render, model) {
     component.get = function (prop) {
         return model[prop];
     };
+    component.render = function () {
+        return render(model);
+    };
     return component;
 }
 
@@ -469,10 +676,16 @@ function create(name, actions, view, model) {
         if (typeof document !== "undefined" && htmlString) {
             var target = document.querySelector("[data-component=" + name + "]");
             if (target) {
+                var childComponents = findChildComponents(target);
                 if (target.innerHTML === "") {
                     target.innerHTML = htmlString;
                 } else {
-                    index(target.firstElementChild, htmlString);
+                    index$1(target.firstElementChild, htmlString);
+                }
+                if (childComponents.length) {
+                    childComponents.map(function (x) {
+                        return components[x] && components[x].render();
+                    });
                 }
             }
         }
@@ -481,13 +694,13 @@ function create(name, actions, view, model) {
     var component = componentize(name, actions(model), viewRender, model);
     components[name] = component;
 
-    if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
-        component = compEvents.registerEventDelegator(component);
-    }
-
     viewInit(component, model);
 
     return component;
+}
+
+if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
+    registerEventDelegator(components);
 }
 
 var comp = {

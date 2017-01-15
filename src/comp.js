@@ -51,7 +51,7 @@ function create(name, actions, view, model) {
                         setDom(target.firstElementChild, htmlString);
                     }
                     if (childComponents.length) {
-                        childComponents.map(x => components[x].render());
+                        childComponents.map(x => components[x] && components[x].render());
                     }
                 }
             }
@@ -61,13 +61,13 @@ function create(name, actions, view, model) {
     let component = componentize(name, actions(model), viewRender, model);
     components[name] = component;
 
-    if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
-        component = compEvents.registerEventDelegator(component);
-    }
-
     viewInit(component, model);
 
     return component;
+}
+
+if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
+    compEvents.registerEventDelegator(components);
 }
 
 export default {

@@ -143,6 +143,8 @@ actions, render will be passed your model and an HTML helper for working with ES
 
 Comp will ensure that the render function is called after every action.
 
+_NOTE: Your component must return a single top-level element_
+
 ```
 // my-component.js
 
