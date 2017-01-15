@@ -11,6 +11,22 @@ test.beforeEach(t => {
         title: "Mock title"
     };
 
+    const childComponent = {
+        model: {},
+        actions(model) {
+            return {}
+        },
+        view() {
+            return {
+                render(model, html) {
+                    return html`
+                        <p id="child-component">child</p>
+                    `;
+                }
+            }
+        }
+    };
+
     t.context.Mock = {
         Actions(model) {
             return {
@@ -24,6 +40,9 @@ test.beforeEach(t => {
                 },
                 asyncAction() {
                     return Promise.resolve(3);
+                },
+                addChild() {
+                    comp.create("childComponent", childComponent.actions, childComponent.view, childComponent.model);
                 }
             }
         },
@@ -31,10 +50,13 @@ test.beforeEach(t => {
             return {
                 render(model) {
                     return `
-                        <h1>${model.title}</h1>
-                        <input type="text" data-change="setTitle(this.value)" value="${model.title}">
-                        <a data-click="setSum(2, 3)">Set sum</a>
-                        <button data-click="clearTitle">Click</button>
+                        <div>
+                            <h1>${model.title}</h1>
+                            <input type="text" data-change="setTitle(this.value)" value="${model.title}">
+                            <a data-click="setSum(2, 3)">Set sum</a>
+                            <button data-click="clearTitle">Click</button>
+                            <div data-component="childComponent"></div>
+                        </div>
                     `;
                 }
             }
@@ -186,4 +208,13 @@ test("Should only render changed DOM nodes", t => {
     t.plan(2);
     t.is(mock.get("title"), "Foo");
     t.is(input, document.activeElement);
+});
+
+test("Should render child component if present", t => {
+    const c = t.context;
+    const mock = comp.create("mock", c.Mock.Actions, c.Mock.View, c.model);
+
+    mock.addChild();
+
+    t.is(document.querySelector("#child-component").innerHTML, "child");
 });

@@ -1,5 +1,5 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.3.0
+*  |___ [__] |\/| |--' . v1.4.0
 * 
 * A design pattern and micro-framework for creating UI components
 *
@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-01-08T09:14:09.274Z 
+* Date: 2017-01-15T05:51:19.462Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -105,25 +105,24 @@ function suggestActions(str, component) {
     });
 }
 
-function registerEventDelegator(component) {
-    var componentHtmlTarget = document.querySelector("[data-component=" + component.name + "]");
-    if (componentHtmlTarget === null) {
-        return component;
-    }
-
+function registerEventDelegator(components) {
     Object.keys(Event.prototype).map(function (ev, i) {
         if (i >= 10 && i <= 19) {
-            componentHtmlTarget.addEventListener(ev.toLowerCase(), function (e) {
-                return delegateEvent(e, component, componentHtmlTarget);
+            document.body.addEventListener(ev.toLowerCase(), function (e) {
+                delegateEvent(e, components);
             });
         }
     }, this);
-
-    return component;
 }
 
-function delegateEvent(e, component, componentHtmlTarget) {
+function delegateEvent(e, components) {
+    e.stopPropagation();
     var target = getEventTarget(e);
+    if (target.nodeName === "BODY") {
+        return;
+    }
+    var componentHtmlTarget = getComponentHtmlTarget(target);
+    var component = components[componentHtmlTarget.getAttribute("data-component")];
     var action = getEventActionFromElement(e, target, componentHtmlTarget);
     if (action.name === "") {
         return;
@@ -161,6 +160,10 @@ function bubbleUntilActionFound(event, element, root) {
     }
 
     return bubbleUntilActionFound(event, element.parentNode, root);
+}
+
+function getComponentHtmlTarget(eventTarget) {
+    return eventTarget.closest("[data-component]");
 }
 
 function getEventActionFromElement(event, element, root) {
@@ -201,6 +204,7 @@ var compEvents = Object.freeze({
 	registerEventDelegator: registerEventDelegator,
 	delegateEvent: delegateEvent,
 	bubbleUntilActionFound: bubbleUntilActionFound,
+	getComponentHtmlTarget: getComponentHtmlTarget,
 	getEventActionFromElement: getEventActionFromElement,
 	extractActionName: extractActionName,
 	extractArguments: extractArguments
@@ -616,6 +620,16 @@ function renderAfterAsync(promise, render) {
     });
 }
 
+function findChildComponents(root) {
+    if (root == null) {
+        throw new Error("InvalidArgument: DOM element expected");
+    }
+
+    return Array.prototype.map.call(root.querySelectorAll("[data-component]"), function (x) {
+        return x.getAttribute("data-component");
+    });
+}
+
 var components = {};
 
 function componentize(name, actions, render, model) {
@@ -639,6 +653,9 @@ function componentize(name, actions, render, model) {
     component.get = function (prop) {
         return model[prop];
     };
+    component.render = function () {
+        return render(model);
+    };
     return component;
 }
 
@@ -659,10 +676,16 @@ function create(name, actions, view, model) {
         if (typeof document !== "undefined" && htmlString) {
             var target = document.querySelector("[data-component=" + name + "]");
             if (target) {
+                var childComponents = findChildComponents(target);
                 if (target.innerHTML === "") {
                     target.innerHTML = htmlString;
                 } else {
                     index$1(target.firstElementChild, htmlString);
+                }
+                if (childComponents.length) {
+                    childComponents.map(function (x) {
+                        return components[x] && components[x].render();
+                    });
                 }
             }
         }
@@ -671,13 +694,13 @@ function create(name, actions, view, model) {
     var component = componentize(name, actions(model), viewRender, model);
     components[name] = component;
 
-    if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
-        component = registerEventDelegator(component);
-    }
-
     viewInit(component, model);
 
     return component;
+}
+
+if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
+    registerEventDelegator(components);
 }
 
 var comp = {

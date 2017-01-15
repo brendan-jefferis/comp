@@ -2,23 +2,22 @@ import inspectSyntax from "./inspect-syntax";
 import getEventTarget from "./get-event-target";
 import suggestActions from "./suggest-actions";
 
-export function registerEventDelegator(component) {
-    const componentHtmlTarget = document.querySelector(`[data-component=${component.name}]`);
-    if (componentHtmlTarget === null) {
-        return component;
-    }
-
+export function registerEventDelegator(components) {
     Object.keys(Event.prototype).map(function (ev, i) {
         if (i >= 10 && i <= 19) {
-            componentHtmlTarget.addEventListener(ev.toLowerCase(), e => delegateEvent(e, component, componentHtmlTarget));
+            document.body.addEventListener(ev.toLowerCase(), e => { delegateEvent(e, components) });
         }
     }, this);
-
-    return component;
 }
 
-export function delegateEvent(e, component, componentHtmlTarget) {
+export function delegateEvent(e, components) {
+    e.stopPropagation();
     const target = getEventTarget(e);
+    if (target.nodeName === "BODY") {
+        return;
+    }
+    const componentHtmlTarget = getComponentHtmlTarget(target);
+    const component = components[componentHtmlTarget.getAttribute("data-component")];
     const action = getEventActionFromElement(e, target, componentHtmlTarget);
     if (action.name === "") {
         return;
@@ -54,6 +53,10 @@ export function bubbleUntilActionFound(event, element, root) {
     }
 
     return bubbleUntilActionFound(event, element.parentNode, root);
+}
+
+export function getComponentHtmlTarget(eventTarget) {
+    return eventTarget.closest("[data-component]");
 }
 
 export function getEventActionFromElement(event, element, root) {

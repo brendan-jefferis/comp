@@ -1,3 +1,12 @@
+# 1.4.0
+
+### Summary
+
+Added support for nesting components, which consisted of:
+
+- On render but before updating DOM, check if current render target has component children, if so render them in order next
+- Moved event delegation to the document body - all events are now handled in the one place which has the added optimisation benefit of only requiring 10 event listeners per page instead of 10 per component
+
 # 1.3.0
 
 ### Summary

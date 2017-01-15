@@ -1,6 +1,7 @@
 Comp.
 =====
 
+[![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 [![Build Status](https://travis-ci.org/brendan-jefferis/comp.svg?branch=master)](https://travis-ci.org/brendan-jefferis/comp)
 [![Coverage Status](https://coveralls.io/repos/github/brendan-jefferis/comp/badge.svg?branch=master)](https://coveralls.io/github/brendan-jefferis/comp?branch=master)
 [![Dependency Status](https://gemnasium.com/badges/github.com/brendan-jefferis/comp.svg)](https://gemnasium.com/github.com/brendan-jefferis/comp)
@@ -15,19 +16,17 @@ Not intended to be the Next Big Thing, more of a stepping stone to make your cod
 - Write declarative views with ES6 template strings
 - Built-in event delegation
 - Lightweight and not overly opinionated
-- Components as siblings rather than parent/child with easy cross-component interop
 - Easy to learn, with very few proprietary concepts to remember
 - Designed to promote an easy future refactor job to migrate your JavaScript code to Elm or something Elm-like.
 
 ###Architecture
 Comp borrows the model/update/view pattern and one-way data flow from the Elm Architecture and React/Flux, with a few key differences:
 
-- All Comp components are siblings (no nesting or parent/child relationships)
 - Actions (i.e., the "update" bit) are expressed with functions rather than a switch block
 - While model and state remain internal to each component, a component's Actions can be called
   from external sources, e.g., other components, the console etc. This allow easy interop
   between components and allows your layout to be more loosely-coupled to your logic.
-- It currently doesn't use immutable data
+- The model is not immutable
 
 
 Install
@@ -143,6 +142,8 @@ A Comp View is simply a function that **returns a render method** and an optiona
 actions, render will be passed your model and an HTML helper for working with ES6 template strings
 
 Comp will ensure that the render function is called after every action.
+
+_NOTE: Your component must return a single top-level element_
 
 ```
 // my-component.js

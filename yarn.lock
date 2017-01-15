@@ -1884,12 +1884,6 @@ html-es6cape@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/html-es6cape/-/html-es6cape-1.0.5.tgz#f3a437883b0594a01b175a6a2833090920b37d85"
 
-html-template-tag@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/html-template-tag/-/html-template-tag-1.0.0.tgz#22937162e17549af11a159d31dcf4f4a6805774b"
-  dependencies:
-    html-es6cape "^1.0.5"
-
 http-signature@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/http-signature/-/http-signature-1.1.1.tgz#df72e267066cd0ac67fb76adf8e134a8fbcf91bf"
@@ -3501,6 +3495,10 @@ sshpk@^1.7.0:
     jodid25519 "^1.0.0"
     jsbn "~0.1.0"
     tweetnacl "~0.14.0"
+
+stability-badges@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/stability-badges/-/stability-badges-0.1.1.tgz#e47d1af828988ab4f7621ff779a1c2d3f9f2c8d0"
 
 stack-utils@^0.4.0:
   version "0.4.0"
