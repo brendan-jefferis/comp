@@ -1,3 +1,8 @@
+#1.4.1
+
+###Minor bug fix
+- Ensure child components are rendered after parent (recursively) 
+
 # 1.4.0
 
 ### Summary
