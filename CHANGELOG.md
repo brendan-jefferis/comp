@@ -1,3 +1,10 @@
+#1.4.2
+
+###Minor bug fix
+- The model that is passed to `comp.create` is now cloned
+ 
+ Predictably, this fixes issues of concurrency in cases where multiple instances of the same component are instantiated.
+
 #1.4.1
 
 ###Minor bug fix

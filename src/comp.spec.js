@@ -88,6 +88,7 @@ test("Should throw error if no Actions supplied", t => {
 
 test("Should create a deep clone of the model", t => {
     const c = t.context;
+
     const mock1 = comp.create("mock", c.Mock.Actions, null, c.model);
     mock1.addToList(1, 2, 3);
     const mock2 = comp.create("mock", c.Mock.Actions, null, c.model);
