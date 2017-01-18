@@ -44,12 +44,12 @@ function create(name, actions, view, model) {
             if (typeof document !== "undefined" && htmlString) {
                 let target = document.querySelector(`[data-component=${name}]`);
                 if (target) {
-                    const childComponents = findChildComponents(target);
                     if (target.innerHTML === "") {
                         target.innerHTML = htmlString;
                     } else {
                         setDom(target.firstElementChild, htmlString);
                     }
+                    const childComponents = findChildComponents(target);
                     if (childComponents.length) {
                         childComponents.map(x => components[x] && components[x].render());
                     }

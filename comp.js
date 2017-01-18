@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-01-15T05:51:19.462Z 
+* Date: 2017-01-18T03:47:21.382Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -676,12 +676,12 @@ function create(name, actions, view, model) {
         if (typeof document !== "undefined" && htmlString) {
             var target = document.querySelector("[data-component=" + name + "]");
             if (target) {
-                var childComponents = findChildComponents(target);
                 if (target.innerHTML === "") {
                     target.innerHTML = htmlString;
                 } else {
                     index$1(target.firstElementChild, htmlString);
                 }
+                var childComponents = findChildComponents(target);
                 if (childComponents.length) {
                     childComponents.map(function (x) {
                         return components[x] && components[x].render();
