@@ -47,6 +47,7 @@
   },
   "homepage": "https://github.com/brendan-jefferis/comp#readme",
   "dependencies": {
+    "clone": "^2.1.0",
     "html-es6cape": "^1.0.5",
     "leven": "^2.0.0",
     "set-dom": "~6.0.0"

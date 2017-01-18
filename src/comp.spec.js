@@ -8,7 +8,8 @@ test.beforeEach(t => {
 
     t.context.model = {
         num: 0,
-        title: "Mock title"
+        title: "Mock title",
+        list: []
     };
 
     const childComponent = {
@@ -43,6 +44,9 @@ test.beforeEach(t => {
                 },
                 addChild() {
                     comp.create("childComponent", childComponent.actions, childComponent.view, childComponent.model);
+                },
+                addToList(...args) {
+                    model.list.push(...args);
                 }
             }
         },
@@ -80,6 +84,17 @@ test("Should throw error if no Actions supplied", t => {
     });
 
     t.is(error.message.substr(0, 24), "mock needs some actions!");
+});
+
+test("Should create a deep clone of the model", t => {
+    const c = t.context;
+    const mock1 = comp.create("mock", c.Mock.Actions, null, c.model);
+    mock1.addToList(1, 2, 3);
+    const mock2 = comp.create("mock", c.Mock.Actions, null, c.model);
+
+    t.plan(2);
+    t.deepEqual(mock1.get("list"), [1,2,3]);
+    t.deepEqual(mock2.get("list"), []);
 });
 
 test("Should be able to access model properties with getter function", t => {

@@ -1,5 +1,6 @@
 import * as compEvents from "./lib/comp-events";
 import setDom from "set-dom";
+import clone from "clone";
 import html from "./lib/html-template";
 import renderAfterAsync from "./lib/render-after-async";
 import { findChildComponents } from "./lib/render-children";
@@ -36,6 +37,7 @@ function create(name, actions, view, model) {
         throw new Error(`${name} needs some actions! Here's an example of an Actions function:\r\n\r\n${example}\r\n\r\n`);
     }
 
+    model = clone(model);
     let _view = view && view();
     let viewInit = _view && _view.init ? _view.init : () => {};
     let viewRender = _view && _view.render
