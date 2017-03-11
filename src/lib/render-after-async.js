@@ -1,4 +1,4 @@
-export default function renderAfterAsync(promise, render) {
+export function renderAfterPromise(promise, render) {
     return promise
         .then((updatedModel) => {
             if (updatedModel == null) {
@@ -13,4 +13,23 @@ export default function renderAfterAsync(promise, render) {
             console.error(err);
             return err;
         });
+}
+
+export function renderAfterGenerator(gen, render) {    
+    let state = gen.next();
+    if (state.value) {
+        if (state.value.then) {
+            renderAfterPromise(state.value, render)
+                .then(() => {
+                    if (!state.done) {
+                        renderAfterGenerator(gen, render);
+                    }
+                });
+        } else {
+            render(state.value);
+            if (!state.done) {
+                renderAfterGenerator(gen, render);
+            }
+        }
+    }
 }

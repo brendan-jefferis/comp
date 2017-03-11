@@ -2,13 +2,47 @@
     let HelloWorld = {};
 
     const model = {
-        greeting: "Hello"
+        message: "Hello world!"
     };
 
     HelloWorld.Actions = function(model) {
+
         return {
-            setGreeting: function(greeting) {
-                model.greeting = greeting || "";
+            setGreeting: function(message) {
+                model.message = message || "";
+            },
+            asyncTest() {
+                return new Promise(resolve => {
+                    const delay = 800;
+                    setTimeout(() => {
+                        model.message = `Delayed action by ${delay}ms`;
+                        resolve(model);
+                    }, delay);
+                });
+            },
+            genTest() {
+                return function* () {
+                    yield new Promise(resolve => {
+                        setTimeout(() => {
+                            model.message = `Step 1...`;
+                            resolve(model);
+                        }, 1000);
+                    });
+                    
+                    yield new Promise(resolve => {
+                        setTimeout(() => {
+                            model.message = `Step 2...`;
+                            resolve(model);
+                        }, 800);
+                    });
+
+                    yield new Promise(resolve => {
+                        setTimeout(() => {
+                            model.message = `Step 3. (complete)`;
+                            resolve(model);
+                        }, 3000);
+                    });
+                }
             }
         }
     };
@@ -18,8 +52,10 @@
             render: function(model, html) {
                 return html`
                     <div>
-                        <h1>${model.greeting} world!</h1>
+                        <h1>${model.message}</h1>
                         <input type="text" data-keyup="setGreeting(this.value)">
+                        <button data-click="asyncTest">Promise</button>
+                        <button data-click="genTest">Generator</button>
                     </div>
                 `;
             }

@@ -2,7 +2,7 @@ import * as compEvents from "./lib/comp-events";
 import setDom from "set-dom";
 import clone from "clone";
 import html from "./lib/html-template";
-import renderAfterAsync from "./lib/render-after-async";
+import { renderAfterPromise, renderAfterGenerator } from "./lib/render-after-async";
 import { findChildComponents } from "./lib/render-children";
 
 const components = {};
@@ -16,7 +16,11 @@ function componentize(name, actions, render, model) {
             let returnValue = actions[action].apply(actions, args);
 
             if (returnValue && returnValue.then) {
-                renderAfterAsync(returnValue, render);
+                renderAfterPromise(returnValue, render);
+            }
+
+            if (returnValue && typeof returnValue === "function" && returnValue().next) {
+                renderAfterGenerator(returnValue(), render);
             }
             render(model);
         }

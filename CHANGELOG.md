@@ -1,3 +1,45 @@
+#1.5.0
+
+### Added support for actions that return generator functions
+This enables developers to queue multiple, delayed state changes from the same action, by yielding promises.
+
+A common use case for this is for UI state changes that trigger a sequence of animations - now comp can render each step as it completes.
+
+e.g.,
+
+```
+actions(model) {
+    return {
+
+        threeStepAction() {
+            return function* () {
+                
+                yield new Promise(resolve => {
+                    setTimeout(() => {
+                        model.counter++;
+                        resolve(model);
+                    }, 1000);
+                });
+
+                yield new Promise(resolve => {
+                    setTimeout(() => {
+                        model.counter++;
+                        resolve(model);
+                    }, 500);
+                });
+
+                yield new Promise(resolve => {
+                    setTimeout(() => {
+                        model.counter++;
+                        resolve(model);
+                    }, 800);
+                });
+            }
+        }
+    }
+}
+```
+
 #1.4.2
 
 ###Minor bug fix

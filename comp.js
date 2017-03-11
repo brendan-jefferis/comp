@@ -1,5 +1,5 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.4.2
+*  |___ [__] |\/| |--' . v1.5.0
 * 
 * A design pattern and micro-framework for creating UI components
 *
@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-02-01T09:55:27.991Z 
+* Date: 2017-03-11T22:26:37.736Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -867,7 +867,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
-function renderAfterAsync(promise, render) {
+function renderAfterPromise(promise, render) {
     return promise.then(function (updatedModel) {
         if (updatedModel == null) {
             throw new Error("No model received - aborting render");
@@ -878,6 +878,24 @@ function renderAfterAsync(promise, render) {
         console.error(err);
         return err;
     });
+}
+
+function renderAfterGenerator(gen, render) {
+    var state = gen.next();
+    if (state.value) {
+        if (state.value.then) {
+            renderAfterPromise(state.value, render).then(function () {
+                if (!state.done) {
+                    renderAfterGenerator(gen, render);
+                }
+            });
+        } else {
+            render(state.value);
+            if (!state.done) {
+                renderAfterGenerator(gen, render);
+            }
+        }
+    }
 }
 
 function findChildComponents(root) {
@@ -904,7 +922,11 @@ function componentize(name, actions, render, model) {
             var returnValue = actions[action].apply(actions, args);
 
             if (returnValue && returnValue.then) {
-                renderAfterAsync(returnValue, render);
+                renderAfterPromise(returnValue, render);
+            }
+
+            if (returnValue && typeof returnValue === "function" && returnValue().next) {
+                renderAfterGenerator(returnValue(), render);
             }
             render(model);
         };
