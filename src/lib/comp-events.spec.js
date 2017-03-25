@@ -14,7 +14,7 @@ test.beforeEach(t => {
         }
     };
 
-    document.body.innerHTML = `<div data-component="mock"></div>`;
+    document.body.innerHTML = `<div data-component="mock"></div><h1 id="other-element">other html</h1>`;
 
     const model = {
         num: 0,
@@ -97,6 +97,16 @@ test("Should exit silently if event target is body", t => {
     const event = new MouseEvent("change");
     const body = document.body;
     Object.defineProperty(event, "target", { value: body, enumerable: true });
+
+    t.notThrows(() => {
+        compEvents.delegateEvent(event, comp.components);
+    });
+});
+
+test("Should exit silently if event fired outside of a component", t => {
+    const event = new MouseEvent("mousedown");
+    const target = document.querySelector("#other-element");
+    Object.defineProperty(event, "target", { value: target, enumerable: true });
 
     t.notThrows(() => {
         compEvents.delegateEvent(event, comp.components);

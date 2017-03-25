@@ -40,7 +40,14 @@ test.beforeEach(t => {
                     model.title = title;
                 },
                 asyncAction() {
-                    return Promise.resolve(3);
+                    return Promise.resolve("pass");
+                },
+                generatorAction() {
+                    return function* () {
+                        yield 1;
+                        yield 2;
+                        yield 3;
+                    }
                 },
                 addChild() {
                     comp.create("childComponent", childComponent.actions, childComponent.view, childComponent.model);
@@ -185,14 +192,33 @@ test("View render should be called after async action is called", async t => {
     const c = t.context;
     const mock = comp.create("mock", c.Mock.Actions, () => {
         return {
-            render() {
-                t.pass();
+            render(model) {
+                if (model !== "") {
+                    t.is(model, "pass")
+                }
             }
         }
-    });
+    }, "");
+
+    mock.asyncAction();
+});
+
+test("View render should be called after each generator function yield", t => {
+    const c = t.context;
+    let count = 0;
+    const mock = comp.create("mock", c.Mock.Actions, () => {
+        return {
+            render(model) {
+                if (model !== 0) {
+                    count++;
+                    t.is(model, count);
+                }
+            }
+        }
+    }, 0);
 
     t.plan(3);
-    mock.asyncAction();
+    mock.generatorAction();
 });
 
 test("Should write to target element on init", t => {

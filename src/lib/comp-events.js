@@ -17,6 +17,9 @@ export function delegateEvent(e, components) {
         return;
     }
     const componentHtmlTarget = getComponentHtmlTarget(target);
+    if (componentHtmlTarget == null) {
+        return;
+    }
     const component = components[componentHtmlTarget.getAttribute("data-component")];
     const action = getEventActionFromElement(e, target, componentHtmlTarget);
     if (action.name === "") {

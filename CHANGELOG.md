@@ -1,3 +1,10 @@
+#1.6.1
+
+### Fixed issue with new mouse event delegation
+Mouse events triggered outside of comp components are now ignored (i.e. comp will not attempt to delegate those events to a component).
+
+### Added/improved async/generator action unit tests 
+
 #1.6.0
 
 ### Added support for mouse events
