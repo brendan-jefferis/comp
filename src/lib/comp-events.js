@@ -4,7 +4,7 @@ import suggestActions from "./suggest-actions";
 
 export function registerEventDelegator(components) {
     Object.keys(Event.prototype).map(function (ev, i) {
-        if (i >= 10 && i <= 19) {
+        if (i >= 4 && i <= 19) {
             document.body.addEventListener(ev.toLowerCase(), e => { delegateEvent(e, components) });
         }
     }, this);

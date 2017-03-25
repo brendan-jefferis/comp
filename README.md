@@ -11,6 +11,8 @@ A design pattern and micro-framework for creating UI components.
 
 Not intended to be the Next Big Thing, more of a stepping stone to make your code and development experience more Elm-like but with less of a commitment to functional programming, more flexibility in working with existing JS code and a shallower learning curve.
 
+[Hello world with comp](http://codepen.io/brendan-jefferis/pen/dNdLRa?editors=1011)
+
 ###Features
 - Virtual dom diffing (using [set-dom](https://www.npmjs.com/package/set-dom))
 - Write declarative views with ES6 template strings
@@ -28,102 +30,50 @@ Comp borrows the model/update/view pattern and one-way data flow from the Elm Ar
   between components and allows your layout to be more loosely-coupled to your logic.
 - The model is not immutable
 
+###ES5 support
+While most of the examples are in ES2015+, you can use good ol' ES5 as well.
 
-Install
+[Hello world in ES5](http://codepen.io/brendan-jefferis/pen/JWBjZr?editors=1010)
+
+
+Install with npm
 -----------
-
-####npm/yarn
 
 ```
 npm install comp --save
 ```
-or
+
+Install as static JS
+----------
+
+[Download comp.min.js](https://raw.githubusercontent.com/brendan-jefferis/comp/master/comp.min.js) and add to your HTML via a script tag.
+
+Alternatively, add the script tag below to use the CDN version
 
 ```
-yarn add comp
+<script type="text/javascript" src="https://unpkg.com/comp"></script>
 ```
 
-####Static JS
-
-[Download comp.js (or comp.min.js)](https://github.com/brendan-jefferis/comp) and add to your HTML
-
-Usage
------
-
-```
-<body>
-    ...
-    <div data-component="helloWorld"></div>
-    ...
-</body>
-```
-
-```
-// hello-world.js
-import comp from "comp";
-
-const model = {
-    greeting: ""
-};
-
-const HelloWorld = {
-
-    Actions = function (model) {
-        return {
-            setGreeting: function(greeting) {
-                model.greeting = greeting || "";
-            }
-        }
-    },
-
-    View = function() {
-        return {
-            init: (actions) {
-                // initialize some things here if you need to
-            },
-            render: (model, html) {
-                return html`
-                    <div>
-                        <h1>${model.greeting} world</h1>
-                        <input type="text" data-keyup="setGreeting(this.value)">
-                    </div>
-                `
-            }
-        }
-    }
-};
-
-comp.create("helloWorld", HelloWorld.Actions, HelloWorld.View, model);
-```
-
-Details
+Basic usage
 -------
 
-####Declare your component
-
-```
-// my-component.js
-
-MyComponent = {};
-```
-
-####Declare a model and give it some defaults
-This step is not required but highly recommended (it'll save a few lines of null-or-undefined checking later on)
+####Model
 
 ```
 // my-component.js
 
 var model = {
     foo: ""
-};
+}
+
 ```
 
-####Add some Actions
+####Actions
 
 ```
 // my-component.js
 
-MyComponent.Actions = function (model) {
+var actions = function (model) {
 	return {
 		setFoo(value) {
 			model.foo = value;
@@ -136,19 +86,12 @@ This must be a function that **takes a model** and **returns an object of functi
 
 These will be used exclusively for changing your model.
 
-####Add a View
-
-A Comp View is simply a function that **returns a render method** and an optional init method. init will be passed your
-actions, render will be passed your model and an HTML helper for working with ES6 template strings
-
-Comp will ensure that the render function is called after every action.
-
-_NOTE: Your component must return a single top-level element_
+####View
 
 ```
 // my-component.js
 
-MyComponent.View = function() {
+var view = function() {
     return {
         init: (actions) {
             // initialize some things here if you need to
@@ -163,6 +106,13 @@ MyComponent.View = function() {
         }
     }
 }
+
+A comp view is a function that **returns a render method** and an optional init method. When you create a component with `comp.create()` comp will pass your actions into the init function if you're using it; render will be passed your model and an HTML helper for working with ES6 template strings
+
+Comp will ensure that the render function is called after every action.
+
+_NOTE: Your component must return a single top-level element_
+
 ```
 ####Add an HTML container element
 
@@ -176,12 +126,13 @@ MyComponent.View = function() {
 ```
 
 ####Create your component
-The name you provide must match the data-component attribute of the container element
 
 ```
 // my-component.js
-comp.create("myComponent", MyComponent.Actions, MyComponent.View, model);
+comp.create("myComponent", actions, view, model);
 ```
+
+The name you provide must match the data-component attribute of the container element
 
 Additional info
 ---------------
@@ -191,7 +142,7 @@ Comp has a simple API:
 
 `components`    An object containing all components on the current page
 
-`create(name:string, actions:(model: Object) -> Object, view:() -> Object, model:Object)` Creates a new component and adds it to components
+`create(name, actions, view, model)` Creates a new component and adds it to comp.components
 
 You can call a component's actions externally via the Comp global object like so:
 
@@ -206,15 +157,78 @@ access to any property on the component's model, e.g.
 comp.components.HelloWorld.get("greeting") // "Sup"
 ```
 
-####Notes
-- Your component's name must match your HTML container's data-component attribute if you want to use ES6 string
-  templates, virtual-dom diffing and event delegation
-- Currently, values passed as arguments in a `data-[event]` attribute are treated as strings - except for references to the element's attributes, which will be treated as the actual values (not the literal string "this.value")
-  e.g., `<input type="text" data-change="setGreeting(this.value)">` - this works for any HTML element attribute
-- The event delegation adds a single event listener to the HTML container, and delegates events to child elements
-  that use the `data-[event]` attribute, e.g., `data-click` `data-change` `data-keyup` etc
+####Async actions
+As long as your action returns a Promise, comp will ensure your view is rendered when it resolves.
 
-  The currently supported events are
+```
+var actions = function(model) {
+    return {
+        myDelayedAction() {
+            return new Promise((resolve, reject) => {
+               // do async stuff here, setTimeout, call the server etc
+
+               // Make sure to resolve with the updated model so it can be rendered
+               resolve(model); 
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        }
+    }
+}
+``` 
+[Async demo](http://codepen.io/brendan-jefferis/pen/VpBwKr)
+
+####Generators in actions (ES2015+)
+Comp supports actions that return generator functions. This allows you to do multi-step, asynchronous actions (handy for things like animation sequences without having to use nested setTimeouts)
+
+```
+var actions = function(model) {
+    return {
+        myMultiStepAction() {
+            return function* () {
+                yield new Promise(resolve => {
+                    setTimeout(() => {
+                        model.counter++;
+                        resolve(model);
+                    }, 1000);
+                });
+
+                yield new Promise(resolve => {
+                    setTimeout(() => {
+                        model.counter++;
+                        resolve(model);
+                    }, 500);
+                });
+
+                yield new Promise(resolve => {
+                    setTimeout(() => {
+                        model.counter++;
+                        resolve(model);
+                    }, 800);
+                });
+            }
+        }
+    }
+}
+}
+```
+
+[Generator demo](http://codepen.io/brendan-jefferis/pen/KWBppo?editors=1010)
+
+####Rules
+- The component name you pass to `comp.create()` must match the `data-component` attribute of the HTML container
+- All values passed as arguments in a `data-[event]` attribute are converted to strings when they're written to the DOM. However, comp ensures you can reference the target element's full attributes using `this`
+  e.g., `<input type="text" data-change="myAction(this.value, this.dataset.foo)" data-foo="123">`
+- Comp adds a total of 16 event event listeners to the document, and delegates all events to child elements that use the `data-[event]` attribute, e.g., `data-click` `data-change` `data-keyup` etc
+
+  The available events are
+    - `mousedown`
+    - `mouseup`
+    - `mouseover`
+    - `mouseout`
+    - `mousemove`
+    - `mousedrag`
     - `click`
     - `dblclick`
     - `keydown`
@@ -225,29 +239,3 @@ comp.components.HelloWorld.get("greeting") // "Sup"
     - `blur`
     - `select`
     - `change`
-
-
-####Writing a View with jQuery
-
-Comp will call your View's render function, but doesn't care what's in it (unless it returns a template string as
-explained above). This means that you're free to implement your view code however you like. Here's an example using jQuery with manual event handling and DOM operations.
-
-```
-HelloWorld.View = function() {
-	const COMPONENT = document.querySelector("[data-component=hello-world]");
-
-	const BUTTON = COMPONENT.querySelector("[data-selector=say-hello]");
-	const GREETING = COMPONENT.querySelector("[data-selector=greeting]");
-
-	return {
-		init: function(actions) {
-			BUTTON.addEventListener("click", actions.sayHello);
-		},
-		render: function(model) {
-			if (model.greeting && model.greeting !== "") {
-				GREETING.innerHTML = model.greeting + " world";
-			}
-		}
-	}
-}
-```

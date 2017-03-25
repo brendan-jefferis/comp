@@ -1,6 +1,6 @@
 {
   "name": "comp",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "A design pattern and micro-framework for creating UI components",
   "keywords": [
     "model",
@@ -50,7 +50,7 @@
     "clone": "^2.1.0",
     "html-es6cape": "^1.0.5",
     "leven": "^2.0.0",
-    "set-dom": "~6.0.0"
+    "set-dom": "^7.0.4"
   },
   "devDependencies": {
     "ava": "~0.17.0",
@@ -69,7 +69,6 @@
     "rollup-plugin-commonjs": "^6.0.1",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-watch": "2.5.0",
-    "sinon": "^1.17.6",
     "stability-badges": "^0.1.1",
     "uglify-js": "^2.7.5"
   },

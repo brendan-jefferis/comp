@@ -1,3 +1,21 @@
+#1.6.0
+
+### Added support for mouse events
+
+    - `mousedown`
+    - `mouseup`
+    - `mouseover`
+    - `mouseout`
+    - `mousemove`
+    - `mousedrag`
+
+### Updated dependencies
+
+### Improved README documentation
+Added codepen examples; simplified install and usage instructions; added async and generator examples
+
+### Removed unused dependency Sinon 
+
 #1.5.0
 
 ### Added support for actions that return generator functions
