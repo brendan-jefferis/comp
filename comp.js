@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-03-25T21:22:27.854Z 
+* Date: 2017-03-25T22:41:30.589Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -231,6 +231,10 @@ function extractArguments(str, target) {
         var argList = arg.split(".");
         if (argList.length === 1 && argList.indexOf("this") === -1) {
             return arg;
+        }
+
+        if (arg === "this") {
+            return target;
         }
 
         var dataset = argList.indexOf("dataset") === 1 ? Object.assign({}, target.dataset) : null;

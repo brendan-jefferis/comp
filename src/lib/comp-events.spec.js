@@ -18,14 +18,16 @@ test.beforeEach(t => {
 
     const model = {
         num: 0,
-        title: "Mock title"
+        title: "Mock title",
+        target: null
     };
 
     const Mock = {
         Actions(model) {
             return {
                 empty() { model.num = 5},
-                setSum(a, b) { model.num = parseInt(a, 10) + parseInt(b, 10); }
+                setSum(a, b) { model.num = parseInt(a, 10) + parseInt(b, 10); },
+                setTargetElement(target) { model.target = target; }
             }
         },
         View() {
@@ -48,6 +50,7 @@ test.beforeEach(t => {
                                     <p>p text</p>
                                 </div>
                             </div>
+                            <div id="set-target-element" data-click="setTargetElement(this)"></div>
                         </div>
                     `;
                 }
@@ -168,6 +171,15 @@ test("Should throw error if data-[event] action contains syntax error", t => {
     t.throws(() => {
         compEvents.delegateEvent(event, comp.components);
     }, SyntaxError);
+});
+
+test("Should pass target element if 'this' passed to action", t => {
+    const event = new MouseEvent("click");
+    const target = document.querySelector("#set-target-element");
+
+    const action = compEvents.getEventActionFromElement(event, target);
+
+    t.deepEqual(action.args[0], target);
 });
 
 test("Should extract element attribute values (e.g., this.value, this.innerHTML) from data-[event] arguments", t => {

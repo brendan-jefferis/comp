@@ -88,6 +88,10 @@ export function extractArguments(str, target) {
             return arg;
         }
 
+        if (arg === "this") {
+            return target;
+        }
+
         const dataset = (argList.indexOf("dataset") === 1)
             ? Object.assign({}, target.dataset)
             : null;
