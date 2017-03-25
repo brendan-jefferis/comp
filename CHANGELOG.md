@@ -1,3 +1,7 @@
+#1.7.0
+
+### Passing 'this' to action not passes target element
+
 #1.6.1
 
 ### Fixed issue with new mouse event delegation
