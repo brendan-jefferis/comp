@@ -1,6 +1,6 @@
 #1.7.0
 
-### Passing 'this' to action not passes target element
+### Passing 'this' to action now passes target element
 
 #1.6.1
 
