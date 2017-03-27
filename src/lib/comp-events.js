@@ -33,9 +33,9 @@ export function delegateEvent(e, components) {
     }
 
     if (action.args === "") {
-        component[action.name]();
+        component[action.name].call(action, e);
     } else {
-        component[action.name].apply(action, action.args);
+        component[action.name].apply(action, action.args.concat(e));
     }
 }
 

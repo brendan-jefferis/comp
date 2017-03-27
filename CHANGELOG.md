@@ -1,3 +1,8 @@
+#1.8.0
+
+### Event is now always passed to an action as the last argument.
+
+
 #1.7.0
 
 ### Passing 'this' to action now passes target element

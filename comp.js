@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-03-25T23:11:38.611Z 
+* Date: 2017-03-27T10:03:45.809Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -178,9 +178,9 @@ function delegateEvent(e, components) {
     }
 
     if (action.args === "") {
-        component[action.name]();
+        component[action.name].call(action, e);
     } else {
-        component[action.name].apply(action, action.args);
+        component[action.name].apply(action, action.args.concat(e));
     }
 }
 

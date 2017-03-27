@@ -19,7 +19,8 @@ test.beforeEach(t => {
     const model = {
         num: 0,
         title: "Mock title",
-        target: null
+        target: null,
+        event: null
     };
 
     const Mock = {
@@ -27,7 +28,9 @@ test.beforeEach(t => {
             return {
                 empty() { model.num = 5},
                 setSum(a, b) { model.num = parseInt(a, 10) + parseInt(b, 10); },
-                setTargetElement(target) { model.target = target; }
+                setTargetElement(target) { model.target = target; },
+                passEvent(e) { model.event = e; },
+                passEventWithParams(a, b, e) { model.event = e; }
             }
         },
         View() {
@@ -40,6 +43,8 @@ test.beforeEach(t => {
                             <input type="checkbox" data-change="empty(this.checked)" checked>
                             <a id="test-no-args" data-click="empty">No args</a>
                             <a id="test-set-num" data-click="setSum(2, 3)">Set sum</a>
+                            <a id="test-pass-event" data-click="passEvent">Pass event</a>
+                            <a id="test-pass-event-params" data-click="passEventWithParams(1, 2)">Pass event with params</a>
                             <button data-click="empty">Click</button>
                             <p id="test-unknown-action" data-click="unknownAction"></p>
                             <p id="test-syntax-error" data-click="setGreeting(1,2"></p>
@@ -180,6 +185,26 @@ test("Should pass target element if 'this' passed to action", t => {
     const action = compEvents.getEventActionFromElement(event, target);
 
     t.deepEqual(action.args[0], target);
+});
+
+test("Should pass Event to action", t => {
+    const event = new MouseEvent("click");
+    const element = document.querySelector("#test-pass-event");
+    Object.defineProperty(event, "target", { value: element, enumerable: true });
+
+    compEvents.delegateEvent(event, comp.components);
+
+    t.is(t.context.mock.get("event"), event);
+});
+
+test("Should pass Event to action as last argument", t => {
+    const event = new MouseEvent("click");
+    const element = document.querySelector("#test-pass-event-params");
+    Object.defineProperty(event, "target", { value: element, enumerable: true });
+
+    compEvents.delegateEvent(event, comp.components);
+
+    t.is(t.context.mock.get("event"), event);
 });
 
 test("Should extract element attribute values (e.g., this.value, this.innerHTML) from data-[event] arguments", t => {

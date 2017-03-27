@@ -8,8 +8,8 @@
     HelloWorld.Actions = function(model) {
 
         return {
-            setGreeting: function(message) {
-                model.message = message || "";
+            setGreeting: function(e) {
+                model.message = e.target.value || "";
             },
             asyncTest() {
                 return new Promise(resolve => {
@@ -53,7 +53,7 @@
                 return html`
                     <div>
                         <h1>${model.message}</h1>
-                        <input type="text" data-keyup="setGreeting(this.value)">
+                        <input type="text" data-keyup="setGreeting(2,3,4)">
                         <button data-click="asyncTest">Promise</button>
                         <button data-click="genTest">Generator</button>
                     </div>
