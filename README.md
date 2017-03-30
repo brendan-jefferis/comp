@@ -106,6 +106,7 @@ var view = function() {
         }
     }
 }
+```
 
 A comp view is a function that **returns a render method** and an optional init method. When you create a component with `comp.create()` comp will pass your actions into the init function if you're using it; render will be passed your model and an HTML helper for working with ES6 template strings
 
@@ -113,7 +114,6 @@ Comp will ensure that the render function is called after every action.
 
 _NOTE: Your component must return a single top-level element_
 
-```
 ####Add an HTML container element
 
 ```
@@ -132,7 +132,7 @@ _NOTE: Your component must return a single top-level element_
 comp.create("myComponent", actions, view, model);
 ```
 
-The name you provide must match the data-component attribute of the container element
+**Important**: The name you specify as the forst argument to `comp.create()` must match the `data-component` value of the HTML container element you declared in the previous step. This name is the unique identifier used by comp for event delegation, rendering etc.
 
 Additional info
 ---------------
