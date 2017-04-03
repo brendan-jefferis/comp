@@ -73,7 +73,9 @@ function create(name, actions, view, model) {
 }
 
 if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
-    compEvents.registerEventDelegator(components);
+    document.addEventListener("DOMContentLoaded", function () {
+        compEvents.registerEventDelegator(components);
+    });
 }
 
 export default {

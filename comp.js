@@ -1,5 +1,5 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.8.0
+*  |___ [__] |\/| |--' . v1.8.1
 * 
 * A design pattern and micro-framework for creating UI components
 *
@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-03-27T10:31:55.612Z 
+* Date: 2017-04-03T08:21:40.211Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -973,7 +973,9 @@ function create(name, actions, view, model) {
 }
 
 if (typeof document !== "undefined" && typeof compEvents !== "undefined") {
-    registerEventDelegator(components);
+    document.addEventListener("DOMContentLoaded", function () {
+        registerEventDelegator(components);
+    });
 }
 
 var comp = {

@@ -1,3 +1,8 @@
+#1.8.1
+
+### Wait for DOMContentLoaded before setting up event delegation
+This issue only affected users who included the script globally as opposed to using ES6 modules. 
+
 #1.8.0
 
 ### Event is now always passed to an action as the last argument.
