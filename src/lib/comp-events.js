@@ -37,6 +37,10 @@ export function delegateEvent(e, components) {
     } else {
         component[action.name].apply(action, action.args.concat(e));
     }
+
+    const compActionEvent = new Event("comp_action");
+    componentHtmlTarget.dispatchEvent(compActionEvent);
+    document.dispatchEvent(compActionEvent);
 }
 
 export function bubbleUntilActionFound(event, element, root) {

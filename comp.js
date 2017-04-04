@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-04-03T08:21:40.211Z 
+* Date: 2017-04-04T21:49:08.293Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -182,6 +182,10 @@ function delegateEvent(e, components) {
     } else {
         component[action.name].apply(action, action.args.concat(e));
     }
+
+    var compActionEvent = new Event("comp_action");
+    componentHtmlTarget.dispatchEvent(compActionEvent);
+    document.dispatchEvent(compActionEvent);
 }
 
 function bubbleUntilActionFound(event, element, root) {
