@@ -1,3 +1,35 @@
+#1.9.0
+
+### Updated dependency: set-dom
+7.0.4 -> 7.4.1
+More info can be found here [CHANGELOG](https://github.com/DylanPiercey/set-dom/blob/master/CHANGELOG.md)
+
+This has also fixed an issue where an element's value was not being updated correctly on render.
+
+### Added custom event which is triggered on document and component when action is called
+*Note: This feature is mainly for interop with external code - i.e., in normal use of comp you probably won't need to use this.*
+
+When an action is called, comp now dispatches an event called `comp_action` on both the document and the component that the action belongs to. You can subscribe to either (or none) as you like.
+
+####An example usage
+Your building a comp component as a new section within a legacy form. The form has it's own client-side validation which, (due to it's design - outside of your control) is not picking up changes in your comp component. With this change you could now write the following line anywhere on the page to ensure the legacy code is notified of the comp update cycle.
+
+```
+document.addEventListener("comp_action", function() {
+    LegacyCode.validateForm();
+});
+```
+
+Alternatively...
+
+```
+var component = document.querySelector("[data-component=myFancyComponent]");
+component.addEventListener("comp_action", function() {
+    LegacyCode.validateForm();
+});
+```
+
+
 #1.8.1
 
 ### Wait for DOMContentLoaded before setting up event delegation

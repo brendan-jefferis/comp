@@ -2,7 +2,8 @@
     let HelloWorld = {};
 
     const model = {
-        message: "Hello world!"
+        message: "Hello world!",
+        test: "123"
     };
 
     HelloWorld.Actions = function(model) {
@@ -53,7 +54,7 @@
                 return html`
                     <div>
                         <h1>${model.message}</h1>
-                        <input type="text" data-keyup="setGreeting(2,3,4)">
+                        <input type="text" data-keyup="setGreeting()" value="${model.test}">
                         <button data-click="asyncTest">Promise</button>
                         <button data-click="genTest">Generator</button>
                     </div>

@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-04-04T21:49:08.293Z 
+* Date: 2017-04-04T22:30:54.379Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -260,27 +260,35 @@ var compEvents = Object.freeze({
 });
 
 var parser = window.DOMParser && new window.DOMParser();
-var htmlType = 'text/html';
-var xhtmlType = 'application/xhtml+xml';
-var testCode = '<i></i>';
 var documentRootName = 'HTML';
 var supportsHTMLType = false;
-var supportsXHTMLType = false;
+var supportsInnerHTML = false;
+var htmlType = 'text/html';
+var xhtmlType = 'application/xhtml+xml';
+var testCode = '<br/>';
 
-// Check if browser supports text/html DOMParser
+/* istanbul ignore next: Fails in older browsers */
 try {
-  /* istanbul ignore next: Fails in older browsers */
+  // Check if browser supports text/html DOMParser
   if (parser.parseFromString(testCode, htmlType)) supportsHTMLType = true;
-} catch (err) {}
-
-try {
-  /* istanbul ignore next: Only used in ie9 */
-  if (!supportsHTMLType && parser.parseFromString(testCode, xhtmlType)) supportsXHTMLType = true;
-} catch (err) {}
+} catch (e) {
+  var mockDoc = document.implementation.createHTMLDocument('');
+  var mockHTML = mockDoc.documentElement;
+  var mockBody = mockDoc.body;
+  try {
+    // Check if browser supports documentElement.innerHTML
+    mockHTML.innerHTML += '';
+    supportsInnerHTML = true;
+  } catch (e) {
+    // Check if browser supports xhtml parsing.
+    parser.parseFromString(testCode, xhtmlType);
+    var bodyReg = /(<body[^>]*>)([\s\S]*)<\/body>/;
+  }
+}
 
 /**
  * Returns the results of a DOMParser as an HTMLElement.
- * (Shims for older browser and IE9).
+ * (Shims for older browsers).
  */
 var parseHtml = supportsHTMLType
   ? function parseHTML (markup, rootName) {
@@ -291,21 +299,31 @@ var parseHtml = supportsHTMLType
   }
   /* istanbul ignore next: Only used in older browsers */
   : function parseHTML (markup, rootName) {
-    var isRoot = rootName === documentRootName;
-
-    // Special case for ie9 (documentElement.innerHTML not supported).
-    if (supportsXHTMLType && isRoot) {
-      return parser.parseFromString(markup, xhtmlType).documentElement
-    }
-
     // Fallback to innerHTML for other older browsers.
-    var doc = document.implementation.createHTMLDocument('');
-    if (isRoot) {
-      doc.documentElement.innerHTML = markup;
-      return doc.documentElement
+    if (rootName === documentRootName) {
+      if (supportsInnerHTML) {
+        mockHTML.innerHTML = markup;
+        return mockHTML
+      } else {
+        // IE9 does not support innerhtml at root level.
+        // We get around this by parsing everything except the body as xhtml.
+        var bodyMatch = markup.match(bodyReg);
+        if (bodyMatch) {
+          var bodyContent = bodyMatch[2];
+          var startBody = bodyMatch.index + bodyMatch[1].length;
+          var endBody = startBody + bodyContent.length;
+          markup = markup.slice(0, startBody) + markup.slice(endBody);
+          mockBody.innerHTML = bodyContent;
+        }
+
+        var doc = parser.parseFromString(markup, xhtmlType);
+        var body = doc.body;
+        while (mockBody.firstChild) body.appendChild(mockBody.firstChild);
+        return doc.documentElement
+      }
     } else {
-      doc.body.innerHTML = markup;
-      return doc.body.firstChild
+      mockBody.innerHTML = markup;
+      return mockBody.firstChild
     }
   };
 
@@ -315,10 +333,9 @@ setDOM.CHECKSUM = 'data-checksum';
 var parseHTML = parseHtml;
 var KEY_PREFIX = '_set-dom-';
 var NODE_MOUNTED = KEY_PREFIX + 'mounted';
-var MOUNT_EVENT = 'mount';
-var DISMOUNT_EVENT = 'dismount';
-var ELEMENT_TYPE = window.Node.ELEMENT_NODE;
-var DOCUMENT_TYPE = window.Node.DOCUMENT_NODE;
+var ELEMENT_TYPE = 1;
+var DOCUMENT_TYPE = 9;
+var DOCUMENT_FRAGMENT_TYPE = 11;
 
 // Expose api.
 var index$1 = setDOM;
@@ -337,16 +354,23 @@ function setDOM (oldNode, newNode) {
   // Alias document element with document.
   if (oldNode.nodeType === DOCUMENT_TYPE) oldNode = oldNode.documentElement;
 
-  // If a string was provided we will parse it as dom.
-  if (typeof newNode === 'string') newNode = parseHTML(newNode, oldNode.nodeName);
-
-  // Update the node.
-  setNode(oldNode, newNode);
+  // Document Fragments don't have attributes, so no need to look at checksums, ignored, attributes, or node replacement.
+  if (newNode.nodeType === DOCUMENT_FRAGMENT_TYPE) {
+    // Simply update all children (and subchildren).
+    setChildNodes(oldNode, newNode);
+  } else {
+    // Otherwise we diff the entire old node.
+    setNode(oldNode, typeof newNode === 'string'
+      // If a string was provided we will parse it as dom.
+      ? parseHTML(newNode, oldNode.nodeName)
+      : newNode
+    );
+  }
 
   // Trigger mount events on initial set.
   if (!oldNode[NODE_MOUNTED]) {
     oldNode[NODE_MOUNTED] = true;
-    dispatch(oldNode, MOUNT_EVENT);
+    mount(oldNode);
   }
 }
 
@@ -362,10 +386,8 @@ function setNode (oldNode, newNode) {
   if (oldNode.nodeType === newNode.nodeType) {
     // Handle regular element node updates.
     if (oldNode.nodeType === ELEMENT_TYPE) {
-      // Ignore elements if their checksum matches.
-      if (getCheckSum(oldNode) === getCheckSum(newNode)) return
-      // Ignore elements that explicity choose not to be diffed.
-      if (isIgnored(oldNode) && isIgnored(newNode)) return
+      // Checks if nodes are equal before diffing.
+      if (isEqualNode(oldNode, newNode)) return
 
       // Update all children (and subchildren).
       setChildNodes(oldNode, newNode);
@@ -391,9 +413,8 @@ function setNode (oldNode, newNode) {
     }
   } else {
     // we have to replace the node.
-    dispatch(oldNode, DISMOUNT_EVENT);
-    oldNode.parentNode.replaceChild(newNode, oldNode);
-    dispatch(newNode, MOUNT_EVENT);
+    oldNode.parentNode.replaceChild(newNode, dismount(oldNode));
+    mount(newNode);
   }
 }
 
@@ -469,24 +490,42 @@ function setChildNodes (oldParent, newParent) {
     newNode = newNode.nextSibling;
 
     if (keyedNodes && (newKey = getKey(checkNew)) && (foundNode = keyedNodes[newKey])) {
-      // If we have a key and it existed before we move the previous node to the new position and diff it.
-      oldParent.insertBefore(foundNode, oldNode);
+      delete keyedNodes[newKey];
+      // If we have a key and it existed before we move the previous node to the new position if needed and diff it.
+      if (foundNode !== oldNode) {
+        oldParent.insertBefore(foundNode, oldNode);
+      } else {
+        oldNode = oldNode.nextSibling;
+      }
+
       setNode(foundNode, checkNew);
-    } else if (oldNode && !getKey(oldNode)) {
-      // If there was no keys on either side we simply diff the nodes.
+    } else if (oldNode) {
       checkOld = oldNode;
       oldNode = oldNode.nextSibling;
-      setNode(checkOld, checkNew);
+      if (getKey(checkOld)) {
+        // If the old child had a key we skip over it until the end.
+        oldParent.insertBefore(checkNew, checkOld);
+        mount(checkNew);
+      } else {
+        // Otherwise we diff the two non-keyed nodes.
+        setNode(checkOld, checkNew);
+      }
     } else {
-      // Otherwise we append or insert the new node at the proper position.
-      oldParent.insertBefore(checkNew, oldNode);
-      dispatch(checkNew, MOUNT_EVENT);
+      // Finally if there was no old node we add the new node.
+      oldParent.appendChild(checkNew);
+      mount(checkNew);
     }
   }
 
-  // If we have any remaining remove them from the end.
+  // Remove old keyed nodes.
+  for (oldKey in keyedNodes) {
+    extra--;
+    oldParent.removeChild(keyedNodes[oldKey]);
+  }
+
+  // If we have any remaining unkeyed nodes remove them from the end.
   while (--extra >= 0) {
-    oldParent.removeChild(dispatch(oldParent.lastChild, DISMOUNT_EVENT));
+    oldParent.removeChild(dismount(oldParent.lastChild));
   }
 }
 
@@ -503,6 +542,25 @@ function getKey (node) {
   if (node.nodeType !== ELEMENT_TYPE) return
   var key = node.getAttribute(setDOM.KEY) || node.id;
   if (key) return KEY_PREFIX + key
+}
+
+/**
+ * Checks if nodes are equal using the following by checking if
+ * they are both ignored, have the same checksum, or have the
+ * same contents.
+ *
+ * @param {Node} a - One of the nodes to compare.
+ * @param {Node} b - Another node to compare.
+ */
+function isEqualNode (a, b) {
+  return (
+    // Check if both nodes are ignored.
+    (isIgnored(a) && isIgnored(b)) ||
+    // Check if both nodes have the same checksum.
+    (getCheckSum(a) === getCheckSum(b)) ||
+    // Fall back to native isEqualNode check.
+    a.isEqualNode(b)
+  )
 }
 
 /**
@@ -529,6 +587,26 @@ function getCheckSum (node) {
  */
 function isIgnored (node) {
   return node.getAttribute(setDOM.IGNORE) != null
+}
+
+/**
+ * Dispatches a mount event for the given node and children.
+ *
+ * @param {Node} node - the node to mount.
+ * @return {node}
+ */
+function mount (node, type) {
+  return dispatch(node, 'mount')
+}
+
+/**
+ * Dispatches a dismount event for the given node and children.
+ *
+ * @param {Node} node - the node to dismount.
+ * @return {node}
+ */
+function dismount (node, type) {
+  return dispatch(node, 'dismount')
 }
 
 /**

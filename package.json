@@ -50,7 +50,7 @@
     "clone": "^2.1.0",
     "html-es6cape": "^1.0.5",
     "leven": "^2.0.0",
-    "set-dom": "^7.0.4"
+    "set-dom": "^7.4.1"
   },
   "devDependencies": {
     "ava": "~0.17.0",
