@@ -3,7 +3,23 @@ import getEventTarget from "./get-event-target";
 import suggestActions from "./suggest-actions";
 
 export function registerEventDelegator(components) {
-    Object.keys(Event.prototype).map(function (ev, i) {
+    [
+        "mousedown",
+        "mouseup",
+        "mouseover",
+        "mouseout",
+        "mousemove",
+        "mousedrag",
+        "click",
+        "dblclick",
+        "keydown",
+        "keyup",
+        "keypress",
+        "focus",
+        "blur",
+        "select",
+        "change"
+    ].map(function (ev, i) {
         if (i >= 4 && i <= 19) {
             document.body.addEventListener(ev.toLowerCase(), e => { delegateEvent(e, components) });
         }
