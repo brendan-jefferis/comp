@@ -15,9 +15,8 @@ Not intended to be the Next Big Thing, more of a stepping stone to make your cod
 
 ###Features
 - Virtual dom diffing (using [set-dom](https://www.npmjs.com/package/set-dom))
-- Write declarative views with ES6 template strings
+- Write declarative views with ES6 template strings (or regular ES5 string concatenation)
 - Built-in event delegation
-- Lightweight and not overly opinionated
 - Easy to learn, with very few proprietary concepts to remember
 - Designed to promote an easy future refactor job to migrate your JavaScript code to Elm or something Elm-like.
 
@@ -220,7 +219,7 @@ var actions = function(model) {
 - The component name you pass to `comp.create()` must match the `data-component` attribute of the HTML container
 - All values passed as arguments in a `data-[event]` attribute are converted to strings when they're written to the DOM. However, comp ensures you can reference the target element's full attributes using `this`
   e.g., `<input type="text" data-change="myAction(this.value, this.dataset.foo)" data-foo="123">`
-- Comp adds a total of 16 event event listeners to the document, and delegates all events to child elements that use the `data-[event]` attribute, e.g., `data-click` `data-change` `data-keyup` etc
+- Comp adds a total of 24 event event listeners to the document, and delegates all events to child elements that use the `data-[event]` attribute, e.g., `data-click` `data-change` `data-keyup` etc
 
   The available events are
     - `mousedown`
@@ -239,3 +238,11 @@ var actions = function(model) {
     - `blur`
     - `select`
     - `change`
+    - `drag`
+    - `dragstart`
+    - `dragend`
+    - `dragover`
+    - `dragenter`
+    - `dragleave`
+    - `dragexit`
+    - `drop`

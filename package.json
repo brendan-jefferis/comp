@@ -1,6 +1,6 @@
 {
   "name": "comp",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "description": "A design pattern and micro-framework for creating UI components",
   "keywords": [
     "model",
@@ -47,6 +47,7 @@
   },
   "homepage": "https://github.com/brendan-jefferis/comp#readme",
   "dependencies": {
+    "brace-expansion": "^1.1.7",
     "clone": "^2.1.0",
     "html-es6cape": "^1.0.5",
     "leven": "^2.0.0",

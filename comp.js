@@ -1,5 +1,5 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.9.1
+*  |___ [__] |\/| |--' . v1.10.0
 * 
 * A design pattern and micro-framework for creating UI components
 *
@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-05-01T09:42:18.159Z 
+* Date: 2017-05-01T09:54:54.230Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -144,7 +144,7 @@ function suggestActions(str, component) {
 }
 
 function registerEventDelegator(components) {
-    Object.keys(Event.prototype).map(function (ev, i) {
+    ["mousedown", "mouseup", "mouseover", "mouseout", "mousemove", "mousedrag", "click", "dblclick", "keydown", "keyup", "keypress", "focus", "blur", "select", "change", "dragdrop", "drag", "dragstart", "dragend", "dragover", "dragenter", "dragleave", "dragexit", "drop"].map(function (ev, i) {
         if (i >= 4 && i <= 19) {
             document.body.addEventListener(ev.toLowerCase(), function (e) {
                 delegateEvent(e, components);

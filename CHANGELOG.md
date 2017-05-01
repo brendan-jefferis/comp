@@ -1,7 +1,21 @@
-#1.9.1
+#1.10.0
+
+### Fixed #6 use hard-coded list instead of Object.prototype
+Also added support for the following events:
+
+- drag
+- dragstart
+- dragend
+- dragover
+- dragenter
+- dragleave
+- dragexit
+- drop
 
 ### Security patch
 Fixed the following alert: brace expansion is vulnerable to Regular Expression Denial of Service attacks.
+
+#1.9.1
 
 ### Updated dependency: set-dom
 7.4.1 -> 7.4.2

@@ -18,7 +18,16 @@ export function registerEventDelegator(components) {
         "focus",
         "blur",
         "select",
-        "change"
+        "change",
+        "dragdrop",
+        "drag",
+        "dragstart",
+        "dragend",
+        "dragover",
+        "dragenter",
+        "dragleave",
+        "dragexit",
+        "drop"
     ].map(function (ev, i) {
         if (i >= 4 && i <= 19) {
             document.body.addEventListener(ev.toLowerCase(), e => { delegateEvent(e, components) });
