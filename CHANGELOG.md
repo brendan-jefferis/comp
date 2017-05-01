@@ -1,3 +1,11 @@
+#1.9.1
+
+### Security patch
+Fixed the following alert: brace expansion is vulnerable to Regular Expression Denial of Service attacks.
+
+### Updated dependency: set-dom
+7.4.1 -> 7.4.2
+
 #1.9.0
 
 ### Updated dependency: set-dom

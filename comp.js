@@ -1,5 +1,5 @@
 /* ____ ____ _  _ ___   
-*  |___ [__] |\/| |--' . v1.9.0
+*  |___ [__] |\/| |--' . v1.9.1
 * 
 * A design pattern and micro-framework for creating UI components
 *
@@ -8,7 +8,7 @@
 * 
 * Issues? Please visit https://github.com/brendan-jefferis/comp/issues
 *
-* Date: 2017-04-04T22:35:16.111Z 
+* Date: 2017-05-01T09:42:18.159Z 
 */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -520,7 +520,7 @@ function setChildNodes (oldParent, newParent) {
   // Remove old keyed nodes.
   for (oldKey in keyedNodes) {
     extra--;
-    oldParent.removeChild(keyedNodes[oldKey]);
+    oldParent.removeChild(dismount(keyedNodes[oldKey]));
   }
 
   // If we have any remaining unkeyed nodes remove them from the end.
@@ -595,7 +595,7 @@ function isIgnored (node) {
  * @param {Node} node - the node to mount.
  * @return {node}
  */
-function mount (node, type) {
+function mount (node) {
   return dispatch(node, 'mount')
 }
 
@@ -605,7 +605,7 @@ function mount (node, type) {
  * @param {Node} node - the node to dismount.
  * @return {node}
  */
-function dismount (node, type) {
+function dismount (node) {
   return dispatch(node, 'dismount')
 }
 
