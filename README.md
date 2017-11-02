@@ -9,18 +9,20 @@ Comp.
 
 A design pattern and micro-framework for creating UI components.
 
+**WARNING: No longer supported**
+
 Not intended to be the Next Big Thing, more of a stepping stone to make your code and development experience more Elm-like but with less of a commitment to functional programming, more flexibility in working with existing JS code and a shallower learning curve.
 
 [Hello world with comp](http://codepen.io/brendan-jefferis/pen/dNdLRa?editors=1011)
 
-###Features
+### Features
 - Virtual dom diffing (using [set-dom](https://www.npmjs.com/package/set-dom))
 - Write declarative views with ES6 template strings (or regular ES5 string concatenation)
 - Built-in event delegation
 - Easy to learn, with very few proprietary concepts to remember
 - Designed to promote an easy future refactor job to migrate your JavaScript code to Elm or something Elm-like.
 
-###Architecture
+### Architecture
 Comp borrows the model/update/view pattern and one-way data flow from the Elm Architecture and React/Flux, with a few key differences:
 
 - Actions (i.e., the "update" bit) are expressed with functions rather than a switch block
@@ -29,7 +31,7 @@ Comp borrows the model/update/view pattern and one-way data flow from the Elm Ar
   between components and allows your layout to be more loosely-coupled to your logic.
 - The model is not immutable
 
-###ES5 support
+### ES5 support
 While most of the examples are in ES2015+, you can use good ol' ES5 as well.
 
 [Hello world in ES5](http://codepen.io/brendan-jefferis/pen/JWBjZr?editors=1010)
@@ -56,7 +58,7 @@ Alternatively, add the script tag below to use the CDN version
 Basic usage
 -------
 
-####Model
+#### Model
 
 ```
 // my-component.js
@@ -67,7 +69,7 @@ var model = {
 
 ```
 
-####Actions
+#### Actions
 
 ```
 // my-component.js
@@ -85,7 +87,7 @@ This must be a function that **takes a model** and **returns an object of functi
 
 These will be used exclusively for changing your model.
 
-####View
+#### View
 
 ```
 // my-component.js
@@ -113,7 +115,7 @@ Comp will ensure that the render function is called after every action.
 
 _NOTE: Your component must return a single top-level element_
 
-####Add an HTML container element
+#### Add an HTML container element
 
 ```
 //index.html
@@ -136,7 +138,7 @@ comp.create("myComponent", actions, view, model);
 Additional info
 ---------------
 
-####The Comp global object
+#### The Comp global object
 Comp has a simple API:
 
 `components`    An object containing all components on the current page
@@ -156,7 +158,7 @@ access to any property on the component's model, e.g.
 comp.components.HelloWorld.get("greeting") // "Sup"
 ```
 
-####Async actions
+#### Async actions
 As long as your action returns a Promise, comp will ensure your view is rendered when it resolves.
 
 ```
@@ -178,7 +180,7 @@ var actions = function(model) {
 ``` 
 [Async demo](http://codepen.io/brendan-jefferis/pen/VpBwKr)
 
-####Generators in actions (ES2015+)
+#### Generators in actions (ES2015+)
 Comp supports actions that return generator functions. This allows you to do multi-step, asynchronous actions (handy for things like animation sequences without having to use nested setTimeouts)
 
 ```
@@ -215,7 +217,7 @@ var actions = function(model) {
 
 [Generator demo](http://codepen.io/brendan-jefferis/pen/KWBppo?editors=1010)
 
-####Rules
+#### Rules
 - The component name you pass to `comp.create()` must match the `data-component` attribute of the HTML container
 - All values passed as arguments in a `data-[event]` attribute are converted to strings when they're written to the DOM. However, comp ensures you can reference the target element's full attributes using `this`
   e.g., `<input type="text" data-change="myAction(this.value, this.dataset.foo)" data-foo="123">`
