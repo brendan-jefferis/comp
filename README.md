@@ -75,11 +75,11 @@ var model = {
 // my-component.js
 
 var actions = function (model) {
-	return {
-		setFoo(value) {
-			model.foo = value;
-		}
+    return {
+        setFoo(value) {
+            model.foo = value;
 	}
+    }
 }
 ```
 
@@ -120,9 +120,9 @@ _NOTE: Your component must return a single top-level element_
 ```
 //index.html
 <body>
-	...
-	<div data-component="myComponent"></div>
-	...
+    ...
+    <div data-component="myComponent"></div>
+    ...
 </body>
 ```
 
