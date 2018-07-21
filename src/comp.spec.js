@@ -1,8 +1,6 @@
 import test from "ava";
 import comp from "./comp.js";
 
-// TODO use sinon to check if functions have been called
-
 test.beforeEach(t => {
     document.body.innerHTML = "<div data-component=mock></div>";
 
