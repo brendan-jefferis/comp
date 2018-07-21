@@ -11,7 +11,7 @@ A design pattern and micro-framework for creating UI components.
 
 **WARNING: No longer supported**
 
-Not intended to be the Next Big Thing, more of a stepping stone to make your code and development experience more Elm-like but with less of a commitment to functional programming, more flexibility in working with existing JS code and a shallower learning curve.
+Not intended to be the Next Big Thing, more of a stepping stone to make your code and development experience more Elm-like.
 
 [Hello world with comp](http://codepen.io/brendan-jefferis/pen/dNdLRa?editors=1011)
 
